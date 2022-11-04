@@ -9,10 +9,8 @@ Once all signatures are gathered, the price info and signatures are pushed on ch
 
 ## Setup
 - Create `.env` file, see `.env.example`
-- Set up cron job to run script `....`
-- TODO
+- Set up cron job to periodically call `api/check`
 
 ## Local setup
 - Create `.env` file, see `.env.example`
 - Run `npm run dev`
-- TODO
