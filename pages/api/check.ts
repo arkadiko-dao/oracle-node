@@ -25,21 +25,21 @@ export default async function handler(
     const tokenId = await getTokenId(symbol)
 
     // Check if price needs to be updated
-    const shouldUpdate = await shouldUpdatePrice(tokenId, priceInfo, blockHeight);
+    const shouldUpdate = await shouldUpdatePrice(tokenId, priceInfo["last-block"], blockHeight);
 
     // Update if needed
     if (shouldUpdate) {
-      await updatePrice(tokenId, priceInfo, blockHeight);
+      await updatePrice(tokenId, priceInfo.decimals, blockHeight);
     }
   }
 
   res.status(200).json({ result: "done" })
 }
 
-async function shouldUpdatePrice(tokenId: number, priceInfo: any, blockHeight: number): Promise<boolean> {
+async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight: number): Promise<boolean> {
 
   // Check if it's time to update
-  if (blockHeight < priceInfo["last-block"] + 6) {
+  if (blockHeight < lastBlock + 6) {
     return false
   }
 
@@ -51,22 +51,28 @@ async function shouldUpdatePrice(tokenId: number, priceInfo: any, blockHeight: n
   return true
 }
 
-async function updatePrice(tokenId: number, priceInfo: any, blockHeight: number) {
+async function updatePrice(tokenId: number, decimals: number, blockHeight: number) {
 
   // Fetch price from source
   // TODO
   const price = 123;
-
-  // Get all signatures
-  // TODO
-  const signatures = ["", ""];
 
   // Create price object
   const priceObject = {
     block: blockHeight,
     tokenId: tokenId,
     price: price,
-    decimals: priceInfo.decimals
+    decimals: decimals
+  }
+
+  // Get all signatures
+  var signatures: string[] = [];
+  const params = `?block=${blockHeight}&tokenId=${tokenId}&price=${price}&decimals=${decimals}`
+  for (const node of config.nodes) {
+    const url = node + params;
+    const response = await fetch(url, { credentials: 'omit' });
+    const data = await response.json();
+    signatures.push(data.signature);
   }
 
   // Push on chain

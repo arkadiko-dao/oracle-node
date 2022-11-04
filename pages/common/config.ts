@@ -7,6 +7,11 @@ const network = process.env.NETWORK as 'mocknet' | 'testnet' | 'mainnet';
 
 const mocknet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
+  nodes: [
+    "http://localhost:3000/api/sign",
+    "http://localhost:3000/api/sign",
+    "http://localhost:3000/api/sign"
+  ],
   signKey: process.env.SIGN_KEY as string,
   network: new StacksMocknet(),
   stacksApiBase: "http://localhost:3999",
@@ -17,6 +22,11 @@ const mocknet = {
 
 const testnet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
+  nodes: [
+    "http://localhost:3000/api/sign",
+    "http://localhost:3000/api/sign",
+    "http://localhost:3000/api/sign"
+  ],
   signKey: process.env.SIGN_KEY as string,
   network: new StacksTestnet(),
   stacksApiBase: "https://stacks-node-api.testnet.stacks.co",
@@ -27,6 +37,11 @@ const testnet = {
 
 const mainnet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
+  nodes: [
+    "http://localhost:3000/api/sign",
+    "http://localhost:3000/api/sign",
+    "http://localhost:3000/api/sign"
+  ],
   signKey: process.env.SIGN_KEY as string,
   network: new StacksMainnet(),
   stacksApiBase: "https://stacks-node-api.stacks.co", 
