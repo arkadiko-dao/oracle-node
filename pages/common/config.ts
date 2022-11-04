@@ -6,24 +6,33 @@ import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
 const network = process.env.NETWORK as 'mocknet' | 'testnet' | 'mainnet';
 
 const mocknet = {
+  symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
   signKey: process.env.SIGN_KEY as string,
   network: new StacksMocknet(),
   stacksApiBase: "http://localhost:3999",
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  managerKey: "753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601"
 };
 
 const testnet = {
+  symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
   signKey: process.env.SIGN_KEY as string,
   network: new StacksTestnet(),
   stacksApiBase: "https://stacks-node-api.testnet.stacks.co",
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  managerKey: process.env.STACKS_KEY as string
 }
 
 const mainnet = {
+  symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
   signKey: process.env.SIGN_KEY as string,
   network: new StacksMainnet(),
   stacksApiBase: "https://stacks-node-api.stacks.co", 
   arkadikoAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
+  managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  managerKey: process.env.STACKS_KEY as string
 }
 
 const networks = {

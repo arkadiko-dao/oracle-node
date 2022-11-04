@@ -1,31 +1,74 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { config } from '../common/config';
+import { getPriceInfo, getTokenId, pushPriceInfo } from '../common/oracle';
+import { getCurrentBlockHeight, getMempoolTransactions } from '../common/stacks';
 
 type Data = {
-  name: string
+  result: string
 }
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
 
-  // Check if price needs to be updated
-  const shouldUpdate = shouldUpdatePrice("BTC");
+  // Get current block
+  const blockHeight = await getCurrentBlockHeight();
 
-  // Fetch price from source
+  // Loop over all symbols
+  for (const symbol of config.symbols) {
 
-  // Get all signatures
+    // Get on chain price info
+    const priceInfo = await getPriceInfo(symbol);
 
-  // Push on chain
+    // Get token ID for symbol
+    const tokenId = await getTokenId(symbol)
 
-  res.status(200).json({ name: 'John Doe' })
+    // Check if price needs to be updated
+    const shouldUpdate = await shouldUpdatePrice(tokenId, priceInfo, blockHeight);
+
+    // Update if needed
+    if (shouldUpdate) {
+      await updatePrice(tokenId, priceInfo, blockHeight);
+    }
+  }
+
+  res.status(200).json({ result: "done" })
 }
 
-async function shouldUpdatePrice(symbol: string): Promise<boolean> {
+async function shouldUpdatePrice(tokenId: number, priceInfo: any, blockHeight: number): Promise<boolean> {
 
-  // Check last updated block on chain
+  // Check if it's time to update
+  if (blockHeight < priceInfo["last-block"] + 6) {
+    return false
+  }
 
   // Check mempool
+  const mempoolTxs = await getMempoolTransactions();
+  const oracleTransactions = mempoolTxs.filter(tx => tx.sender_address == config.managerAddress)
+  // TODO: check if transaction for given tokenId
 
-  return false
+  return true
+}
+
+async function updatePrice(tokenId: number, priceInfo: any, blockHeight: number) {
+
+  // Fetch price from source
+  // TODO
+  const price = 123;
+
+  // Get all signatures
+  // TODO
+  const signatures = ["", ""];
+
+  // Create price object
+  const priceObject = {
+    block: blockHeight,
+    tokenId: tokenId,
+    price: price,
+    decimals: priceInfo.decimals
+  }
+
+  // Push on chain
+  await pushPriceInfo(priceObject, signatures);
 }
