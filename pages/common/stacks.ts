@@ -1,22 +1,15 @@
 import { config } from './config';
-import {
-  callReadOnlyFunction,
-  cvToJSON,
-  stringAsciiCV,
-} from '@stacks/transactions';
 
-export async function getPriceInfo(symbol: string): Promise<any> {
-  const call = await callReadOnlyFunction({
-    contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v1-1",
-    functionName: "get-price",
-    functionArgs: [
-      stringAsciiCV(symbol)
-    ],
-    senderAddress: config.arkadikoAddress as string,
-    network: config.network,
-  });
-  const result = cvToJSON(call).value;
-  return result;
+export async function getCurrentBlockHeight(): Promise<any> {
+  const url = `${config.stacksApiBase}/extended/v1/block?limit=1`;
+  const response = await fetch(url, { credentials: 'omit' });
+  const data = await response.json();
+  return data.results[0].height;
 }
 
+export async function getMempoolTransactions(address: string): Promise<any> {
+  const url = `${config.stacksApiBase}/extended/v1/tx/mempool?limit=200`;
+  const response = await fetch(url, { credentials: 'omit' });
+  const data = await response.json();
+  return data.results;
+}
