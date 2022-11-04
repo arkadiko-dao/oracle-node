@@ -29,7 +29,7 @@ export default async function handler(
 
     // Update if needed
     if (shouldUpdate) {
-      await updatePrice(tokenId, priceInfo.decimals, blockHeight);
+      await updatePrice(symbol, tokenId, priceInfo.decimals, blockHeight);
     }
   }
 
@@ -51,11 +51,10 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
   return true
 }
 
-async function updatePrice(tokenId: number, decimals: number, blockHeight: number) {
+async function updatePrice(symbol: string, tokenId: number, decimals: number, blockHeight: number) {
 
   // Fetch price from source
-  // TODO
-  const price = 123;
+  const price = await config.source?.fetchPrice(symbol, decimals) as number;
 
   // Create price object
   const priceObject = {
