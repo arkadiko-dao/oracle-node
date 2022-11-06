@@ -1,7 +1,7 @@
 import { fetchPriceAMM } from "./amm";
 import { PriceSourceInterface } from "./interface";
 
-export class SourceCoinGecko implements PriceSourceInterface {
+export class SourceCoinCap implements PriceSourceInterface {
 
   // Return price as int (with given decimals)
   public async fetchPrice(symbol: string, decimals: number): Promise<number> {
@@ -13,7 +13,7 @@ export class SourceCoinGecko implements PriceSourceInterface {
   async fetchPriceHelper(symbol: string, decimals: number): Promise<number> {
     // API
     if (symbol == "STX") {
-      return await this.fetchPrice("blockstack", decimals);
+      return await this.fetchPrice("stacks", decimals);
     } else if (symbol == "BTC") {
       return await this.fetchPrice("bitcoin", decimals);
     }
@@ -23,8 +23,8 @@ export class SourceCoinGecko implements PriceSourceInterface {
     return await fetchPriceAMM(symbol, stxPrice);
   }
 
-  async fetchPriceAPI(id: string, decimals: number): Promise<number> {
-    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&precision=${decimals}`;
+  async fetchPriceAPI(id: string): Promise<number> {
+    const url = `api.coincap.io/v2/assets/${id}`;
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
     return data[id].usd;
