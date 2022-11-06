@@ -5,12 +5,12 @@ export class SourceCryptoCompare implements PriceSourceInterface {
 
   // Return price as int (with given decimals)
   public async fetchPrice(symbol: string, decimals: number): Promise<number> {
-    const price = await this.fetchPriceHelper(symbol, decimals);
+    const price = await this.fetchPriceHelper(symbol);
     return Math.round(Math.pow(price, decimals));
   }
 
   // Return price as double
-  async fetchPriceHelper(symbol: string, decimals: number): Promise<number> {
+  async fetchPriceHelper(symbol: string): Promise<number> {
     // API
     if (symbol == "STX") {
       return await this.fetchPriceAPI("STX");
