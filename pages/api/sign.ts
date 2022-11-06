@@ -1,18 +1,31 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getSignableMessage } from '../common/oracle';
+import { getPriceInfo, getSignableMessage, getTokenNames } from '../common/oracle';
 import secp256k1 from 'secp256k1';
 import { config } from '../common/config';
+import { getCurrentBlockHeight } from '../common/stacks';
 
 type Data = {
-  signature: string
+  signature: string,
+  publicKey: string
+}
+
+type DataError = {
+  error: string,
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<Data | DataError>
 ) {
   // Get params
   const { block, tokenId, price, decimals } = req.query;
+
+  // Check input
+  const inputError = await checkInput(Number(block), Number(tokenId), Number(price), Number(decimals));
+  if (inputError !== undefined) {
+    res.status(404).json(inputError);
+    return;
+  }
 
   // Create price object
   const priceObject = {
@@ -32,10 +45,11 @@ export default async function handler(
   const privateKey = Buffer.from(config.signKey, "hex");
 
   // Get the public key in a compressed format
-  const publicKey = secp256k1.publicKeyCreate(privateKey)
+  const publicKey = secp256k1.publicKeyCreate(privateKey);
+  const publicKeyString = Buffer.from(publicKey).toString("hex");
 
   // Get signature
-  const signatureObject = secp256k1.ecdsaSign(message, privateKey)
+  const signatureObject = secp256k1.ecdsaSign(message, privateKey);
 
   // Append recovery ID to signature
   const recoveryId = new Uint8Array([signatureObject.recid]);
@@ -44,5 +58,43 @@ export default async function handler(
   mergedArray.set(recoveryId, signatureObject.signature.length);
   const fullSignature = Buffer.from(mergedArray).toString("hex");
 
-  res.status(200).json({ signature: fullSignature })
+  res.status(200).json({ signature: fullSignature, publicKey: publicKeyString })
+}
+
+async function checkInput(block: number, tokenId: number, price: number, decimals: number): Promise<DataError | undefined> {
+  
+  // Check if block correct
+  const currentBlock = await getCurrentBlockHeight();
+  if (Math.abs(currentBlock - block) > 5) {
+    // TODO: add 5 to config
+    return { error: "wrong input - block" };
+  }
+
+  // Get token names
+  const tokenNames = await getTokenNames(Number(tokenId));
+
+  // Get supported symbol
+  var symbol = tokenNames[0];
+  for (const tokenName of tokenNames) {
+    if (config.symbols.includes(tokenName)) {
+      symbol = tokenName;
+    }
+  }
+
+  // Get on chain price info
+  const priceInfo = await getPriceInfo(symbol);
+
+  // Check if decimals correct
+  if (priceInfo.decimals != decimals) {
+    return { error: "wrong input - decimals" };
+  }
+
+  // Check if price within range
+  const sourcePrice = await config.source?.fetchPrice(symbol, decimals) as number;
+  if (Math.abs(price / sourcePrice) - 1 > 0.01) {
+    // TODO: add 0.01 to config
+    return { error: "wrong input - price" };
+  }
+
+  return true;
 }

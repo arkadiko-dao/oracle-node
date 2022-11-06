@@ -71,9 +71,13 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, bl
     const url = node + params;
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
+
+    // TODO: check status code (404 if wrong input)
+
     signatures.push(data.signature);
   }
 
   // Push on chain
+  // TODO: only if amount of signatures > required signatures
   await pushPriceInfo(priceObject, signatures);
 }
