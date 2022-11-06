@@ -32,6 +32,8 @@ const mocknet = {
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerKey: "753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601",
   source: getSource(),
+  inputMaxBlockDiff: 5,
+  inputMaxPriceDiff: 0.01
 };
 
 const testnet = {
@@ -50,6 +52,8 @@ const testnet = {
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerKey: process.env.STACKS_KEY as string,
   source: getSource(),
+  inputMaxBlockDiff: 5,
+  inputMaxPriceDiff: 0.01
 }
 
 const mainnet = {
@@ -68,6 +72,8 @@ const mainnet = {
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerKey: process.env.STACKS_KEY as string,
   source: getSource(),
+  inputMaxBlockDiff: 5,
+  inputMaxPriceDiff: 0.01
 }
 
 const networks = {

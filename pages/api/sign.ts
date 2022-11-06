@@ -65,8 +65,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
   
   // Check if block correct
   const currentBlock = await getCurrentBlockHeight();
-  if (Math.abs(currentBlock - block) > 5) {
-    // TODO: add 5 to config
+  if (Math.abs(currentBlock - block) > config.inputMaxBlockDiff) {
     return { error: "wrong input - block" };
   }
 
@@ -91,8 +90,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
 
   // Check if price within range
   const sourcePrice = await config.source?.fetchPrice(symbol, decimals) as number;
-  if (Math.abs(price / sourcePrice) - 1 > 0.01) {
-    // TODO: add 0.01 to config
+  if (Math.abs(price / sourcePrice) - 1 > config.inputMaxPriceDiff) {
     return { error: "wrong input - price" };
   }
 

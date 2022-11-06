@@ -55,6 +55,19 @@ export async function getTokenNames(tokenId: number): Promise<any> {
   return result;
 }
 
+export async function getMinimumSigners(): Promise<any> {
+  const call = await callReadOnlyFunction({
+    contractAddress: config.arkadikoAddress as string,
+    contractName: "arkadiko-oracle-v1-1",
+    functionName: "get-minimum-valid-signers",
+    functionArgs: [],
+    senderAddress: config.arkadikoAddress as string,
+    network: config.network,
+  });
+  const result = cvToJSON(call).value;
+  return result;
+}
+
 export async function getPriceInfo(symbol: string): Promise<any> {
   const call = await callReadOnlyFunction({
     contractAddress: config.arkadikoAddress as string,

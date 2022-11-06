@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { config } from '../common/config';
-import { getPriceInfo, getTokenId, pushPriceInfo } from '../common/oracle';
+import { getMinimumSigners, getPriceInfo, getTokenId, pushPriceInfo } from '../common/oracle';
 import { getCurrentBlockHeight, getMempoolTransactions } from '../common/stacks';
 
 type Data = {
@@ -46,7 +46,7 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
   // Check mempool
   const mempoolTxs = await getMempoolTransactions();
   const oracleTransactions = mempoolTxs.filter(tx => tx.sender_address == config.managerAddress)
-  // TODO: check if transaction for given tokenId
+  // TODO: check if transaction in mempool to update price for given tokenId
 
   return true
 }
@@ -70,14 +70,15 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, bl
   for (const node of config.nodes) {
     const url = node + params;
     const response = await fetch(url, { credentials: 'omit' });
-    const data = await response.json();
-
-    // TODO: check status code (404 if wrong input)
-
-    signatures.push(data.signature);
+    if (response.status == 200) {
+      const data = await response.json();
+      signatures.push(data.signature);
+    }
   }
 
   // Push on chain
-  // TODO: only if amount of signatures > required signatures
-  await pushPriceInfo(priceObject, signatures);
+  const minimumSigners = await getMinimumSigners();
+  if (signatures.length >= minimumSigners) {
+    await pushPriceInfo(priceObject, signatures);
+  }
 }
