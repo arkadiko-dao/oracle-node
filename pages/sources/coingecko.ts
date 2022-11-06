@@ -13,13 +13,13 @@ export class SourceCoinGecko implements PriceSourceInterface {
   async fetchPriceHelper(symbol: string, decimals: number): Promise<number> {
     // API
     if (symbol == "STX") {
-      return await this.fetchPrice("blockstack", decimals);
+      return await this.fetchPriceAPI("blockstack", decimals);
     } else if (symbol == "BTC") {
-      return await this.fetchPrice("bitcoin", decimals);
+      return await this.fetchPriceAPI("bitcoin", decimals);
     }
 
     // AMM
-    const stxPrice = await this.fetchPrice("blockstack", decimals);
+    const stxPrice = await this.fetchPriceAPI("blockstack", decimals);
     return await fetchPriceAMM(symbol, stxPrice);
   }
 

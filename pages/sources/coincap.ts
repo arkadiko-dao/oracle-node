@@ -13,13 +13,13 @@ export class SourceCoinCap implements PriceSourceInterface {
   async fetchPriceHelper(symbol: string, decimals: number): Promise<number> {
     // API
     if (symbol == "STX") {
-      return await this.fetchPrice("stacks", decimals);
+      return await this.fetchPriceAPI("stacks");
     } else if (symbol == "BTC") {
-      return await this.fetchPrice("bitcoin", decimals);
+      return await this.fetchPriceAPI("bitcoin");
     }
 
     // AMM
-    const stxPrice = await this.fetchPrice("blockstack", decimals);
+    const stxPrice = await this.fetchPriceAPI("stacks");
     return await fetchPriceAMM(symbol, stxPrice);
   }
 

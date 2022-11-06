@@ -1,7 +1,7 @@
 import { fetchPriceAMM } from "./amm";
 import { PriceSourceInterface } from "./interface";
 
-export class SourceCoinMarketCap implements PriceSourceInterface {
+export class SourceCryptoCompare implements PriceSourceInterface {
 
   // Return price as int (with given decimals)
   public async fetchPrice(symbol: string, decimals: number): Promise<number> {
@@ -13,24 +13,24 @@ export class SourceCoinMarketCap implements PriceSourceInterface {
   async fetchPriceHelper(symbol: string, decimals: number): Promise<number> {
     // API
     if (symbol == "STX") {
-      return await this.fetchPriceAPI("4847");
+      return await this.fetchPriceAPI("STX");
     } else if (symbol == "BTC") {
-      return await this.fetchPriceAPI("1");
+      return await this.fetchPriceAPI("BTC");
     }
 
     // AMM
-    const stxPrice = await this.fetchPriceAPI("4847");
+    const stxPrice = await this.fetchPriceAPI("STX");
     return await fetchPriceAMM(symbol, stxPrice);
   }
 
   async fetchPriceAPI(id: string): Promise<number> {
-    const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=${id}&convert=USD`
+    const url = `https://min-api.cryptocompare.com/data/price?fsym=${id}&tsyms=USD`
     const response = await fetch(url, { 
       headers: {
-        "X-CMC_PRO_API_KEY": process.env.CMC_KEY!
+        "Apikey": process.env.CRYPTOCOMPARE_KEY!
       }
     });
     const data = await response.json();
-    return data.data[id].quote.USD.price;
+    return data.USD;
   }
 }
