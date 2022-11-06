@@ -96,5 +96,5 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
     return { error: "wrong input - price" };
   }
 
-  return true;
+  return undefined;
 }
