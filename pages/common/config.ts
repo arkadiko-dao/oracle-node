@@ -4,15 +4,24 @@ dotenv.config();
 import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
 import { SourceCoinMarketCap } from '../sources/coinmarketcap';
 import { SourceCoinGecko } from '../sources/coingecko';
+import { SourceCoinApi } from '../sources/coinapi';
+import { SourceCryptoCompare } from '../sources/cryptocompare';
+import { SourceRedstone } from '../sources/redstone';
 
 const network = process.env.NETWORK as 'mocknet' | 'testnet' | 'mainnet';
-const source = process.env.SOURCE as 'coinmarketcap' | 'coingecko';
+const source = process.env.SOURCE as 'coinmarketcap' | 'coingecko' | 'coinapi' | 'cryptocompare' | 'redstone';
 
 function getSource() {
   if (source == "coinmarketcap") {
     return new SourceCoinMarketCap();
   } else if (source == "coingecko") {
     return new SourceCoinGecko();
+  } else if (source == "coinapi") {
+    return new SourceCoinApi();
+  } else if (source == "cryptocompare") {
+    return new SourceCryptoCompare();
+  } else if (source == "redstone") {
+    return new SourceRedstone();
   }
 }
 
