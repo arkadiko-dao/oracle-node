@@ -18,6 +18,7 @@ function getSource() {
 
 const mocknet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
+  // TODO: actual nodes
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -27,6 +28,7 @@ const mocknet = {
   network: new StacksMocknet(),
   stacksApiBase: "http://localhost:3999",
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  alexAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerKey: "753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601",
   source: getSource(),
@@ -34,6 +36,7 @@ const mocknet = {
 
 const testnet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
+  // TODO: actual nodes
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -43,6 +46,7 @@ const testnet = {
   network: new StacksTestnet(),
   stacksApiBase: "https://stacks-node-api.testnet.stacks.co",
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  alexAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerKey: process.env.STACKS_KEY as string,
   source: getSource(),
@@ -50,6 +54,7 @@ const testnet = {
 
 const mainnet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
+  // TODO: actual nodes
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -59,6 +64,7 @@ const mainnet = {
   network: new StacksMainnet(),
   stacksApiBase: "https://stacks-node-api.stacks.co", 
   arkadikoAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
+  alexAddress: "SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9",
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerKey: process.env.STACKS_KEY as string,
   source: getSource(),
