@@ -17,7 +17,7 @@ export async function getPairDetails(tokenX: string, tokenY: string): Promise<an
     senderAddress: config.managerAddress as string,
     network: config.network,
   });
-  const result = cvToJSON(call).value;
+  const result = cvToJSON(call).value.value.value;
   return result;
 }
 

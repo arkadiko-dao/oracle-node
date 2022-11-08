@@ -5,6 +5,8 @@ import { SourceCoinMarketCap } from '../pages/sources/coinmarketcap';
 import { SourceCryptoCompare } from '../pages/sources/cryptocompare';
 import { SourceRedstone } from '../pages/sources/redstone';
 
+jest.setTimeout(50000);
+
 describe('/api/sources', () => {
   test('can get price from CoinApi', async () => {
     const source = new SourceCoinApi();
@@ -45,6 +47,21 @@ describe('/api/sources', () => {
     const source = new SourceRedstone();
     const price = await source.fetchPrice("STX", 1000000);
     console.log("price:", price);
+    expect(price).toBeGreaterThan(0);
+  });
+
+  test('can get AMM prices', async () => {
+    const source = new SourceRedstone();
+    var price = await source.fetchPrice("DIKO", 1000000);
+    console.log("DIKO price:", price);
+    expect(price).toBeGreaterThan(0);
+
+    price = await source.fetchPrice("USDA", 1000000);
+    console.log("USDA price:", price);
+    expect(price).toBeGreaterThan(0);
+
+    price = await source.fetchPrice("auto-alex", 100000000);
+    console.log("atALEX price:", price);
     expect(price).toBeGreaterThan(0);
   });
 });

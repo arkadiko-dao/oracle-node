@@ -18,7 +18,7 @@ export async function getPairDetailsSimpleWeightPool(tokenX: string, tokenY: str
     senderAddress: config.managerAddress as string,
     network: config.network,
   });
-  const result = cvToJSON(call).value;
+  const result = cvToJSON(call).value.value;
   return result;
 }
 
@@ -36,7 +36,7 @@ export async function getPairDetailsFixedWeightPool(tokenX: string, tokenY: stri
     senderAddress: config.managerAddress as string,
     network: config.network,
   });
-  const result = cvToJSON(call).value;
+  const result = cvToJSON(call).value.value;
   return result;
 }
 
