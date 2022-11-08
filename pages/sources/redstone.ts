@@ -26,6 +26,6 @@ export class SourceRedstone implements PriceSourceInterface {
 
   async fetchPriceAPI(id: string): Promise<number> {
     const data = await redstone.oracle.getFromDataFeed("redstone", id);
-    return data.priceData.values[0];
+    return data.priceData.values[0] / 100000000;
   }
 }

@@ -24,9 +24,9 @@ export class SourceCoinCap implements PriceSourceInterface {
   }
 
   async fetchPriceAPI(id: string): Promise<number> {
-    const url = `api.coincap.io/v2/assets/${id}`;
+    const url = `https://api.coincap.io/v2/assets/${id}`;
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
-    return data[id].usd;
+    return data.data.priceUsd;
   }
 }

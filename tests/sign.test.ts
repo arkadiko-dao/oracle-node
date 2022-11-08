@@ -24,9 +24,7 @@ describe('/api/sign', () => {
       }),
     );
   });
-});
 
-describe('/api/sign', () => {
   test('error if wrong decimals', async () => {
 
     // Mocks
@@ -48,22 +46,17 @@ describe('/api/sign', () => {
       }),
     );
   });
-});
 
-describe('/api/sign', () => {
   test('error if wrong price', async () => {
 
     // Mocks
     jest.spyOn(stacks, 'getCurrentBlockHeight').mockReturnValue(69420);
     jest.spyOn(oracle, 'getTokenNames').mockReturnValue(["STX"]);
 
-    const priceInfo = await oracle.getPriceInfo('STX');
-    console.log("priceinfo:", priceInfo);
-
     // Call API
     const { req, res } = createMocks({
       method: 'GET',
-      query: { block: 69415, tokenId: 1, price: 0.33, decimals: 1000000 }
+      query: { block: 69415, tokenId: 1, price: 123, decimals: 1000000 }
     });
     await handler(req, res);
 
@@ -76,3 +69,6 @@ describe('/api/sign', () => {
     );
   });
 });
+
+
+// TODO: check if correct price can be signed

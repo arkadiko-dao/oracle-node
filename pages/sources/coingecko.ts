@@ -24,7 +24,8 @@ export class SourceCoinGecko implements PriceSourceInterface {
   }
 
   async fetchPriceAPI(id: string, decimals: number): Promise<number> {
-    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&precision=${decimals}`;
+    const precision = `${decimals}`.split("0").length - 1;
+    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&precision=${precision}`;
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
     return data[id].usd;
