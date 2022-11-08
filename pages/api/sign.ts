@@ -39,7 +39,7 @@ export default async function handler(
   const signableMessage = await getSignableMessage(priceObject);
   
   // Message to sign
-  const message = Buffer.from(signableMessage, "hex");
+  const message = Buffer.from(signableMessage.replace("0x", ""), "hex");
 
   // Private key to sign
   const privateKey = Buffer.from(config.signKey, "hex");
