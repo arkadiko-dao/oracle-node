@@ -84,7 +84,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
   const priceInfo = await getPriceInfo(symbol);
 
   // Check if decimals correct
-  if (priceInfo.decimals != decimals) {
+  if (priceInfo.decimals.value != decimals) {
     return { error: "wrong input - decimals" };
   }
 

@@ -29,7 +29,7 @@ export default async function handler(
 
     // Update if needed
     if (shouldUpdate) {
-      await updatePrice(symbol, tokenId, priceInfo.decimals, blockHeight);
+      await updatePrice(symbol, tokenId, priceInfo.decimals.value, blockHeight);
     }
   }
 

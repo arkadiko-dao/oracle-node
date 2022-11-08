@@ -6,7 +6,7 @@ export class SourceCoinGecko implements PriceSourceInterface {
   // Return price as int (with given decimals)
   public async fetchPrice(symbol: string, decimals: number): Promise<number> {
     const price = await this.fetchPriceHelper(symbol, decimals);
-    return Math.round(Math.pow(price, decimals));
+    return Math.round(price * decimals);
   }
 
   // Return price as double

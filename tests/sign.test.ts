@@ -12,7 +12,7 @@ describe('/api/sign', () => {
     // Call API
     const { req, res } = createMocks({
       method: 'GET',
-      query: { block: 69320, tokenId: 1, price: 123, decimals: 8 }
+      query: { block: 69320, tokenId: 1, price: 0.33, decimals: 1000000 }
     });
     await handler(req, res);
 
@@ -36,7 +36,7 @@ describe('/api/sign', () => {
     // Call API
     const { req, res } = createMocks({
       method: 'GET',
-      query: { block: 69415, tokenId: 1, price: 123, decimals: 8 }
+      query: { block: 69415, tokenId: 1, price: 0.33, decimals: 100000000 }
     });
     await handler(req, res);
 
@@ -45,6 +45,33 @@ describe('/api/sign', () => {
     expect(JSON.parse(res._getData())).toEqual(
       expect.objectContaining({
         error: 'wrong input - decimals',
+      }),
+    );
+  });
+});
+
+describe('/api/sign', () => {
+  test('error if wrong price', async () => {
+
+    // Mocks
+    jest.spyOn(stacks, 'getCurrentBlockHeight').mockReturnValue(69420);
+    jest.spyOn(oracle, 'getTokenNames').mockReturnValue(["STX"]);
+
+    const priceInfo = await oracle.getPriceInfo('STX');
+    console.log("priceinfo:", priceInfo);
+
+    // Call API
+    const { req, res } = createMocks({
+      method: 'GET',
+      query: { block: 69415, tokenId: 1, price: 0.33, decimals: 1000000 }
+    });
+    await handler(req, res);
+
+    // Check result
+    expect(res._getStatusCode()).toBe(404);
+    expect(JSON.parse(res._getData())).toEqual(
+      expect.objectContaining({
+        error: 'wrong input - price',
       }),
     );
   });
