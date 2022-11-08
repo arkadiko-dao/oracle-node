@@ -3,16 +3,18 @@ import handler from '../pages/api/sign';
 import * as stacks from '../pages/common/stacks';
 import * as oracle from '../pages/common/oracle';
 
+jest.setTimeout(50000);
+
 describe('/api/sign', () => {
   test('error if wrong block', async () => {
 
-    // Mocks
-    jest.spyOn(stacks, 'getCurrentBlockHeight').mockReturnValue(69420);
+    // Get info
+    const currentBlock = await stacks.getCurrentBlockHeight();
 
     // Call API
     const { req, res } = createMocks({
       method: 'GET',
-      query: { block: 69320, tokenId: 1, price: 0.33, decimals: 1000000 }
+      query: { block: currentBlock-20, tokenId: 1, price: 0.33, decimals: 1000000 }
     });
     await handler(req, res);
 
@@ -56,7 +58,7 @@ describe('/api/sign', () => {
     // Call API
     const { req, res } = createMocks({
       method: 'GET',
-      query: { block: 69415, tokenId: 1, price: 123, decimals: 1000000 }
+      query: { block: 69415, tokenId: 1, price: 31200, decimals: 1000000 }
     });
     await handler(req, res);
 
@@ -69,6 +71,5 @@ describe('/api/sign', () => {
     );
   });
 });
-
 
 // TODO: check if correct price can be signed
