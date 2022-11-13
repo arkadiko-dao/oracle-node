@@ -1,16 +1,23 @@
 import { config } from './config';
 import {
+  AnchorMode,
+  broadcastTransaction,
+  bufferCV,
   callReadOnlyFunction,
   cvToJSON,
+  getNonce,
+  listCV,
+  makeContractCall,
   stringAsciiCV,
   uintCV
 } from '@stacks/transactions';
 import { PriceObject } from './price';
+import { hexToBytes } from './utils';
 
 export async function getSignableMessage(price: PriceObject): Promise<string> {
   const call = await callReadOnlyFunction({
     contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v1-1",
+    contractName: "arkadiko-oracle-v2-1",
     functionName: "get-signable-message-hash",
     functionArgs: [
       uintCV(price.block),
@@ -28,7 +35,7 @@ export async function getSignableMessage(price: PriceObject): Promise<string> {
 export async function getTokenId(symbol: string): Promise<any> {
   const call = await callReadOnlyFunction({
     contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v1-1",
+    contractName: "arkadiko-oracle-v2-1",
     functionName: "get-token-id-from-name",
     functionArgs: [
       stringAsciiCV(symbol)
@@ -43,7 +50,7 @@ export async function getTokenId(symbol: string): Promise<any> {
 export async function getTokenNames(tokenId: number): Promise<any> {
   const call = await callReadOnlyFunction({
     contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v1-1",
+    contractName: "arkadiko-oracle-v2-1",
     functionName: "get-token-names-from-id",
     functionArgs: [
       uintCV(tokenId),
@@ -58,7 +65,7 @@ export async function getTokenNames(tokenId: number): Promise<any> {
 export async function getMinimumSigners(): Promise<any> {
   const call = await callReadOnlyFunction({
     contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v1-1",
+    contractName: "arkadiko-oracle-v2-1",
     functionName: "get-minimum-valid-signers",
     functionArgs: [],
     senderAddress: config.arkadikoAddress as string,
@@ -71,7 +78,7 @@ export async function getMinimumSigners(): Promise<any> {
 export async function getPriceInfo(symbol: string): Promise<any> {
   const call = await callReadOnlyFunction({
     contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v1-1",
+    contractName: "arkadiko-oracle-v2-1",
     functionName: "get-price",
     functionArgs: [
       stringAsciiCV(symbol)
@@ -84,5 +91,28 @@ export async function getPriceInfo(symbol: string): Promise<any> {
 }
 
 export async function pushPriceInfo(price: PriceObject, signatures: string[]): Promise<any> {
+  const nonce = await getNonce(config.managerAddress)
 
+  const txOptions = {
+    contractAddress: config.arkadikoAddress as string,
+    contractName: "arkadiko-oracle-v2-1",
+    functionName: "update-price-multi",
+    functionArgs: [
+      uintCV(price.block),
+      uintCV(price.tokenId),
+      uintCV(price.price),
+      uintCV(price.decimals),
+      listCV(signatures.map(signature => bufferCV(Buffer.from(hexToBytes(signature))))),
+    ],
+    senderKey: config.managerKey,
+    nonce: nonce,
+    postConditionMode: 1,
+    fee: (0.001 * 1000000),
+    network: config.network,
+    anchorMode: AnchorMode.Any
+  };
+
+  const transaction = await makeContractCall(txOptions);
+  const result = await broadcastTransaction(transaction, config.network);
+  return result;
 }
