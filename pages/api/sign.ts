@@ -62,37 +62,40 @@ export default async function handler(
 }
 
 async function checkInput(block: number, tokenId: number, price: number, decimals: number): Promise<DataError | undefined> {
-  
-  // Check if block correct
-  const currentBlock = await getCurrentBlockHeight();
-  if (Math.abs(currentBlock - block) > setup.inputMaxBlockDiff) {
-    return { error: "wrong input - block" };
-  }
-
-  // Get token names
-  const tokenNames = await getTokenNames(Number(tokenId));
-
-  // Get supported symbol
-  var symbol = tokenNames[0];
-  for (const tokenName of tokenNames) {
-    if (setup.symbols.includes(tokenName)) {
-      symbol = tokenName;
+  try {
+    // Check if block correct
+    const currentBlock = await getCurrentBlockHeight();
+    if (Math.abs(currentBlock - block) > setup.inputMaxBlockDiff) {
+      return { error: "wrong input - block" };
     }
+
+    // Get token names
+    const tokenNames = await getTokenNames(Number(tokenId));
+
+    // Get supported symbol
+    var symbol = tokenNames[0];
+    for (const tokenName of tokenNames) {
+      if (setup.symbols.includes(tokenName)) {
+        symbol = tokenName;
+      }
+    }
+
+    // Get on chain price info
+    const priceInfo = await getPriceInfo(symbol);
+
+    // Check if decimals correct
+    if (priceInfo.decimals.value != decimals) {
+      return { error: "wrong input - decimals" };
+    }
+
+    // Check if price within range
+    const sourcePrice = await setup.source?.fetchPrice(symbol, decimals) as number;
+    if (Math.abs(price / sourcePrice - 1) > setup.inputMaxPriceDiff) {
+      return { error: "wrong input - price" };
+    }
+
+    return undefined;
+  } catch (e) {
+    return undefined;
   }
-
-  // Get on chain price info
-  const priceInfo = await getPriceInfo(symbol);
-
-  // Check if decimals correct
-  if (priceInfo.decimals.value != decimals) {
-    return { error: "wrong input - decimals" };
-  }
-
-  // Check if price within range
-  const sourcePrice = await setup.source?.fetchPrice(symbol, decimals) as number;
-  if (Math.abs(price / sourcePrice - 1) > setup.inputMaxPriceDiff) {
-    return { error: "wrong input - price" };
-  }
-
-  return undefined;
 }
