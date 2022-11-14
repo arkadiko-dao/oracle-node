@@ -1,9 +1,9 @@
-import { SourceCoinApi } from '../pages/sources/coinapi';
-import { SourceCoinCap } from '../pages/sources/coincap';
-import { SourceCoinGecko } from '../pages/sources/coingecko';
-import { SourceCoinMarketCap } from '../pages/sources/coinmarketcap';
-import { SourceCryptoCompare } from '../pages/sources/cryptocompare';
-import { SourceRedstone } from '../pages/sources/redstone';
+import { SourceCoinApi } from '@sources/coinapi';
+import { SourceCoinCap } from '@sources/coincap';
+import { SourceCoinGecko } from '@sources/coingecko';
+import { SourceCoinMarketCap } from '@sources/coinmarketcap';
+import { SourceCryptoCompare } from '@sources/cryptocompare';
+import { SourceRedstone } from '@sources/redstone';
 
 jest.setTimeout(50000);
 

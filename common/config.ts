@@ -2,11 +2,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
-import { SourceCoinMarketCap } from '../sources/coinmarketcap';
-import { SourceCoinGecko } from '../sources/coingecko';
-import { SourceCoinApi } from '../sources/coinapi';
-import { SourceCryptoCompare } from '../sources/cryptocompare';
-import { SourceRedstone } from '../sources/redstone';
+import { SourceCoinMarketCap } from '@sources/coinmarketcap';
+import { SourceCoinGecko } from '@sources/coingecko';
+import { SourceCoinApi } from '@sources/coinapi';
+import { SourceCryptoCompare } from '@sources/cryptocompare';
+import { SourceRedstone } from '@sources/redstone';
 
 const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
 const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinapi' | 'cryptocompare' | 'redstone';
@@ -94,4 +94,4 @@ const networks = {
   mainnet
 }
 
-export const setup = networks[network];
+export const config = networks[network];

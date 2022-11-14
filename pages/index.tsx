@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css'
-import { getPriceInfo } from './common/oracle';
-import { setup } from './common/setup';
-import { getCurrentBlockHeight } from './common/stacks';
+import { getPriceInfo } from '@common/oracle';
+import { config } from '@common/config';
+import { getCurrentBlockHeight } from '@common/stacks';
 
 export default function Home() {
 
@@ -77,19 +77,19 @@ export default function Home() {
               <tbody>
                 <tr>
                   <td style={{width: "200px", textAlign: "right", paddingRight: "10px"}}>Network</td>
-                  <td style={{width: "200px", paddingLeft: "10px"}}><b>{setup.network.isMainnet() ? "mainnet" : "testnet"}</b></td>
+                  <td style={{width: "200px", paddingLeft: "10px"}}><b>{config.network.isMainnet() ? "mainnet" : "testnet"}</b></td>
                 </tr>
                 <tr>
                   <td style={{textAlign: "right", paddingRight: "10px"}}>Source</td>
-                  <td style={{paddingLeft: "10px"}}><b>{setup.sourceName}</b></td>
+                  <td style={{paddingLeft: "10px"}}><b>{config.sourceName}</b></td>
                 </tr>
                 <tr>
                   <td style={{textAlign: "right", paddingRight: "10px"}}>Max block diff</td>
-                  <td style={{paddingLeft: "10px"}}><b>{setup.inputMaxBlockDiff}</b></td>
+                  <td style={{paddingLeft: "10px"}}><b>{config.inputMaxBlockDiff}</b></td>
                 </tr>
                 <tr>
                   <td style={{textAlign: "right", paddingRight: "10px"}}>Max price diff</td>
-                  <td style={{paddingLeft: "10px"}}><b>{setup.inputMaxPriceDiff}</b></td>
+                  <td style={{paddingLeft: "10px"}}><b>{config.inputMaxPriceDiff}</b></td>
                 </tr>
               </tbody>
             </table>
