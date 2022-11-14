@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { config } from '../common/config';
+import { setup } from '../common/setup';
 import { getMinimumSigners, getPriceInfo, getTokenId, pushPriceInfo } from '../common/oracle';
 import { getCurrentBlockHeight, getMempoolTransactions } from '../common/stacks';
 
@@ -16,7 +16,7 @@ export default async function handler(
   const blockHeight = await getCurrentBlockHeight();
 
   // Loop over all symbols
-  for (const symbol of config.symbols) {
+  for (const symbol of setup.symbols) {
 
     // Get on chain price info
     const priceInfo = await getPriceInfo(symbol);
@@ -45,7 +45,7 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
 
   // Check mempool
   const mempoolTxs = await getMempoolTransactions();
-  const oracleTransactions = mempoolTxs.filter(tx => tx.sender_address == config.managerAddress)
+  const oracleTransactions = mempoolTxs.filter(tx => tx.sender_address == setup.managerAddress)
   // TODO: check if transaction in mempool to update price for given tokenId
 
   return true
@@ -54,7 +54,7 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
 async function updatePrice(symbol: string, tokenId: number, decimals: number, blockHeight: number) {
 
   // Fetch price from source
-  const price = await config.source?.fetchPrice(symbol, decimals) as number;
+  const price = await setup.source?.fetchPrice(symbol, decimals) as number;
 
   // Create price object
   const priceObject = {
@@ -67,7 +67,7 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, bl
   // Get all signatures
   var signatures: string[] = [];
   const params = `?block=${blockHeight}&tokenId=${tokenId}&price=${price}&decimals=${decimals}`
-  for (const node of config.nodes) {
+  for (const node of setup.nodes) {
     const url = node + params;
     const response = await fetch(url, { credentials: 'omit' });
     if (response.status == 200) {

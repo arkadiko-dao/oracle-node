@@ -27,7 +27,7 @@ export class SourceCryptoCompare implements PriceSourceInterface {
     const url = `https://min-api.cryptocompare.com/data/price?fsym=${id}&tsyms=USD`
     const response = await fetch(url, { 
       headers: {
-        "Apikey": process.env.CRYPTOCOMPARE_KEY!
+        "Apikey": process.env.NEXT_PUBLIC_CRYPTOCOMPARE_KEY!
       }
     });
     const data = await response.json();

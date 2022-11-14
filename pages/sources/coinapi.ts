@@ -24,7 +24,7 @@ export class SourceCoinApi implements PriceSourceInterface {
   }
 
   async fetchPriceAPI(id: string): Promise<number> {
-    const url = `https://rest.coinapi.io/v1/quotes/current?apiKey=${process.env.COINAPI_KEY!}&filter_symbol_id=${id}`;
+    const url = `https://rest.coinapi.io/v1/quotes/current?apiKey=${process.env.NEXT_PUBLIC_COINAPI_KEY!}&filter_symbol_id=${id}`;
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
     return data[0].last_trade.price;

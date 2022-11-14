@@ -8,8 +8,8 @@ import { SourceCoinApi } from '../sources/coinapi';
 import { SourceCryptoCompare } from '../sources/cryptocompare';
 import { SourceRedstone } from '../sources/redstone';
 
-const network = process.env.NETWORK as 'mocknet' | 'testnet' | 'mainnet';
-const source = process.env.SOURCE as 'coinmarketcap' | 'coingecko' | 'coinapi' | 'cryptocompare' | 'redstone';
+const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
+const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinapi' | 'cryptocompare' | 'redstone';
 
 function getSource() {
   if (source == "coinmarketcap") {
@@ -91,4 +91,4 @@ const networks = {
   mainnet
 }
 
-export const config = networks[network];
+export const setup = networks[network];

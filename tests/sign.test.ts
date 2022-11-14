@@ -2,7 +2,7 @@ import { createMocks } from 'node-mocks-http';
 import handler from '../pages/api/sign';
 import * as stacks from '../pages/common/stacks';
 import * as oracle from '../pages/common/oracle';
-import { config } from '../pages/common/config';
+import { setup } from '../pages/common/setup';
 
 jest.setTimeout(50000);
 
@@ -80,7 +80,7 @@ describe('/api/sign', () => {
     jest.spyOn(oracle, 'getSignableMessage').mockReturnValue("0x792bba1971eec90128a2db0847aa260c495390ee351821ce5e8d2fe7509ae388");
 
     // Get info
-    const price = await config.source?.fetchPrice("STX", 1000000);
+    const price = await setup.source?.fetchPrice("STX", 1000000);
 
     // Call API
     const { req, res } = createMocks({

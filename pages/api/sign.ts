@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getPriceInfo, getSignableMessage, getTokenNames } from '../common/oracle';
 import secp256k1 from 'secp256k1';
-import { config } from '../common/config';
+import { setup } from '../common/setup';
 import { getCurrentBlockHeight } from '../common/stacks';
 
 type Data = {
@@ -42,7 +42,7 @@ export default async function handler(
   const message = Buffer.from(signableMessage.replace("0x", ""), "hex");
 
   // Private key to sign
-  const privateKey = Buffer.from(config.signKey, "hex");
+  const privateKey = Buffer.from(setup.signKey, "hex");
 
   // Get the public key in a compressed format
   const publicKey = secp256k1.publicKeyCreate(privateKey);
@@ -65,7 +65,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
   
   // Check if block correct
   const currentBlock = await getCurrentBlockHeight();
-  if (Math.abs(currentBlock - block) > config.inputMaxBlockDiff) {
+  if (Math.abs(currentBlock - block) > setup.inputMaxBlockDiff) {
     return { error: "wrong input - block" };
   }
 
@@ -75,7 +75,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
   // Get supported symbol
   var symbol = tokenNames[0];
   for (const tokenName of tokenNames) {
-    if (config.symbols.includes(tokenName)) {
+    if (setup.symbols.includes(tokenName)) {
       symbol = tokenName;
     }
   }
@@ -89,8 +89,8 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
   }
 
   // Check if price within range
-  const sourcePrice = await config.source?.fetchPrice(symbol, decimals) as number;
-  if (Math.abs(price / sourcePrice - 1) > config.inputMaxPriceDiff) {
+  const sourcePrice = await setup.source?.fetchPrice(symbol, decimals) as number;
+  if (Math.abs(price / sourcePrice - 1) > setup.inputMaxPriceDiff) {
     return { error: "wrong input - price" };
   }
 
