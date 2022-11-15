@@ -39,7 +39,7 @@ export const tokenDecimals: { [key: string]: number } = {
 
 // Mocknet config
 const mocknet = {
-  symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
+  symbols: ["STX", "BTC", "USDA", "DIKO", "auto-alex"],
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -60,7 +60,7 @@ const mocknet = {
 
 // Testnet config
 const testnet = {
-  symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
+  symbols: ["STX", "BTC", "USDA", "DIKO", "auto-alex"],
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -81,7 +81,7 @@ const testnet = {
 
 // Mainnet config
 const mainnet = {
-  symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
+  symbols: ["STX", "BTC", "USDA", "DIKO", "auto-alex"],
   // TODO: update nodes
   nodes: [
     "https://arkadiko-oracle-node-redstone.herokuapp.com/api/sign",
