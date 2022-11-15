@@ -25,10 +25,6 @@ export async function isTrustedOracle(publicKey: string): Promise<boolean> {
     network: config.network,
   });
   const result = cvToJSON(call).value;
-
-  console.log("GOT TRUSTED:", publicKey)
-  console.log("GOT TRUSTED:", cvToJSON(call))
-
   return result;
 }
 
