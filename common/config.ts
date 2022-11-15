@@ -7,9 +7,10 @@ import { SourceCoinGecko } from '@sources/coingecko';
 import { SourceCoinApi } from '@sources/coinapi';
 import { SourceCryptoCompare } from '@sources/cryptocompare';
 import { SourceRedstone } from '@sources/redstone';
+import { SourceCoinCap } from '@sources/coincap';
 
 const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
-const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinapi' | 'cryptocompare' | 'redstone';
+const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinapi' | 'cryptocompare' | 'coincap' | 'redstone';
 
 function getSource() {
   if (source == "coinmarketcap") {
@@ -20,6 +21,8 @@ function getSource() {
     return new SourceCoinApi();
   } else if (source == "cryptocompare") {
     return new SourceCryptoCompare();
+  } else if (source == "coincap") {
+    return new SourceCoinCap();
   }
   return new SourceRedstone();
 }
