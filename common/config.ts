@@ -12,6 +12,7 @@ import { SourceCoinCap } from '@sources/coincap';
 const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
 const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinapi' | 'cryptocompare' | 'coincap' | 'redstone';
 
+// Map source names to objects
 function getSource() {
   if (source == "coinmarketcap") {
     return new SourceCoinMarketCap();
@@ -27,6 +28,7 @@ function getSource() {
   return new SourceRedstone();
 }
 
+// Number of decimals to use for price representation on chain
 export const tokenDecimals: { [key: string]: number } = {
   "STX": 6,
   "BTC": 6,
@@ -35,6 +37,7 @@ export const tokenDecimals: { [key: string]: number } = {
   "auto-alex": 8
 } 
 
+// Mocknet config
 const mocknet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
   nodes: [
@@ -55,6 +58,7 @@ const mocknet = {
   inputMaxPriceDiff: 0.01
 };
 
+// Testnet config
 const testnet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
   nodes: [
@@ -75,13 +79,15 @@ const testnet = {
   inputMaxPriceDiff: 0.01
 }
 
+// Mainnet config
 const mainnet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
-  // TODO: actual nodes
+  // TODO: update nodes
   nodes: [
-    "http://localhost:3000/api/sign",
-    "http://localhost:3000/api/sign",
-    "http://localhost:3000/api/sign"
+    "https://arkadiko-oracle-node-redstone.herokuapp.com/api/sign",
+    "https://akradiko-oracle-node-coingecko.herokuapp.com/api/sign",
+    "https://akradiko-oracle-node-cmc.herokuapp.com/api/sign",
+    "https://arkadiko-oracle-node-coincap.herokuapp.com/api/sign"
   ],
   signKey: process.env.NEXT_PUBLIC_SIGN_KEY as string,
   network: new StacksMainnet(),
