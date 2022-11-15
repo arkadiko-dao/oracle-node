@@ -20,9 +20,8 @@ function getSource() {
     return new SourceCoinApi();
   } else if (source == "cryptocompare") {
     return new SourceCryptoCompare();
-  } else if (source == "redstone") {
-    return new SourceRedstone();
   }
+  return new SourceRedstone();
 }
 
 const mocknet = {

@@ -56,7 +56,7 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
 async function updatePrice(symbol: string, tokenId: number, decimals: number, blockHeight: number) {
 
   // Fetch price from source
-  const price = await config.source!.fetchPrice(symbol, decimals) as number;
+  const price = await config.source.fetchPrice(symbol, decimals) as number;
 
   // Create price object
   const priceObject = {

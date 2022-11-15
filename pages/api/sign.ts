@@ -92,7 +92,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
     }
 
     // Check if price within range
-    const sourcePrice = await config.source?.fetchPrice(symbol, decimals) as number;
+    const sourcePrice = await config.source.fetchPrice(symbol, decimals) as number;
     if (Math.abs(price / sourcePrice - 1) > config.inputMaxPriceDiff) {
       return { error: "wrong input - price" };
     }
