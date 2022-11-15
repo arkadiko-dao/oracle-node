@@ -89,7 +89,7 @@ export default function Home() {
               <tbody>
                 <tr>
                   <td style={{width: "200px", textAlign: "right", paddingRight: "10px"}}>Trusted</td>
-                  <td style={{width: "200px", paddingLeft: "10px"}}><b>{trustedOracle ? "trusted" : "NOT TRUSTED"}</b></td>
+                  <td style={{width: "200px", paddingLeft: "10px"}}><b>{trustedOracle ? "yes" : "NO!"}</b></td>
                 </tr>
                 <tr>
                   <td style={{width: "200px", textAlign: "right", paddingRight: "10px"}}>Network</td>

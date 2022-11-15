@@ -19,9 +19,11 @@ export default async function handler(
 ) {
   // Get params
   const { block, tokenId, price, decimals } = req.query;
+  console.log("\n[SIGN] Input:", {block: block, tokenId: tokenId, price: price, decimals: decimals});
 
   // Check input
   const inputError = await checkInput(Number(block), Number(tokenId), Number(price), Number(decimals));
+  console.log("[SIGN] Check input:", inputError == undefined ? "success" : "error: " + inputError);
   if (inputError !== undefined) {
     res.status(404).json(inputError);
     return;
@@ -58,6 +60,7 @@ export default async function handler(
   mergedArray.set(recoveryId, signatureObject.signature.length);
   const fullSignature = Buffer.from(mergedArray).toString("hex");
 
+  console.log("[SIGN] Signature:", fullSignature);
   res.status(200).json({ signature: fullSignature, publicKey: publicKeyString })
 }
 
@@ -73,10 +76,10 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
     const tokenNames = await getTokenNames(Number(tokenId));
 
     // Get supported symbol
-    var symbol = tokenNames[0];
+    var symbol = tokenNames[0].value;
     for (const tokenName of tokenNames) {
-      if (config.symbols.includes(tokenName)) {
-        symbol = tokenName;
+      if (config.symbols.includes(tokenName.value)) {
+        symbol = tokenName.value;
       }
     }
 

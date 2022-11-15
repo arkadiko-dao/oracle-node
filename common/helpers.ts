@@ -10,7 +10,7 @@ export function getPublicKey() {
   // Get the public key in a compressed format
   const publicKey = secp256k1.publicKeyCreate(privateKey);
   const publicKeyString = Buffer.from(publicKey).toString("hex");
-  return "0x" + publicKeyString;
+  return publicKeyString;
 }
 
 export async function isOracleTrusted() {
