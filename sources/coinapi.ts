@@ -1,16 +1,17 @@
+import { tokenDecimals } from "@common/config";
 import { fetchPriceAMM } from "./amm";
 import { PriceSourceInterface } from "./interface";
 
 export class SourceCoinApi implements PriceSourceInterface {
 
-  // Return price as int (with given decimals)
-  public async fetchPrice(symbol: string, decimals: number): Promise<number> {
-    const price = await this.fetchPriceHelper(symbol, decimals);
-    return Math.round(price * decimals);
+  // Return price as int
+  public async fetchPrice(symbol: string): Promise<number> {
+    const price = await this.fetchPriceHelper(symbol);
+    return Math.round(price * Math.pow(10, tokenDecimals[symbol]));
   }
 
   // Return price as double
-  async fetchPriceHelper(symbol: string, decimals: number): Promise<number> {
+  async fetchPriceHelper(symbol: string): Promise<number> {
     // API
     if (symbol == "STX") {
       return await this.fetchPriceAPI("BINANCE_SPOT_STX_USDT");

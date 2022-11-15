@@ -1,12 +1,13 @@
+import { tokenDecimals } from "@common/config";
 import { fetchPriceAMM } from "./amm";
 import { PriceSourceInterface } from "./interface";
 
 export class SourceCoinMarketCap implements PriceSourceInterface {
 
-  // Return price as int (with given decimals)
-  public async fetchPrice(symbol: string, decimals: number): Promise<number> {
+  // Return price as int
+  public async fetchPrice(symbol: string): Promise<number> {
     const price = await this.fetchPriceHelper(symbol);
-    return Math.round(price * decimals);
+    return Math.round(price * Math.pow(10, tokenDecimals[symbol]));
   }
 
   // Return price as double

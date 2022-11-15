@@ -27,9 +27,16 @@ function getSource() {
   return new SourceRedstone();
 }
 
+export const tokenDecimals: { [key: string]: number } = {
+  "STX": 6,
+  "BTC": 6,
+  "DIKO": 6,
+  "USDA": 6,
+  "auto-alex": 8
+} 
+
 const mocknet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
-  // TODO: actual nodes
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -50,7 +57,6 @@ const mocknet = {
 
 const testnet = {
   symbols: ["STX", "BTC", "DIKO", "USDA", "auto-alex"],
-  // TODO: actual nodes
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",

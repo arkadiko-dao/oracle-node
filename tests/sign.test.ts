@@ -32,7 +32,7 @@ describe('/api/sign', () => {
 
     // Mocks
     jest.spyOn(stacks, 'getCurrentBlockHeight').mockReturnValue(69420);
-    jest.spyOn(oracle, 'getTokenNames').mockReturnValue(["STX"]);
+    jest.spyOn(oracle, 'getTokenNames').mockReturnValue([{value: "STX"},{value: "xSTX"}]);
 
     // Call API
     const { req, res } = createMocks({
@@ -54,7 +54,7 @@ describe('/api/sign', () => {
 
     // Mocks
     jest.spyOn(stacks, 'getCurrentBlockHeight').mockReturnValue(69420);
-    jest.spyOn(oracle, 'getTokenNames').mockReturnValue(["STX"]);
+    jest.spyOn(oracle, 'getTokenNames').mockReturnValue([{value: "STX"},{value: "xSTX"}]);
 
     // Call API
     const { req, res } = createMocks({
@@ -80,7 +80,7 @@ describe('/api/sign', () => {
     jest.spyOn(oracle, 'getSignableMessage').mockReturnValue("0x792bba1971eec90128a2db0847aa260c495390ee351821ce5e8d2fe7509ae388");
 
     // Get info
-    const price = await config.source?.fetchPrice("STX", 1000000);
+    const price = await config.source.fetchPrice("STX");
 
     // Call API
     const { req, res } = createMocks({
@@ -93,8 +93,8 @@ describe('/api/sign', () => {
     expect(res._getStatusCode()).toBe(200);
     expect(JSON.parse(res._getData())).toEqual(
       expect.objectContaining({
-        signature: '7b08fe12a53b175af72e5a8318bac89a6f72e328e5985887a6c8747ca7aa1e2108719d7c1bae45cef7840ee22ce669753e73f2a7bbddb6ef73cfb0d85577d02a01',
-        publicKey: '029f3a1023151193a31eb36575601151df8706c8b3b50c243fee5e03abe2cf3107'
+        signature: '929cf1a775801908d420260dff4ad3f958cdf3ece270223be308f76e8a7cc7147a512e0dd61cbf69997b1f7e3aa1166dc5d33f3b31d265c2f816b4d12c1fc54401',
+        publicKey: '0338c6c30f619819ae9f95e0a506207f95ff22927dee0e2303050a7a1cce6056d8'
       }),
     );
   });
