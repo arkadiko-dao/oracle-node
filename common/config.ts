@@ -82,7 +82,6 @@ const testnet = {
 // Mainnet config
 const mainnet = {
   symbols: ["STX", "BTC", "USDA", "DIKO", "auto-alex"],
-  // TODO: update nodes
   nodes: [
     "https://arkadiko-oracle-node-redstone.herokuapp.com/api/sign",
     "https://akradiko-oracle-node-coingecko.herokuapp.com/api/sign",
