@@ -118,7 +118,7 @@ export default function Home() {
                   <td style={{width: "100px"}}><b>Symbol</b></td>
                   <td style={{width: "150px"}}><b>Decimals</b></td>
                   <td style={{width: "200px"}}><b>Last Updated</b></td>
-                  <td style={{width: "200px"}}><b>Price</b></td>
+                  <td style={{width: "300px"}}><b>Price</b></td>
                 </tr>
                 <tr>
                   <td>STX</td>

@@ -94,7 +94,7 @@ const mainnet = {
   stacksApiBase: "https://stacks-node-api.stacks.co", 
   arkadikoAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
   alexAddress: "SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9",
-  managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  managerAddress: "SP2YYZRZ210D7CPG5M8TDJE8V694B6AVGAKM99MH9",
   managerKey: process.env.NEXT_PUBLIC_STACKS_KEY as string,
   source: getSource(),
   sourceName: source,

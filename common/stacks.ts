@@ -30,3 +30,10 @@ export async function getMempoolTransactions(): Promise<any> {
 
   return result;
 }
+
+export async function getUnanchoredMicroblockTransactions(): Promise<any> {
+  const url = `${config.stacksApiBase}/extended/v1/microblock/unanchored/txs`;
+  const response = await fetch(url, { credentials: 'omit' });
+  const data = await response.json();
+  return data.results;
+}
