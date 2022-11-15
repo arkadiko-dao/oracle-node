@@ -1,0 +1,6 @@
+{ 
+  "moduleNameMapper": {
+    "@common/(.*)": "<rootDir>/common/$1",
+    "@sources/(.*)": "<rootDir>/sources/$1"
+  }
+}
