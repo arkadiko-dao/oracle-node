@@ -11,7 +11,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-
   // Get current block
   const blockHeight = await getCurrentBlockHeight();
 
@@ -102,6 +101,7 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, bl
   const uniqueSignatures = new Set(signatures).size
   if (uniqueSignatures >= minimumSigners) {
     console.log("[CHECK] Push price info for " + symbol);
-    await pushPriceInfo(priceObject, signatures);
+    const pushResult = await pushPriceInfo(priceObject, signatures);
+    console.log("[CHECK] Transaction result:", pushResult);
   }
 }

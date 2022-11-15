@@ -5,13 +5,13 @@ import {
   bufferCV,
   callReadOnlyFunction,
   cvToJSON,
-  getNonce,
   listCV,
   makeContractCall,
   stringAsciiCV,
   uintCV
 } from '@stacks/transactions';
 import { PriceObject } from './price';
+import { getNonce } from './stacks';
 
 export async function isTrustedOracle(publicKey: string): Promise<boolean> {
   const call = await callReadOnlyFunction({
@@ -106,7 +106,10 @@ export async function getPriceInfo(symbol: string): Promise<any> {
 
 export async function pushPriceInfo(price: PriceObject, signatures: string[]): Promise<any> {
   const nonce = await getNonce(config.managerAddress)
+  return await pushPriceInfoHelper(price, signatures, nonce);
+}
 
+async function pushPriceInfoHelper(price: PriceObject, signatures: string[], nonce: number): Promise<any> {
   const txOptions = {
     contractAddress: config.arkadikoAddress as string,
     contractName: "arkadiko-oracle-v2-1",
@@ -128,5 +131,11 @@ export async function pushPriceInfo(price: PriceObject, signatures: string[]): P
 
   const transaction = await makeContractCall(txOptions);
   const result = await broadcastTransaction(transaction, config.network);
+
+  // Increase nonce if needed
+  if ((result.reason as string) == "ConflictingNonceInMempool") {
+    return await pushPriceInfoHelper(price, signatures, nonce+1);
+  }
+
   return result;
 }
