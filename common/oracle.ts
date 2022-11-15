@@ -12,7 +12,25 @@ import {
   uintCV
 } from '@stacks/transactions';
 import { PriceObject } from './price';
-import { hexToBytes } from './utils';
+
+export async function isTrustedOracle(publicKey: string): Promise<boolean> {
+  const call = await callReadOnlyFunction({
+    contractAddress: config.arkadikoAddress as string,
+    contractName: "arkadiko-oracle-v2-1",
+    functionName: "is-trusted-oracle",
+    functionArgs: [
+      bufferCV(Buffer.from(publicKey, "hex"))
+    ],
+    senderAddress: config.arkadikoAddress as string,
+    network: config.network,
+  });
+  const result = cvToJSON(call).value;
+
+  console.log("GOT TRUSTED:", publicKey)
+  console.log("GOT TRUSTED:", cvToJSON(call))
+
+  return result;
+}
 
 export async function getSignableMessage(price: PriceObject): Promise<string> {
   const call = await callReadOnlyFunction({
@@ -102,7 +120,7 @@ export async function pushPriceInfo(price: PriceObject, signatures: string[]): P
       uintCV(price.tokenId),
       uintCV(price.price),
       uintCV(price.decimals),
-      listCV(signatures.map(signature => bufferCV(Buffer.from(hexToBytes(signature))))),
+      listCV(signatures.map(signature => bufferCV(Buffer.from(signature, "hex")))),
     ],
     senderKey: config.managerKey,
     nonce: nonce,

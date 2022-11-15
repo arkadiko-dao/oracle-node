@@ -4,11 +4,14 @@ import styles from '../styles/Home.module.css'
 import { getPriceInfo } from '@common/oracle';
 import { config } from '@common/config';
 import { getCurrentBlockHeight } from '@common/stacks';
+import { getPublicKey, isOracleTrusted } from '@common/helpers';
 
 export default function Home() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [blockHeight, setBlockHeight] = useState(true);
+  const [trustedOracle, setTrustedOracle] = useState(true);
+  const [publicKey, setPublicKey] = useState("");
 
   const [stxPrice, setStxPrice] = useState({});
   const [xstxPrice, setXstxPrice] = useState({});
@@ -21,6 +24,7 @@ export default function Home() {
     const fetchInfo = async () => {
       const [
         currentBlock,
+        oracleTrusted,
         priceStx,
         priceXstx,
         priceBtc,
@@ -29,6 +33,7 @@ export default function Home() {
         priceAtAlex
       ] = await Promise.all([
         getCurrentBlockHeight(),
+        isOracleTrusted(),
         getPriceInfo("STX"),
         getPriceInfo("xSTX"),
         getPriceInfo("xBTC"),
@@ -37,6 +42,7 @@ export default function Home() {
         getPriceInfo("auto-alex"),
       ]);
       setBlockHeight(currentBlock);
+      setTrustedOracle(oracleTrusted);
 
       setStxPrice(priceStx);
       setXstxPrice(priceXstx);
@@ -45,6 +51,7 @@ export default function Home() {
       setUsdaPrice(priceUsda);
       setAtAlexPrice(priceAtAlex);
 
+      setPublicKey(getPublicKey());
       setIsLoading(false);
     };
 
@@ -73,8 +80,17 @@ export default function Home() {
           </p>
         ) : (
           <>
+            <h3>Public Key</h3>
+            {publicKey}
+            <br/><br/><br/>
+
+            <h3>Config</h3>
             <table>
               <tbody>
+                <tr>
+                  <td style={{width: "200px", textAlign: "right", paddingRight: "10px"}}>Trusted</td>
+                  <td style={{width: "200px", paddingLeft: "10px"}}><b>{trustedOracle ? "trusted" : "NOT TRUSTED"}</b></td>
+                </tr>
                 <tr>
                   <td style={{width: "200px", textAlign: "right", paddingRight: "10px"}}>Network</td>
                   <td style={{width: "200px", paddingLeft: "10px"}}><b>{config.network.isMainnet() ? "mainnet" : "testnet"}</b></td>
@@ -93,8 +109,9 @@ export default function Home() {
                 </tr>
               </tbody>
             </table>
-            <br/><br/>
+            <br/><br/><br/>
 
+            <h3>Oracle</h3>
             <table style={{textAlign: "center"}}>
               <tbody>
                 <tr>
