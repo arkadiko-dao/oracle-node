@@ -76,7 +76,7 @@ describe('/api/sign', () => {
 
     // Mocks
     jest.spyOn(stacks, 'getCurrentBlockHeight').mockReturnValue(69420);
-    jest.spyOn(oracle, 'getTokenNames').mockReturnValue(["STX"]);
+    jest.spyOn(oracle, 'getTokenNames').mockReturnValue([{value: "STX"},{value: "xSTX"}]);
     jest.spyOn(oracle, 'getSignableMessage').mockReturnValue("0x792bba1971eec90128a2db0847aa260c495390ee351821ce5e8d2fe7509ae388");
 
     // Get info
