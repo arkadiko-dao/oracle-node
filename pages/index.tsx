@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css'
 import { getPriceInfo } from '@common/oracle';
-import { config } from '@common/config';
+import { config, tokenDecimals } from '@common/config';
 import { getCurrentBlockHeight } from '@common/stacks';
 import { getPublicKey, isOracleTrusted } from '@common/helpers';
 
@@ -124,37 +124,37 @@ export default function Home() {
                   <td>STX</td>
                   <td>{stxPrice['decimals'].value}</td>
                   <td>{stxPrice['last-block'].value} ({blockHeight - stxPrice['last-block'].value} blocks ago)</td>
-                  <td>{stxPrice['last-price'].value} (${stxPrice['last-price'].value / 1000000})</td>
+                  <td>{stxPrice['last-price'].value} (${stxPrice['last-price'].value / Math.pow(10, tokenDecimals["STX"])})</td>
                 </tr>
                 <tr>
                   <td>xSTX</td>
                   <td>{xstxPrice['decimals'].value}</td>
                   <td>{xstxPrice['last-block'].value} ({blockHeight - xstxPrice['last-block'].value} blocks ago)</td>
-                  <td>{xstxPrice['last-price'].value} (${xstxPrice['last-price'].value / 1000000})</td>
+                  <td>{xstxPrice['last-price'].value} (${xstxPrice['last-price'].value / Math.pow(10, tokenDecimals["STX"])})</td>
                 </tr>
                 <tr>
                   <td>xBTC</td>
                   <td>{btcPrice['decimals'].value}</td>
                   <td>{btcPrice['last-block'].value} ({blockHeight - btcPrice['last-block'].value} blocks ago)</td>
-                  <td>{btcPrice['last-price'].value} (${btcPrice['last-price'].value / 1000000})</td>
+                  <td>{btcPrice['last-price'].value} (${btcPrice['last-price'].value / Math.pow(10, tokenDecimals["BTC"])})</td>
                 </tr>
                 <tr>
                   <td>DIKO</td>
                   <td>{dikoPrice['decimals'].value}</td>
                   <td>{dikoPrice['last-block'].value} ({blockHeight - dikoPrice['last-block'].value} blocks ago)</td> 
-                  <td>{dikoPrice['last-price'].value} (${dikoPrice['last-price'].value / 1000000})</td>
+                  <td>{dikoPrice['last-price'].value} (${dikoPrice['last-price'].value / Math.pow(10, tokenDecimals["DIKO"])})</td>
                 </tr>
                 <tr>
                   <td>USDA</td>
                   <td>{usdaPrice['decimals'].value}</td>
                   <td>{usdaPrice['last-block'].value} ({blockHeight - usdaPrice['last-block'].value} blocks ago)</td>
-                  <td>{usdaPrice['last-price'].value} (${usdaPrice['last-price'].value / 1000000})</td>
+                  <td>{usdaPrice['last-price'].value} (${usdaPrice['last-price'].value / Math.pow(10, tokenDecimals["USDA"])})</td>
                 </tr>
                 <tr>
                   <td>atALEX</td>
                   <td>{atAlexPrice['decimals'].value}</td>
                   <td>{atAlexPrice['last-block'].value} ({blockHeight - atAlexPrice['last-block'].value} blocks ago)</td>
-                  <td>{atAlexPrice['last-price'].value} (${atAlexPrice['last-price'].value / 1000000})</td>
+                  <td>{atAlexPrice['last-price'].value} (${atAlexPrice['last-price'].value / Math.pow(10, tokenDecimals["auto-alex"])})</td>
                 </tr>
               </tbody>
             </table>

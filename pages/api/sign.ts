@@ -69,6 +69,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
     // Check if block correct
     const currentBlock = await getCurrentBlockHeight();
     if (Math.abs(currentBlock - block) > config.inputMaxBlockDiff) {
+      console.log("[SIGN] Wrong input - Block: " + block + ", current block: " + currentBlock);
       return { error: "wrong input - block" };
     }
 
@@ -88,12 +89,14 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
 
     // Check if decimals correct
     if (priceInfo.decimals.value != decimals) {
+      console.log("[SIGN] Wrong input - Decimals: " + decimals + ", on chain decimals: " + priceInfo.decimals.value);
       return { error: "wrong input - decimals" };
     }
 
     // Check if price within range
     const sourcePrice = await config.source.fetchPrice(symbol) as number;
     if (Math.abs(price / sourcePrice - 1) > config.inputMaxPriceDiff) {
+      console.log("[SIGN] Wrong input - Price: " + price + ", source price: " + sourcePrice);
       return { error: "wrong input - price" };
     }
 

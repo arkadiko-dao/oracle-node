@@ -8,8 +8,25 @@ export async function getCurrentBlockHeight(): Promise<any> {
 }
 
 export async function getMempoolTransactions(): Promise<any> {
-  const url = `${config.stacksApiBase}/extended/v1/tx/mempool?limit=200`;
+  // Start with first page
+  const url = `${config.stacksApiBase}/extended/v1/tx/mempool?limit=20`;
   const response = await fetch(url, { credentials: 'omit' });
   const data = await response.json();
-  return data.results;
+
+  // Calculate number of pages
+  const total = data.total;
+  const pages = Math.floor(total / 20) + 1;
+
+  // Results
+  var result = data.results;
+
+  // Loop over every page
+  for (let page = 1; page < pages; page++) {
+    const url = `${config.stacksApiBase}/extended/v1/tx/mempool?limit=20&offset=${page*20}`;
+    const response = await fetch(url, { credentials: 'omit' });
+    const data = await response.json();
+    result = result.concat(data.results);
+  }
+
+  return result;
 }

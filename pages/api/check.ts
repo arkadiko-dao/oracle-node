@@ -73,9 +73,11 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, bl
   for (const node of config.nodes) {
     const url = node + params;
     const response = await fetch(url, { credentials: 'omit' });
+    const data = await response.json();
     if (response.status == 200) {
-      const data = await response.json();
       signatures.push(data.signature);
+    } else {
+      console.log("[CHECK] Could not get signature, error:", data);
     }
   }
   console.log("[CHECK] Signatures:", signatures);
