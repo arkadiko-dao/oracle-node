@@ -1,5 +1,8 @@
 async function run() {
-  console.log("ok", process.env)
+  var os = require("os");
+  var test = os.hostname();
+  // console.log("got: ", test);
+  console.log("got: ", test);
 }
 
 run();
