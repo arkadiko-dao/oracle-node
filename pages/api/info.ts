@@ -20,6 +20,7 @@ export default async function handler(
   const publicKey = getPublicKey();
   const trusted = await isTrustedOracle(publicKey);
 
+  res.setHeader("Access-Control-Allow-Origin", "*")
   res.status(200).json({ 
     publicKey: publicKey,
     trusted: trusted,

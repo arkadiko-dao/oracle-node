@@ -59,7 +59,6 @@ export default function Home() {
       const [
         minSigners,
         pubKey,
-        infoNodes,
         infoStx,
         infoBtc,
         infoUsda,
@@ -68,7 +67,6 @@ export default function Home() {
       ] = await Promise.all([
         getMinimumSigners(),
         getPublicKey(),
-        getNodesInfo(),
         getSymbolInfo("STX", currentBlock),
         getSymbolInfo("BTC", currentBlock),
         getSymbolInfo("USDA", currentBlock),
@@ -133,6 +131,7 @@ export default function Home() {
       setPriceRows(newPriceRows)
       setIsLoadingPrices(false)
 
+      const infoNodes = await getNodesInfo();
       const newNodeRows:any = [];
       for (const infoNode of infoNodes) {
         newNodeRows.push(

@@ -36,6 +36,7 @@ export default async function handler(
     }
   }
 
+  res.setHeader("Access-Control-Allow-Origin", "*")
   res.status(200).json({ result: "done" })
 }
 

@@ -61,6 +61,8 @@ export default async function handler(
   const fullSignature = Buffer.from(mergedArray).toString("hex");
 
   console.log("[SIGN] Signature:", fullSignature);
+
+  res.setHeader("Access-Control-Allow-Origin", "*")
   res.status(200).json({ signature: fullSignature, publicKey: publicKeyString })
 }
 
