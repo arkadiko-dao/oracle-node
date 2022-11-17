@@ -7,13 +7,9 @@ type Data = {
   publicKey: string
 }
 
-type DataError = {
-  error: string,
-}
-
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data | DataError>
+  res: NextApiResponse<Data>
 ) {
   let privateKey
   do {
