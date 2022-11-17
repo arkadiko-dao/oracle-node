@@ -44,8 +44,7 @@ export default function Home() {
   async function getNodesInfo() {
     var result: any[] = [];
     for (const node in config.nodes) {
-      const url = "http://localhost:3000/api/info";
-      // const url = node + "info";
+      const url = node + "info";
       const response = await fetch(url, { credentials: 'omit' });
       const json = await response.json();
       result.push(json);
