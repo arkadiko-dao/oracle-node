@@ -42,7 +42,7 @@ export default async function handler(
 async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight: number): Promise<boolean> {
 
   // Check if it's time to update
-  if (blockHeight < lastBlock + 6) {
+  if (blockHeight <= lastBlock + 6) {
     return false
   }
 
@@ -83,7 +83,7 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, bl
 
   // Get all signatures
   var signatures: string[] = [];
-  const params = `?block=${blockHeight}&tokenId=${tokenId}&price=${price}&decimals=${decimals}`
+  const params = `sign?block=${blockHeight}&tokenId=${tokenId}&price=${price}&decimals=${decimals}`
   for (const node of config.nodes) {
     const url = node + params;
     const response = await fetch(url, { credentials: 'omit' });
