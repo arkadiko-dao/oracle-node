@@ -6,14 +6,18 @@ import { config, tokenDecimals } from '@common/config';
 import { getCurrentBlockHeight } from '@common/stacks';
 import { getPublicKey } from '@common/helpers';
 import { PriceRow } from 'components/price-row';
+import { NodeRow } from 'components/node-row';
 
 export default function Home() {
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingPrices, setIsLoadingPrices] = useState(true);
+  const [isLoadingNodes, setIsLoadingNodes] = useState(true);
+
   const [blockHeight, setBlockHeight] = useState(true);
   const [minimumSigners, setMinimumSigners] = useState(0);
 
   const [priceRows, setPriceRows] = useState([]);
+  const [nodeRows, setNodeRows] = useState([]);
 
   async function getSymbolInfo(symbol: string, currentBlock: number) {
     const priceInfo = await getPriceInfo(symbol);
@@ -37,6 +41,18 @@ export default function Home() {
     }
   }
 
+  async function getNodesInfo() {
+    var result: any[] = [];
+    for (const node in config.nodes) {
+      const url = "http://localhost:3000/api/info";
+      // const url = node + "info";
+      const response = await fetch(url, { credentials: 'omit' });
+      const json = await response.json();
+      result.push(json);
+    }
+    return result;
+  }
+
   useEffect(() => {
 
     const fetchInfo = async () => {
@@ -44,6 +60,7 @@ export default function Home() {
       const [
         minSigners,
         pubKey,
+        infoNodes,
         infoStx,
         infoBtc,
         infoUsda,
@@ -52,6 +69,7 @@ export default function Home() {
       ] = await Promise.all([
         getMinimumSigners(),
         getPublicKey(),
+        getNodesInfo(),
         getSymbolInfo("STX", currentBlock),
         getSymbolInfo("BTC", currentBlock),
         getSymbolInfo("USDA", currentBlock),
@@ -65,6 +83,7 @@ export default function Home() {
       const newPriceRows:any = [];
       newPriceRows.push(
         <PriceRow 
+          key={infoStx.tokenId}
           tokenId={infoStx.tokenId}
           symbols={infoStx.symbols.join(", ")} 
           decimals={infoStx.oracleDecimals} 
@@ -74,6 +93,7 @@ export default function Home() {
       )
       newPriceRows.push(
         <PriceRow 
+          key={infoBtc.tokenId}
           tokenId={infoBtc.tokenId}
           symbols={infoBtc.symbols.join(", ")} 
           decimals={infoBtc.oracleDecimals} 
@@ -83,6 +103,7 @@ export default function Home() {
       )
       newPriceRows.push(
         <PriceRow 
+          key={infoUsda.tokenId}
           tokenId={infoUsda.tokenId}
           symbols={infoUsda.symbols.join(", ")} 
           decimals={infoUsda.oracleDecimals} 
@@ -92,6 +113,7 @@ export default function Home() {
       )
       newPriceRows.push(
         <PriceRow 
+          key={infoDiko.tokenId}
           tokenId={infoDiko.tokenId}
           symbols={infoDiko.symbols.join(", ")} 
           decimals={infoDiko.oracleDecimals} 
@@ -101,6 +123,7 @@ export default function Home() {
       )
       newPriceRows.push(
         <PriceRow 
+          key={infoAtAlex.tokenId}
           tokenId={infoAtAlex.tokenId}
           symbols={infoAtAlex.symbols.join(", ")} 
           decimals={infoAtAlex.oracleDecimals} 
@@ -109,8 +132,25 @@ export default function Home() {
         />
       )
       setPriceRows(newPriceRows)
+      setIsLoadingPrices(false)
 
-      setIsLoading(false);
+      const newNodeRows:any = [];
+      for (const infoNode of infoNodes) {
+        newNodeRows.push(
+          <NodeRow 
+            key={infoNode.publicKey}
+            publicKey={infoNode.publicKey}
+            currentNode={infoNode.publicKey == pubKey}
+            trusted={infoNode.trusted ? "yes" : "NO"} 
+            network={infoNode.network} 
+            source={infoNode.source} 
+            maxBlockDiff={infoNode.maxBlockDiff}
+            maxPriceDiff={infoNode.maxPriceDiff}
+          />
+        )
+      }
+      setNodeRows(newNodeRows)
+      setIsLoadingNodes(false);
     };
 
     fetchInfo();
@@ -132,10 +172,10 @@ export default function Home() {
           Multisig oracle solution on Stacks.
         </p>
 
-        {isLoading ? (
-          <p className="mt-10 text-xl text-gray-400">
-            Loading oracle info..
-          </p>
+        {isLoadingPrices ? (
+          <h2 className="mt-10 text-xl text-gray-600">
+            Loading on chain oracle info..
+          </h2>
         ) : (
           <>
             <h2 className="mt-10 text-xl text-gray-600">
@@ -173,7 +213,15 @@ export default function Home() {
                 </table>
               </div>
             </div>
+          </>
+        )}
 
+        {isLoadingNodes ? (
+          <h2 className="mt-10 text-xl text-gray-600">
+            Loading active oracle nodes..
+          </h2>
+        ) : (
+          <>
             <h2 className="mt-10 text-xl text-gray-600">
               Active oracle nodes
             </h2>
@@ -207,26 +255,7 @@ export default function Home() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="bg-white">
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                        0338c6c30f619819ae9f95e0a506207f95ff22927dee0e2303050a7a1cce6056d8
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        yes
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        mainnet
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        coingecko
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        5
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        0.025
-                      </td>
-                    </tr>
+                    {nodeRows}
                   </tbody>
                 </table>
               </div>
