@@ -44,9 +44,10 @@ export default function Home() {
   async function getNodesInfo() {
     var result: any[] = [];
     for (const node of config.nodes) {
-      const url = node + "info";
+      const url = node + "/api/info";
       const response = await fetch(url, { credentials: 'omit' });
       const json = await response.json();
+      json["url"] = node;
       result.push(json);
     }
     return result;
@@ -138,6 +139,7 @@ export default function Home() {
           <NodeRow 
             key={infoNode.publicKey}
             publicKey={infoNode.publicKey}
+            url={infoNode.url}
             currentNode={infoNode.publicKey == pubKey}
             trusted={infoNode.trusted ? "yes" : "NO"} 
             network={infoNode.network} 
@@ -233,10 +235,10 @@ export default function Home() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Public key
+                        Trusted
                       </th>
                       <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Trusted
+                        Public key
                       </th>
                       <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                         Network
@@ -249,6 +251,9 @@ export default function Home() {
                       </th>
                       <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                         Max price diff
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Link
                       </th>
                     </tr>
                   </thead>

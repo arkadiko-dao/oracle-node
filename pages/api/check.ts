@@ -84,7 +84,7 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, bl
 
   // Get all signatures
   var signatures: string[] = [];
-  const params = `sign?block=${blockHeight}&tokenId=${tokenId}&price=${price}&decimals=${decimals}`
+  const params = `/api/sign?block=${blockHeight}&tokenId=${tokenId}&price=${price}&decimals=${decimals}`
   for (const node of config.nodes) {
     const url = node + params;
     const response = await fetch(url, { credentials: 'omit' });

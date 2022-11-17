@@ -1,34 +1,33 @@
 import React, { useEffect, useState } from 'react';
 
-export const NodeRow: React.FC = ({ publicKey, currentNode, trusted, network, source, maxBlockDiff, maxPriceDiff }) => {
-  
-  const [className, setClassName] = useState("px-6 py-4 text-sm text-gray-500 whitespace-nowrap");
-
-  useEffect(() => {
-    if (currentNode) {
-      setClassName("px-6 py-4 text-sm text-gray-500 font-medium whitespace-nowrap")
-    }
-  }, []);
-  
+export const NodeRow: React.FC = ({ publicKey, url, currentNode, trusted, network, source, maxBlockDiff, maxPriceDiff }) => {
+    
   return (
     <tr key={publicKey} className="bg-white">
-      <td className={className}>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+        {trusted ? "✅" : "❌"}
+      </td>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         {publicKey}
       </td>
-      <td className={className}>
-        {trusted}
-      </td>
-      <td className={className}>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         {network}
       </td>
-      <td className={className}>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         {source}
       </td>
-      <td className={className}>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         {maxBlockDiff}
       </td>
-      <td className={className}>
-        {maxPriceDiff}
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+        {maxPriceDiff * 100}%
+      </td>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+        {currentNode ? (
+          "Current"
+        ):(
+          <a className="text-blue-500" href={url}>Show</a>
+        )}
       </td>
     </tr>
   );
