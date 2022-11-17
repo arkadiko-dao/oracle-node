@@ -165,7 +165,7 @@ export default function Home() {
 
       <main className="mt-10 text-center">
         <h1 className={styles.title}>
-          <a href="https://arkadiko.finance/" target="_blank">Arkadiko</a> Oracle Node
+          <a href="https://arkadiko.finance/" target="_blank" rel="noopener">Arkadiko</a> Oracle Node
         </h1>
 
         <p className="mt-2 text-2xl text-gray-400">
