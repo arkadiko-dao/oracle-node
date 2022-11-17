@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { config } from '@common/config';
 import { getMinimumSigners, getPriceInfo, getTokenId, pushPriceInfo } from '@common/oracle';
-import { getCurrentBlockHeight, getMempoolTransactions, getUnanchoredMicroblockTransactions } from '@common/stacks';
+import { getCurrentBlockHeight, getMempoolTransactions, getNonce, getUnanchoredMicroblockTransactions } from '@common/stacks';
 
 type Data = {
   result: string
@@ -56,10 +56,14 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
   const filteredTxs = allTxs.filter(tx => tx.tx_type == 'contract_call' && tx.contract_call.contract_id == oracleContract);
 
   // Check if given token is currently being updated
+  const nonce = await getNonce(config.managerAddress)
   for (const tx of filteredTxs) {
     for (const arg of tx.contract_call.function_args) {
       if (arg.name == 'token-id' && arg.repr == 'u' + tokenId) {
-        return false
+        // Check if it's an actual TX, or stuck TX
+        if (nonce <= tx.nonce) {
+          return false
+        }
       }
     }
   }
