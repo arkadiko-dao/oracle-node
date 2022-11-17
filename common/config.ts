@@ -83,10 +83,10 @@ const testnet = {
 const mainnet = {
   symbols: ["STX", "BTC", "USDA", "DIKO", "auto-alex"],
   nodes: [
-    "https://arkadiko-oracle-node-redstone.herokuapp.com/api/sign",
-    "https://akradiko-oracle-node-coingecko.herokuapp.com/api/sign",
-    "https://akradiko-oracle-node-cmc.herokuapp.com/api/sign",
-    "https://arkadiko-oracle-node-coincap.herokuapp.com/api/sign"
+    "https://arkadiko-oracle-node-redstone.herokuapp.com",
+    "https://akradiko-oracle-node-coingecko.herokuapp.com",
+    "https://akradiko-oracle-node-cmc.herokuapp.com",
+    "https://arkadiko-oracle-node-coincap.herokuapp.com"
   ],
   signKey: process.env.NEXT_PUBLIC_SIGN_KEY as string,
   network: new StacksMainnet(),

@@ -2,7 +2,7 @@ import { config } from "./config";
 import secp256k1 from 'secp256k1';
 import { isTrustedOracle } from "./oracle";
 
-export function getPublicKey() {
+export function getPublicKey(): string {
 
   // Private key to sign
   const privateKey = Buffer.from(config.signKey, "hex");
@@ -13,7 +13,7 @@ export function getPublicKey() {
   return publicKeyString;
 }
 
-export async function isOracleTrusted() {
+export async function isOracleTrusted(): Promise<boolean> {
 
   // Get public key
   const publicKey = getPublicKey();

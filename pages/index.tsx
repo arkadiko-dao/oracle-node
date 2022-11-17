@@ -1,58 +1,156 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css'
-import { getPriceInfo } from '@common/oracle';
+import { getMinimumSigners, getPriceInfo, getTokenId, getTokenNames } from '@common/oracle';
 import { config, tokenDecimals } from '@common/config';
 import { getCurrentBlockHeight } from '@common/stacks';
-import { getPublicKey, isOracleTrusted } from '@common/helpers';
+import { getPublicKey } from '@common/helpers';
+import { PriceRow } from 'components/price-row';
+import { NodeRow } from 'components/node-row';
 
 export default function Home() {
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [blockHeight, setBlockHeight] = useState(true);
-  const [trustedOracle, setTrustedOracle] = useState(true);
-  const [publicKey, setPublicKey] = useState("");
+  const [isLoadingPrices, setIsLoadingPrices] = useState(true);
+  const [isLoadingNodes, setIsLoadingNodes] = useState(true);
 
-  const [stxPrice, setStxPrice] = useState({});
-  const [xstxPrice, setXstxPrice] = useState({});
-  const [btcPrice, setBtcPrice] = useState({});
-  const [dikoPrice, setDikoPrice] = useState({});
-  const [usdaPrice, setUsdaPrice] = useState({});
-  const [atAlexPrice, setAtAlexPrice] = useState({});
+  const [blockHeight, setBlockHeight] = useState(true);
+  const [minimumSigners, setMinimumSigners] = useState(0);
+
+  const [priceRows, setPriceRows] = useState([]);
+  const [nodeRows, setNodeRows] = useState([]);
+
+  async function getSymbolInfo(symbol: string, currentBlock: number) {
+    const priceInfo = await getPriceInfo(symbol);
+    const tokenId = await getTokenId(symbol);
+    const tokenNamesResult = await getTokenNames(tokenId);
+
+    var tokenNames = []
+    for (const nameInfo of tokenNamesResult) {
+      tokenNames.push(nameInfo.value);
+    }
+
+    return {
+      tokenId: tokenId,
+      symbols: tokenNames,
+      lastBlock: priceInfo['last-block'].value,
+      blocksAgo: currentBlock - priceInfo['last-block'].value,
+      lastOraclePrice: priceInfo['last-price'].value,
+      lastDollarPrice: priceInfo['last-price'].value / Math.pow(10, tokenDecimals[symbol]),
+      oracleDecimals: priceInfo['decimals'].value,
+      priceDecimals: tokenDecimals[symbol]
+    }
+  }
+
+  async function getNodesInfo() {
+    var result: any[] = [];
+    for (const node of config.nodes) {
+      const url = node + "/api/info";
+      const response = await fetch(url, { credentials: 'omit' });
+      const json = await response.json();
+      json["url"] = node;
+      result.push(json);
+    }
+    return result;
+  }
 
   useEffect(() => {
+
     const fetchInfo = async () => {
+      const currentBlock = await getCurrentBlockHeight();
       const [
-        currentBlock,
-        oracleTrusted,
-        priceStx,
-        priceXstx,
-        priceBtc,
-        priceDiko,
-        priceUsda,
-        priceAtAlex
+        minSigners,
+        pubKey,
+        infoStx,
+        infoBtc,
+        infoUsda,
+        infoDiko,
+        infoAtAlex
       ] = await Promise.all([
-        getCurrentBlockHeight(),
-        isOracleTrusted(),
-        getPriceInfo("STX"),
-        getPriceInfo("xSTX"),
-        getPriceInfo("xBTC"),
-        getPriceInfo("DIKO"),
-        getPriceInfo("USDA"),
-        getPriceInfo("auto-alex"),
+        getMinimumSigners(),
+        getPublicKey(),
+        getSymbolInfo("STX", currentBlock),
+        getSymbolInfo("BTC", currentBlock),
+        getSymbolInfo("USDA", currentBlock),
+        getSymbolInfo("DIKO", currentBlock),
+        getSymbolInfo("auto-alex", currentBlock),
       ]);
+
       setBlockHeight(currentBlock);
-      setTrustedOracle(oracleTrusted);
+      setMinimumSigners(minSigners);
 
-      setStxPrice(priceStx);
-      setXstxPrice(priceXstx);
-      setBtcPrice(priceBtc);
-      setDikoPrice(priceDiko);
-      setUsdaPrice(priceUsda);
-      setAtAlexPrice(priceAtAlex);
+      const newPriceRows:any = [];
+      newPriceRows.push(
+        <PriceRow 
+          key={infoStx.tokenId}
+          tokenId={infoStx.tokenId}
+          symbols={infoStx.symbols.join(", ")} 
+          decimals={infoStx.oracleDecimals} 
+          lastUpdated={infoStx.blocksAgo + " blocks ago (#" + infoStx.lastBlock + ")"} 
+          price={"$" + infoStx.lastDollarPrice + " (" + infoStx.lastOraclePrice + ")"}
+        />
+      )
+      newPriceRows.push(
+        <PriceRow 
+          key={infoBtc.tokenId}
+          tokenId={infoBtc.tokenId}
+          symbols={infoBtc.symbols.join(", ")} 
+          decimals={infoBtc.oracleDecimals} 
+          lastUpdated={infoBtc.blocksAgo + " blocks ago (#" + infoBtc.lastBlock + ")"} 
+          price={"$" + infoBtc.lastDollarPrice + " (" + infoBtc.lastOraclePrice + ")"}
+        />
+      )
+      newPriceRows.push(
+        <PriceRow 
+          key={infoUsda.tokenId}
+          tokenId={infoUsda.tokenId}
+          symbols={infoUsda.symbols.join(", ")} 
+          decimals={infoUsda.oracleDecimals} 
+          lastUpdated={infoUsda.blocksAgo + " blocks ago (#" + infoUsda.lastBlock + ")"} 
+          price={"$" + infoUsda.lastDollarPrice + " (" + infoUsda.lastOraclePrice + ")"}
+        />
+      )
+      newPriceRows.push(
+        <PriceRow 
+          key={infoDiko.tokenId}
+          tokenId={infoDiko.tokenId}
+          symbols={infoDiko.symbols.join(", ")} 
+          decimals={infoDiko.oracleDecimals} 
+          lastUpdated={infoDiko.blocksAgo + " blocks ago (#" + infoDiko.lastBlock + ")"} 
+          price={"$" + infoDiko.lastDollarPrice + " (" + infoDiko.lastOraclePrice + ")"}
+        />
+      )
+      newPriceRows.push(
+        <PriceRow 
+          key={infoAtAlex.tokenId}
+          tokenId={infoAtAlex.tokenId}
+          symbols={infoAtAlex.symbols.join(", ")} 
+          decimals={infoAtAlex.oracleDecimals} 
+          lastUpdated={infoAtAlex.blocksAgo + " blocks ago (#" + infoAtAlex.lastBlock + ")"} 
+          price={"$" + infoAtAlex.lastDollarPrice + " (" + infoAtAlex.lastOraclePrice + ")"}
+        />
+      )
+      setPriceRows(newPriceRows)
+      setIsLoadingPrices(false)
 
-      setPublicKey(getPublicKey());
-      setIsLoading(false);
+      const infoNodes = await getNodesInfo();
+      const newNodeRows:any = [];
+      for (const infoNode of infoNodes) {
+        newNodeRows.push(
+          <NodeRow 
+            key={infoNode.publicKey}
+            publicKey={infoNode.publicKey}
+            url={infoNode.url}
+            currentNode={infoNode.publicKey == pubKey}
+            trusted={infoNode.trusted ? "yes" : "NO"} 
+            network={infoNode.network} 
+            source={infoNode.source} 
+            maxBlockDiff={infoNode.maxBlockDiff}
+            maxPriceDiff={infoNode.maxPriceDiff}
+          />
+        )
+      }
+      setNodeRows(newNodeRows)
+      setIsLoadingNodes(false);
     };
 
     fetchInfo();
@@ -65,99 +163,106 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
+      <main className="mt-10 text-center">
         <h1 className={styles.title}>
-          <a href="https://arkadiko.finance/">Arkadiko</a> Oracle Node
+          <a href="https://arkadiko.finance/" target="_blank" rel="noreferrer">Arkadiko</a> Oracle Node
         </h1>
 
-        <p className={styles.description}>
+        <p className="mt-2 text-2xl text-gray-400">
           Multisig oracle solution on Stacks.
         </p>
 
-        {isLoading ? (
-          <p>
-            Loading oracle prices..
-          </p>
+        {isLoadingPrices ? (
+          <h2 className="mt-10 text-xl text-gray-600">
+            Loading on chain oracle info..
+          </h2>
         ) : (
           <>
-            <h3>Public Key</h3>
-            {publicKey}
-            <br/><br/><br/>
+            <h2 className="mt-10 text-xl text-gray-600">
+              On chain oracle info
+            </h2>
+            <p className="mb-3 text-sm text-gray-400">
+              current block #{blockHeight}
+            </p>
 
-            <h3>Config</h3>
-            <table>
-              <tbody>
-                <tr>
-                  <td style={{width: "200px", textAlign: "right", paddingRight: "10px"}}>Trusted</td>
-                  <td style={{width: "200px", paddingLeft: "10px"}}><b>{trustedOracle ? "yes" : "NO!"}</b></td>
-                </tr>
-                <tr>
-                  <td style={{width: "200px", textAlign: "right", paddingRight: "10px"}}>Network</td>
-                  <td style={{width: "200px", paddingLeft: "10px"}}><b>{config.network.isMainnet() ? "mainnet" : "testnet"}</b></td>
-                </tr>
-                <tr>
-                  <td style={{textAlign: "right", paddingRight: "10px"}}>Source</td>
-                  <td style={{paddingLeft: "10px"}}><b>{config.sourceName}</b></td>
-                </tr>
-                <tr>
-                  <td style={{textAlign: "right", paddingRight: "10px"}}>Max block diff</td>
-                  <td style={{paddingLeft: "10px"}}><b>{config.inputMaxBlockDiff}</b></td>
-                </tr>
-                <tr>
-                  <td style={{textAlign: "right", paddingRight: "10px"}}>Max price diff</td>
-                  <td style={{paddingLeft: "10px"}}><b>{config.inputMaxPriceDiff}</b></td>
-                </tr>
-              </tbody>
-            </table>
-            <br/><br/><br/>
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
+              <div className="overflow-hidden border border-gray-200 rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        ID
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Symbols
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Decimals
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Last updated
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Price
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {priceRows}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
 
-            <h3>Oracle</h3>
-            <table style={{textAlign: "center"}}>
-              <tbody>
-                <tr>
-                  <td style={{width: "100px"}}><b>Symbol</b></td>
-                  <td style={{width: "150px"}}><b>Decimals</b></td>
-                  <td style={{width: "200px"}}><b>Last Updated</b></td>
-                  <td style={{width: "300px"}}><b>Price</b></td>
-                </tr>
-                <tr>
-                  <td>STX</td>
-                  <td>{stxPrice['decimals'].value}</td>
-                  <td>{stxPrice['last-block'].value} ({blockHeight - stxPrice['last-block'].value} blocks ago)</td>
-                  <td>{stxPrice['last-price'].value} (${stxPrice['last-price'].value / Math.pow(10, tokenDecimals["STX"])})</td>
-                </tr>
-                <tr>
-                  <td>xSTX</td>
-                  <td>{xstxPrice['decimals'].value}</td>
-                  <td>{xstxPrice['last-block'].value} ({blockHeight - xstxPrice['last-block'].value} blocks ago)</td>
-                  <td>{xstxPrice['last-price'].value} (${xstxPrice['last-price'].value / Math.pow(10, tokenDecimals["STX"])})</td>
-                </tr>
-                <tr>
-                  <td>xBTC</td>
-                  <td>{btcPrice['decimals'].value}</td>
-                  <td>{btcPrice['last-block'].value} ({blockHeight - btcPrice['last-block'].value} blocks ago)</td>
-                  <td>{btcPrice['last-price'].value} (${btcPrice['last-price'].value / Math.pow(10, tokenDecimals["BTC"])})</td>
-                </tr>
-                <tr>
-                  <td>DIKO</td>
-                  <td>{dikoPrice['decimals'].value}</td>
-                  <td>{dikoPrice['last-block'].value} ({blockHeight - dikoPrice['last-block'].value} blocks ago)</td> 
-                  <td>{dikoPrice['last-price'].value} (${dikoPrice['last-price'].value / Math.pow(10, tokenDecimals["DIKO"])})</td>
-                </tr>
-                <tr>
-                  <td>USDA</td>
-                  <td>{usdaPrice['decimals'].value}</td>
-                  <td>{usdaPrice['last-block'].value} ({blockHeight - usdaPrice['last-block'].value} blocks ago)</td>
-                  <td>{usdaPrice['last-price'].value} (${usdaPrice['last-price'].value / Math.pow(10, tokenDecimals["USDA"])})</td>
-                </tr>
-                <tr>
-                  <td>atALEX</td>
-                  <td>{atAlexPrice['decimals'].value}</td>
-                  <td>{atAlexPrice['last-block'].value} ({blockHeight - atAlexPrice['last-block'].value} blocks ago)</td>
-                  <td>{atAlexPrice['last-price'].value} (${atAlexPrice['last-price'].value / Math.pow(10, tokenDecimals["auto-alex"])})</td>
-                </tr>
-              </tbody>
-            </table>
+        {isLoadingNodes ? (
+          <h2 className="mt-10 text-xl text-gray-600">
+            Loading active oracle nodes..
+          </h2>
+        ) : (
+          <>
+            <h2 className="mt-10 text-xl text-gray-600">
+              Active oracle nodes
+            </h2>
+            <p className="mb-3 text-sm text-gray-400">
+              {config.nodes.length} nodes, {minimumSigners} valid signatures needed
+            </p>
+
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
+              <div className="overflow-hidden border border-gray-200 rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Trusted
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Public key
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Network
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Source
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Max block diff
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Max price diff
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Link
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {nodeRows}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </>
         )}
 
