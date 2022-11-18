@@ -12,12 +12,14 @@ export default function Home() {
 
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
   const [isLoadingNodes, setIsLoadingNodes] = useState(true);
+  const [isLoadingSourcePrices, setIsLoadingSourcePrices] = useState(true);
 
   const [blockHeight, setBlockHeight] = useState(true);
   const [minimumSigners, setMinimumSigners] = useState(0);
 
   const [priceRows, setPriceRows] = useState([]);
   const [nodeRows, setNodeRows] = useState([]);
+  const [sourcePrices, setSourcePrices] = useState({});
 
   async function getSymbolInfo(symbol: string, currentBlock: number) {
     const priceInfo = await getPriceInfo(symbol);
@@ -64,7 +66,7 @@ export default function Home() {
         infoBtc,
         infoUsda,
         infoDiko,
-        infoAtAlex
+        infoAtAlex,
       ] = await Promise.all([
         getMinimumSigners(),
         getPublicKey(),
@@ -141,7 +143,7 @@ export default function Home() {
             publicKey={infoNode.publicKey}
             url={infoNode.url}
             currentNode={infoNode.publicKey == pubKey}
-            trusted={infoNode.trusted ? "yes" : "NO"} 
+            trusted={infoNode.trusted} 
             network={infoNode.network} 
             source={infoNode.source} 
             maxBlockDiff={infoNode.maxBlockDiff}
@@ -151,6 +153,31 @@ export default function Home() {
       }
       setNodeRows(newNodeRows)
       setIsLoadingNodes(false);
+
+      const [
+        sourcePriceStx,
+        sourcePriceBtc,
+        sourcePriceUsda,
+        sourcePriceDiko,
+        sourcePriceAtAlex
+      ] = await Promise.all([
+        config.source.fetchPrice("STX"),
+        config.source.fetchPrice("BTC"),
+        config.source.fetchPrice("USDA"),
+        config.source.fetchPrice("DIKO"),
+        config.source.fetchPrice("auto-alex"),
+      ]);
+
+      const prices = {
+        "stx": sourcePriceStx / Math.pow(10, tokenDecimals["STX"]),
+        "btc": sourcePriceBtc / Math.pow(10, tokenDecimals["BTC"]),
+        "usda": sourcePriceUsda / Math.pow(10, tokenDecimals["USDA"]),
+        "diko": sourcePriceDiko / Math.pow(10, tokenDecimals["DIKO"]),
+        "atalex": sourcePriceAtAlex / Math.pow(10, tokenDecimals["auto-alex"]),
+      }
+
+      setSourcePrices(prices);
+      setIsLoadingSourcePrices(false);
     };
 
     fetchInfo();
@@ -172,17 +199,18 @@ export default function Home() {
           Multisig oracle solution on Stacks.
         </p>
 
+        <h2 className="mt-10 text-xl text-gray-600">
+          On chain oracle info
+        </h2>
         {isLoadingPrices ? (
-          <h2 className="mt-10 text-xl text-gray-600">
-            Loading on chain oracle info..
-          </h2>
+          <p className="mb-3 text-sm text-gray-400">
+            Loading..
+          </p>
         ) : (
           <>
-            <h2 className="mt-10 text-xl text-gray-600">
-              On chain oracle info
-            </h2>
             <p className="mb-3 text-sm text-gray-400">
-              current block #{blockHeight}
+              current block #{blockHeight}{' | '}
+              <a className="text-blue-500" href="https://explorer.stacks.co/txid/SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-oracle-v2-1?chain=mainnet">show contract</a>
             </p>
 
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
@@ -216,17 +244,17 @@ export default function Home() {
           </>
         )}
 
+        <h2 className="mt-10 text-xl text-gray-600">
+          Active oracle nodes
+        </h2>
         {isLoadingNodes ? (
-          <h2 className="mt-10 text-xl text-gray-600">
-            Loading active oracle nodes..
-          </h2>
+          <p className="mb-3 text-sm text-gray-400">
+            Loading..
+          </p>
         ) : (
           <>
-            <h2 className="mt-10 text-xl text-gray-600">
-              Active oracle nodes
-            </h2>
             <p className="mb-3 text-sm text-gray-400">
-              {config.nodes.length} nodes, {minimumSigners} valid signatures needed
+              {config.nodes.length} nodes | {minimumSigners} valid signatures needed
             </p>
 
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
@@ -259,6 +287,66 @@ export default function Home() {
                   </thead>
                   <tbody>
                     {nodeRows}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
+
+        <h2 className="mt-10 text-xl text-gray-600">
+          Source prices
+        </h2>
+        {isLoadingSourcePrices ? (
+          <p className="mb-3 text-sm text-gray-400">
+            Loading..
+          </p>
+        ) : (
+          <>
+            <p className="mb-3 text-sm text-gray-400">
+              {config.sourceName} | Arkadiko DEX | Alex DEX
+            </p>
+
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
+              <div className="overflow-hidden border border-gray-200 rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        STX
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        BTC
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        USDA
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        DIKO
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        atALEX
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="bg-white">
+                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        ${sourcePrices.stx}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        ${sourcePrices.btc}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        ${sourcePrices.usda}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        ${sourcePrices.diko}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        ${sourcePrices.atalex}
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
