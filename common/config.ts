@@ -86,7 +86,8 @@ const mainnet = {
     "https://arkadiko-oracle-node-redstone.herokuapp.com",
     "https://akradiko-oracle-node-coingecko.herokuapp.com",
     "https://akradiko-oracle-node-cmc.herokuapp.com",
-    "https://arkadiko-oracle-node-coincap.herokuapp.com"
+    "https://arkadiko-oracle-node-coincap.herokuapp.com",
+    "https://arkadiko-oracle-node-coinapi.herokuapp.com"
   ],
   signKey: process.env.NEXT_PUBLIC_SIGN_KEY as string,
   network: new StacksMainnet(),
