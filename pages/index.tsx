@@ -55,6 +55,15 @@ export default function Home() {
     return result;
   }
 
+  async function getSourcePriceInfo() {
+    var result: any[] = [];
+    for (const symbol of config.symbols) {
+      const price = await config.source.fetchPrice(symbol);
+      result[symbol] = price / Math.pow(10, tokenDecimals[symbol]);
+    }
+    return result;
+  }
+
   useEffect(() => {
 
     const fetchInfo = async () => {
@@ -154,28 +163,7 @@ export default function Home() {
       setNodeRows(newNodeRows)
       setIsLoadingNodes(false);
 
-      const [
-        sourcePriceStx,
-        sourcePriceBtc,
-        sourcePriceUsda,
-        sourcePriceDiko,
-        sourcePriceAtAlex
-      ] = await Promise.all([
-        config.source.fetchPrice("STX"),
-        config.source.fetchPrice("BTC"),
-        config.source.fetchPrice("USDA"),
-        config.source.fetchPrice("DIKO"),
-        config.source.fetchPrice("auto-alex"),
-      ]);
-
-      const prices = {
-        "stx": sourcePriceStx / Math.pow(10, tokenDecimals["STX"]),
-        "btc": sourcePriceBtc / Math.pow(10, tokenDecimals["BTC"]),
-        "usda": sourcePriceUsda / Math.pow(10, tokenDecimals["USDA"]),
-        "diko": sourcePriceDiko / Math.pow(10, tokenDecimals["DIKO"]),
-        "atalex": sourcePriceAtAlex / Math.pow(10, tokenDecimals["auto-alex"]),
-      }
-
+      const prices = await getSourcePriceInfo();
       setSourcePrices(prices);
       setIsLoadingSourcePrices(false);
     };
@@ -210,7 +198,9 @@ export default function Home() {
           <>
             <p className="mb-3 text-sm text-gray-400">
               current block #{blockHeight}{' | '}
-              <a className="text-blue-500" href="https://explorer.stacks.co/txid/SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-oracle-v2-1?chain=mainnet">show contract</a>
+              <a className="text-blue-500" target="_blank" rel="noreferrer" href="https://explorer.stacks.co/txid/SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-oracle-v2-1?chain=mainnet">
+                show contract
+              </a>
             </p>
 
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
@@ -332,19 +322,19 @@ export default function Home() {
                   <tbody>
                     <tr className="bg-white">
                       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices.stx}
+                        ${sourcePrices['STX']}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices.btc}
+                        ${sourcePrices['BTC']}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices.usda}
+                        ${sourcePrices['USDA']}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices.diko}
+                        ${sourcePrices['DIKO']}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices.atalex}
+                        ${sourcePrices['auto-alex']}
                       </td>
                     </tr>
                   </tbody>
