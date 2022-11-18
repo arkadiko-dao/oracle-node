@@ -14,3 +14,9 @@ function hexToBytesHelper(hex: string) {
   }
   return array;
 }
+
+export function sleep(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}

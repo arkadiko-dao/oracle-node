@@ -26,7 +26,7 @@ export const NodeRow: React.FC = ({ publicKey, url, currentNode, trusted, networ
         {currentNode ? (
           "Current"
         ):(
-          <a className="text-blue-500" href={url}>Show</a>
+          <a className="text-blue-500" href={url} target="_blank" rel="noreferrer">Show</a>
         )}
       </td>
     </tr>

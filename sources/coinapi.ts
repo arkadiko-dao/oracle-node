@@ -1,4 +1,5 @@
 import { tokenDecimals } from "@common/config";
+import { sleep } from "@common/utils";
 import { fetchPriceAMM } from "./amm";
 import { PriceSourceInterface } from "./interface";
 
@@ -28,6 +29,12 @@ export class SourceCoinApi implements PriceSourceInterface {
     const url = `https://rest.coinapi.io/v1/quotes/current?apiKey=${process.env.NEXT_PUBLIC_COINAPI_KEY!}&filter_symbol_id=${id}`;
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
+
+    // Possible we hit the rate limit
+    if (response.status != 200) {
+      await sleep(1000);
+      return await this.fetchPriceAPI(id);
+    }
     return data[0].last_trade.price;
   }
 }
