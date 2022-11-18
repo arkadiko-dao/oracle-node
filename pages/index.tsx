@@ -141,7 +141,7 @@ export default function Home() {
             publicKey={infoNode.publicKey}
             url={infoNode.url}
             currentNode={infoNode.publicKey == pubKey}
-            trusted={infoNode.trusted ? "yes" : "NO"} 
+            trusted={infoNode.trusted} 
             network={infoNode.network} 
             source={infoNode.source} 
             maxBlockDiff={infoNode.maxBlockDiff}
@@ -172,17 +172,18 @@ export default function Home() {
           Multisig oracle solution on Stacks.
         </p>
 
+        <h2 className="mt-10 text-xl text-gray-600">
+          On chain oracle info
+        </h2>
         {isLoadingPrices ? (
-          <h2 className="mt-10 text-xl text-gray-600">
-            Loading on chain oracle info..
-          </h2>
+          <p className="mb-3 text-sm text-gray-400">
+            Loading..
+          </p>
         ) : (
           <>
-            <h2 className="mt-10 text-xl text-gray-600">
-              On chain oracle info
-            </h2>
             <p className="mb-3 text-sm text-gray-400">
-              current block #{blockHeight}
+              current block #{blockHeight}{' | '}
+              <a className="text-blue-500" href="https://explorer.stacks.co/txid/SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-oracle-v2-1?chain=mainnet">show contract</a>
             </p>
 
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
@@ -216,17 +217,17 @@ export default function Home() {
           </>
         )}
 
+        <h2 className="mt-10 text-xl text-gray-600">
+          Active oracle nodes
+        </h2>
         {isLoadingNodes ? (
-          <h2 className="mt-10 text-xl text-gray-600">
-            Loading active oracle nodes..
-          </h2>
+          <p className="mb-3 text-sm text-gray-400">
+            Loading..
+          </p>
         ) : (
           <>
-            <h2 className="mt-10 text-xl text-gray-600">
-              Active oracle nodes
-            </h2>
             <p className="mb-3 text-sm text-gray-400">
-              {config.nodes.length} nodes, {minimumSigners} valid signatures needed
+              {config.nodes.length} nodes | {minimumSigners} valid signatures needed
             </p>
 
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
