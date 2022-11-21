@@ -1,9 +1,8 @@
 import { tokenDecimals } from "@common/config";
-import { sleep } from "@common/utils";
 import { fetchPriceAMM } from "./amm";
 import { PriceSourceInterface } from "./interface";
 
-export class SourceCoinApi implements PriceSourceInterface {
+export class SourceCoinbase implements PriceSourceInterface {
 
   // Return price as int
   public async fetchPrice(symbol: string): Promise<number> {
@@ -15,26 +14,20 @@ export class SourceCoinApi implements PriceSourceInterface {
   async fetchPriceHelper(symbol: string): Promise<number> {
     // API
     if (symbol == "STX") {
-      return await this.fetchPriceAPI("BINANCE_SPOT_STX_USDT");
+      return await this.fetchPriceAPI("STX");
     } else if (symbol == "BTC") {
-      return await this.fetchPriceAPI("BINANCE_SPOT_BTC_USDT");
+      return await this.fetchPriceAPI("BTC");
     }
 
     // AMM
-    const stxPrice = await this.fetchPriceAPI("BINANCE_SPOT_STX_USDT");
+    const stxPrice = await this.fetchPriceAPI("STX");
     return await fetchPriceAMM(symbol, stxPrice);
   }
 
   async fetchPriceAPI(id: string): Promise<number> {
-    const url = `https://rest.coinapi.io/v1/quotes/current?apiKey=${process.env.NEXT_PUBLIC_COINAPI_KEY!}&filter_symbol_id=${id}`;
+    const url = `https://api.exchange.coinbase.com/products/${id}-USD/ticker`;
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
-
-    // Possible we hit the rate limit
-    if (response.status != 200) {
-      await sleep(1000);
-      return await this.fetchPriceAPI(id);
-    }
-    return data[0].last_trade.price;
+    return data.price;
   }
 }

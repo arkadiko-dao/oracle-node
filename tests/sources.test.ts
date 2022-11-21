@@ -1,15 +1,22 @@
-import { SourceCoinApi } from '@sources/coinapi';
+import { SourceCoinbase } from '@sources/coinbase';
 import { SourceCoinCap } from '@sources/coincap';
 import { SourceCoinGecko } from '@sources/coingecko';
 import { SourceCoinMarketCap } from '@sources/coinmarketcap';
-import { SourceCryptoCompare } from '@sources/cryptocompare';
+import { SourceKucoin } from '@sources/kucoin';
 import { SourceRedstone } from '@sources/redstone';
 
 jest.setTimeout(50000);
 
 describe('/api/sources', () => {
-  test('can get price from CoinApi', async () => {
-    const source = new SourceCoinApi();
+  test('can get price from Coinbase', async () => {
+    const source = new SourceCoinbase();
+    const price = await source.fetchPrice("STX");
+    console.log("price:", price);
+    expect(price).toBeGreaterThan(0);
+  });
+
+  test('can get price from Kucoin', async () => {
+    const source = new SourceKucoin();
     const price = await source.fetchPrice("STX");
     console.log("price:", price);
     expect(price).toBeGreaterThan(0);
@@ -31,13 +38,6 @@ describe('/api/sources', () => {
 
   test('can get price from CoinMarketCap', async () => {
     const source = new SourceCoinMarketCap();
-    const price = await source.fetchPrice("STX");
-    console.log("price:", price);
-    expect(price).toBeGreaterThan(0);
-  });
-
-  test('can get price from CryptoCompare', async () => {
-    const source = new SourceCryptoCompare();
     const price = await source.fetchPrice("STX");
     console.log("price:", price);
     expect(price).toBeGreaterThan(0);

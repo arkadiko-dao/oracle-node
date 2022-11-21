@@ -2,7 +2,7 @@ import { tokenDecimals } from "@common/config";
 import { fetchPriceAMM } from "./amm";
 import { PriceSourceInterface } from "./interface";
 
-export class SourceCryptoCompare implements PriceSourceInterface {
+export class SourceKucoin implements PriceSourceInterface {
 
   // Return price as int
   public async fetchPrice(symbol: string): Promise<number> {
@@ -25,13 +25,9 @@ export class SourceCryptoCompare implements PriceSourceInterface {
   }
 
   async fetchPriceAPI(id: string): Promise<number> {
-    const url = `https://min-api.cryptocompare.com/data/price?fsym=${id}&tsyms=USD`
-    const response = await fetch(url, { 
-      headers: {
-        "Apikey": process.env.NEXT_PUBLIC_CRYPTOCOMPARE_KEY!
-      }
-    });
+    const url = `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=${id}-USDT`;
+    const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
-    return data.USD;
+    return data.data.price;
   }
 }

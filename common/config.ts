@@ -4,13 +4,13 @@ dotenv.config();
 import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
 import { SourceCoinMarketCap } from '@sources/coinmarketcap';
 import { SourceCoinGecko } from '@sources/coingecko';
-import { SourceCoinApi } from '@sources/coinapi';
-import { SourceCryptoCompare } from '@sources/cryptocompare';
 import { SourceRedstone } from '@sources/redstone';
 import { SourceCoinCap } from '@sources/coincap';
+import { SourceCoinbase } from '@sources/coinbase';
+import { SourceKucoin } from '@sources/kucoin';
 
 const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
-const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinapi' | 'cryptocompare' | 'coincap' | 'redstone';
+const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinbase' | 'kucoin' | 'coincap' | 'redstone';
 
 // Map source names to objects
 function getSource() {
@@ -18,10 +18,10 @@ function getSource() {
     return new SourceCoinMarketCap();
   } else if (source == "coingecko") {
     return new SourceCoinGecko();
-  } else if (source == "coinapi") {
-    return new SourceCoinApi();
-  } else if (source == "cryptocompare") {
-    return new SourceCryptoCompare();
+  } else if (source == "coinbase") {
+    return new SourceCoinbase();
+  } else if (source == "kucoin") {
+    return new SourceKucoin();
   } else if (source == "coincap") {
     return new SourceCoinCap();
   }
@@ -87,7 +87,7 @@ const mainnet = {
     "https://akradiko-oracle-node-coingecko.herokuapp.com",
     "https://akradiko-oracle-node-cmc.herokuapp.com",
     "https://arkadiko-oracle-node-coincap.herokuapp.com",
-    "https://arkadiko-oracle-node-ccompare.herokuapp.com"
+    "https://arkadiko-oracle-node-kucoin.herokuapp.com"
   ],
   signKey: process.env.NEXT_PUBLIC_SIGN_KEY as string,
   network: new StacksMainnet(),
