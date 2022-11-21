@@ -2,6 +2,7 @@ import { SourceCoinbase } from '@sources/coinbase';
 import { SourceCoinCap } from '@sources/coincap';
 import { SourceCoinGecko } from '@sources/coingecko';
 import { SourceCoinMarketCap } from '@sources/coinmarketcap';
+import { SourceCryptoCompare } from '@sources/cryptocompare';
 import { SourceKucoin } from '@sources/kucoin';
 import { SourceRedstone } from '@sources/redstone';
 
@@ -12,6 +13,13 @@ describe('/api/sources', () => {
     const source = new SourceCoinbase();
     const price = await source.fetchPrice("STX");
     console.log("price:", price);
+    expect(price).toBeGreaterThan(0);
+  });
+
+  test('can get price from Cryptocompare', async () => {
+    const source = new SourceCryptoCompare();
+    const price = await source.fetchPrice("STX");
+    console.log("price:", price); 
     expect(price).toBeGreaterThan(0);
   });
 

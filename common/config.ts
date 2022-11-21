@@ -8,9 +8,10 @@ import { SourceRedstone } from '@sources/redstone';
 import { SourceCoinCap } from '@sources/coincap';
 import { SourceCoinbase } from '@sources/coinbase';
 import { SourceKucoin } from '@sources/kucoin';
+import { SourceCryptoCompare } from '@sources/cryptocompare';
 
 const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
-const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinbase' | 'kucoin' | 'coincap' | 'redstone';
+const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinbase' | 'kucoin' | 'coincap' | 'cryptocompare' | 'redstone';
 
 // Map source names to objects
 function getSource() {
@@ -24,6 +25,8 @@ function getSource() {
     return new SourceKucoin();
   } else if (source == "coincap") {
     return new SourceCoinCap();
+  } else if (source == "cryptocompare") {
+    return new SourceCryptoCompare();
   }
   return new SourceRedstone();
 }
