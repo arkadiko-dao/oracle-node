@@ -87,8 +87,8 @@ const mainnet = {
   symbols: ["STX", "BTC", "USDA", "DIKO", "auto-alex"],
   nodes: [
     "https://arkadiko-oracle-node-redstone.herokuapp.com",
-    "https://akradiko-oracle-node-coingecko.herokuapp.com",
-    "https://akradiko-oracle-node-cmc.herokuapp.com",
+    "https://arkadiko-oracle-node-coingecko.herokuapp.com",
+    "https://arkadiko-oracle-node-cmc.herokuapp.com",
     "https://arkadiko-oracle-node-coincap.herokuapp.com",
     "https://arkadiko-oracle-node-ccompare.herokuapp.com"
   ],
