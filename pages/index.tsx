@@ -55,13 +55,11 @@ export default function Home() {
     return result;
   }
 
-  async function getSourcePriceInfo() {
-    var result: any[] = [];
-    for (const symbol of config.symbols) {
-      const price = await config.source.fetchPrice(symbol);
-      result[symbol] = price / Math.pow(10, tokenDecimals[symbol]);
-    }
-    return result;
+  async function getSourcePriceInfo(nodeUrl: string) {
+    const url = nodeUrl + "/api/prices";
+    const response = await fetch(url, { credentials: 'omit' });
+    const json = await response.json();
+    return json.prices;
   }
 
   useEffect(() => {
@@ -145,6 +143,7 @@ export default function Home() {
 
       const infoNodes = await getNodesInfo();
       const newNodeRows:any = [];
+      var currentNode = infoNodes[0];
       for (const infoNode of infoNodes) {
         newNodeRows.push(
           <NodeRow 
@@ -159,11 +158,14 @@ export default function Home() {
             maxPriceDiff={infoNode.maxPriceDiff}
           />
         )
+        if (infoNode.publicKey == pubKey) {
+          currentNode = infoNode;
+        }
       }
       setNodeRows(newNodeRows)
       setIsLoadingNodes(false);
 
-      const prices = await getSourcePriceInfo();
+      const prices = await getSourcePriceInfo(currentNode.url);
       setSourcePrices(prices);
       setIsLoadingSourcePrices(false);
     };
