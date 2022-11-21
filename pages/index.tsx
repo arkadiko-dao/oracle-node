@@ -7,6 +7,7 @@ import { getCurrentBlockHeight } from '@common/stacks';
 import { getPublicKey } from '@common/helpers';
 import { PriceRow } from 'components/price-row';
 import { NodeRow } from 'components/node-row';
+import { SourceRow } from 'components/source-row';
 
 export default function Home() {
 
@@ -19,7 +20,7 @@ export default function Home() {
 
   const [priceRows, setPriceRows] = useState([]);
   const [nodeRows, setNodeRows] = useState([]);
-  const [sourcePrices, setSourcePrices] = useState({});
+  const [sourceRows, setSourceRows] = useState([]);
 
   async function getSymbolInfo(symbol: string, currentBlock: number) {
     const priceInfo = await getPriceInfo(symbol);
@@ -55,11 +56,16 @@ export default function Home() {
     return result;
   }
 
-  async function getSourcePriceInfo(nodeUrl: string) {
-    const url = nodeUrl + "/api/prices";
-    const response = await fetch(url, { credentials: 'omit' });
-    const json = await response.json();
-    return json.prices;
+  async function getSourcePriceInfo(nodes: any) {
+    var result: any[] = [];
+    for (const node of nodes) {
+      const url = node.url + "/api/prices";
+      const response = await fetch(url, { credentials: 'omit' });
+      const json = await response.json();
+      json.prices["source"] = node.source;
+      result.push(json.prices);
+    }
+    return result;
   }
 
   useEffect(() => {
@@ -143,7 +149,6 @@ export default function Home() {
 
       const infoNodes = await getNodesInfo();
       const newNodeRows:any = [];
-      var currentNode = infoNodes[0];
       for (const infoNode of infoNodes) {
         newNodeRows.push(
           <NodeRow 
@@ -158,15 +163,27 @@ export default function Home() {
             maxPriceDiff={infoNode.maxPriceDiff}
           />
         )
-        if (infoNode.publicKey == pubKey) {
-          currentNode = infoNode;
-        }
       }
       setNodeRows(newNodeRows)
       setIsLoadingNodes(false);
 
-      const prices = await getSourcePriceInfo(currentNode.url);
-      setSourcePrices(prices);
+      const prices = await getSourcePriceInfo(infoNodes);
+      const newSourceRows:any = [];
+      for (const price of prices) {
+        newSourceRows.push(
+          <SourceRow 
+            key={price.source}
+            source={price.source}
+            currentNode={price.source == config.sourceName}
+            stx={price['STX']}
+            btc={price['BTC']}
+            usda={price['USDA']}
+            diko={price['DIKO']}
+            atAlex={price['auto-alex']}
+          />
+        )
+      }
+      setSourceRows(newSourceRows);
       setIsLoadingSourcePrices(false);
     };
 
@@ -305,6 +322,9 @@ export default function Home() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        Source
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                         STX
                       </th>
                       <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
@@ -322,23 +342,7 @@ export default function Home() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="bg-white">
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices['STX']}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices['BTC']}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices['USDA']}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices['DIKO']}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        ${sourcePrices['auto-alex']}
-                      </td>
-                    </tr>
+                    {sourceRows}
                   </tbody>
                 </table>
               </div>
