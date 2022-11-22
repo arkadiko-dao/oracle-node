@@ -207,7 +207,7 @@ export default function Home() {
         </p>
 
         <h2 className="mt-10 text-xl text-gray-600">
-          On chain oracle info
+          On-chain oracle info
         </h2>
         {isLoadingPrices ? (
           <p className="mb-3 text-sm text-gray-400">
@@ -222,33 +222,31 @@ export default function Home() {
               </a>
             </p>
 
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
-              <div className="overflow-hidden border border-gray-200 rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        ID
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Symbols
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Decimals
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Last updated
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Price
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {priceRows}
-                  </tbody>
-                </table>
-              </div>
+            <div className="overflow-x-auto border border-gray-200 rounded-lg text-left">
+              <table className="table-auto overflow-scroll w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      ID
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Symbols
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Decimals
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Last updated
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Price
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {priceRows}
+                </tbody>
+              </table>
             </div>
           </>
         )}
@@ -266,45 +264,43 @@ export default function Home() {
               {config.nodes.length} nodes | {minimumSigners} valid signatures needed
             </p>
 
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
-              <div className="overflow-hidden border border-gray-200 rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Trusted
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Public key
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Network
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Source
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Max block diff
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Max price diff
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Link
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {nodeRows}
-                  </tbody>
-                </table>
-              </div>
+            <div className="overflow-x-auto border border-gray-200 rounded-lg text-left">
+              <table className="table-auto overflow-scroll w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Trusted
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Public key
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Network
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Source
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Max block diff
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Max price diff
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Link
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nodeRows}
+                </tbody>
+              </table>
             </div>
           </>
         )}
 
         <h2 className="mt-10 text-xl text-gray-600">
-          Source prices
+          Sources and prices
         </h2>
         {isLoadingSourcePrices ? (
           <p className="mb-3 text-sm text-gray-400">
@@ -316,39 +312,42 @@ export default function Home() {
               {config.sourceName} | Arkadiko DEX | Alex DEX
             </p>
 
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
-              <div className="overflow-hidden border border-gray-200 rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Source
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        STX
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        BTC
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        USDA
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        DIKO
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        atALEX
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sourceRows}
-                  </tbody>
-                </table>
-              </div>
+            <div className="overflow-x-auto border border-gray-200 rounded-lg text-left">
+              <table className="table-auto overflow-scroll w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Source
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      STX
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      BTC
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      USDA
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      DIKO
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      atALEX
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sourceRows}
+                </tbody>
+              </table>
             </div>
           </>
         )}
+
+        <p className="mt-10 mb-10 text-sm text-gray-400">
+          Find the latest version on {' '}
+          <a href="https://github.com/arkadiko-dao/oracle-node" target="_blank" rel="noreferrer" className="text-blue-500">Github</a>
+        </p>
 
       </main>
     </div>
