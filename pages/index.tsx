@@ -17,7 +17,6 @@ export default function Home() {
 
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
   const [isLoadingNodes, setIsLoadingNodes] = useState(true);
-  const [isLoadingSourcePrices, setIsLoadingSourcePrices] = useState(true);
 
   const [blockHeight, setBlockHeight] = useState(true);
   const [minimumSigners, setMinimumSigners] = useState(0);
@@ -63,30 +62,23 @@ export default function Home() {
     }
   }
 
-  // 
+  // Get info for all nodes
   async function getNodesInfo() {
-    var result: any[] = [];
+    var requests = [];
     for (const node of config.nodes) {
-      const url = node + "/api/info";
-      const response = await fetch(url, { credentials: 'omit' });
-      const json = await response.json();
-      json["url"] = node;
-      result.push(json);
+      requests.push(getNodeInfo(node));
     }
+    const result = await Promise.all(requests);
     return result;
   }
 
-  // 
-  async function getSourcePriceInfo(nodes: any) {
-    var result: any[] = [];
-    for (const node of nodes) {
-      const url = node.url + "/api/prices";
-      const response = await fetch(url, { credentials: 'omit' });
-      const json = await response.json();
-      json.prices["source"] = node.source;
-      result.push(json.prices);
-    }
-    return result;
+  // Get info for given node
+  async function getNodeInfo(nodeUrl: string) {
+    const url = nodeUrl + "/api/info";
+    const response = await fetch(url, { credentials: 'omit' });
+    const json = await response.json();
+    json["url"] = nodeUrl;
+    return json;
   }
 
   // ----------------------------------------------
@@ -129,7 +121,10 @@ export default function Home() {
       setPriceRows(newPriceRows)
       setIsLoadingPrices(false)
 
+      // Fetch node info
       const infoNodes = await getNodesInfo();
+
+      // Create node rows
       const newNodeRows:any = [];
       for (const infoNode of infoNodes) {
         newNodeRows.push(
@@ -147,27 +142,25 @@ export default function Home() {
         )
       }
       setNodeRows(newNodeRows)
-      setIsLoadingNodes(false);
 
-      
-      const prices = await getSourcePriceInfo(infoNodes);
+      // Create sources and prices rows 
       const newSourceRows:any = [];
-      for (const price of prices) {
+      for (const infoNode of infoNodes) {
         newSourceRows.push(
           <SourceRow 
-            key={price.source}
-            source={price.source}
-            currentNode={price.source == config.sourceName}
-            stx={price['STX']}
-            btc={price['BTC']}
-            usda={price['USDA']}
-            diko={price['DIKO']}
-            atAlex={price['auto-alex']}
+            key={infoNode.source}
+            source={infoNode.source}
+            currentNode={infoNode.publicKey == pubKey}
+            stx={infoNode.prices['STX']}
+            btc={infoNode.prices['BTC']}
+            usda={infoNode.prices['USDA']}
+            diko={infoNode.prices['DIKO']}
+            atAlex={infoNode.prices['auto-alex']}
           />
         )
       }
       setSourceRows(newSourceRows);
-      setIsLoadingSourcePrices(false);
+      setIsLoadingNodes(false);
     };
 
     fetchInfo();
@@ -306,7 +299,7 @@ export default function Home() {
         <h2 className="mt-10 text-xl text-gray-600">
           Sources and prices
         </h2>
-        {isLoadingSourcePrices ? (
+        {isLoadingNodes ? (
           <p className="mb-3 text-sm text-gray-400">
             Loading..
           </p>
