@@ -70,7 +70,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
   try {
     // Check if block correct
     const currentBlock = await getCurrentBlockHeight();
-    if (Math.abs(currentBlock - block) > config.inputMaxBlockDiff) {
+    if (Math.abs(currentBlock - block) >= config.inputMaxBlockDiff) {
       console.log("[SIGN] Wrong input - Block: " + block + ", current block: " + currentBlock);
       return { error: "wrong input - block" };
     }
