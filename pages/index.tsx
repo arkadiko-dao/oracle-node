@@ -11,9 +11,12 @@ import { SourceRow } from 'components/source-row';
 
 export default function Home() {
 
+  // ----------------------------------------------
+  // State
+  // ----------------------------------------------
+
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
   const [isLoadingNodes, setIsLoadingNodes] = useState(true);
-  const [isLoadingSourcePrices, setIsLoadingSourcePrices] = useState(true);
 
   const [blockHeight, setBlockHeight] = useState(true);
   const [minimumSigners, setMinimumSigners] = useState(0);
@@ -22,6 +25,21 @@ export default function Home() {
   const [nodeRows, setNodeRows] = useState([]);
   const [sourceRows, setSourceRows] = useState([]);
 
+  // ----------------------------------------------
+  // Fetch info
+  // ----------------------------------------------
+
+  // Get on-chain oracle info for all symbols
+  async function getOracleInfo(currentBlock: number) {
+    var requests = [];
+    for (const symbol of config.symbols) {
+      requests.push(getSymbolInfo(symbol, currentBlock));
+    }
+    const result = await Promise.all(requests);
+    return result;
+  }
+
+  // Get on-chain oracle info for given symbol
   async function getSymbolInfo(symbol: string, currentBlock: number) {
     const priceInfo = await getPriceInfo(symbol);
     const tokenId = await getTokenId(symbol);
@@ -44,110 +62,69 @@ export default function Home() {
     }
   }
 
+  // Get info for all nodes
   async function getNodesInfo() {
-    var result: any[] = [];
+    var requests = [];
     for (const node of config.nodes) {
-      const url = node + "/api/info";
-      const response = await fetch(url, { credentials: 'omit' });
-      const json = await response.json();
-      json["url"] = node;
-      result.push(json);
+      requests.push(getNodeInfo(node));
     }
+    const result = await Promise.all(requests);
     return result;
   }
 
-  async function getSourcePriceInfo(nodes: any) {
-    var result: any[] = [];
-    for (const node of nodes) {
-      const url = node.url + "/api/prices";
-      const response = await fetch(url, { credentials: 'omit' });
-      const json = await response.json();
-      json.prices["source"] = node.source;
-      result.push(json.prices);
-    }
-    return result;
+  // Get info for given node
+  async function getNodeInfo(nodeUrl: string) {
+    const url = nodeUrl + "/api/info";
+    const response = await fetch(url, { credentials: 'omit' });
+    const json = await response.json();
+    json["url"] = nodeUrl;
+    return json;
   }
+
+  // ----------------------------------------------
+  // Main
+  // ----------------------------------------------
 
   useEffect(() => {
 
     const fetchInfo = async () => {
-      const currentBlock = await getCurrentBlockHeight();
+
+      // Get some general info
       const [
         minSigners,
         pubKey,
-        infoStx,
-        infoBtc,
-        infoUsda,
-        infoDiko,
-        infoAtAlex,
+        currentBlock
       ] = await Promise.all([
         getMinimumSigners(),
         getPublicKey(),
-        getSymbolInfo("STX", currentBlock),
-        getSymbolInfo("BTC", currentBlock),
-        getSymbolInfo("USDA", currentBlock),
-        getSymbolInfo("DIKO", currentBlock),
-        getSymbolInfo("auto-alex", currentBlock),
+        getCurrentBlockHeight()
       ]);
 
       setBlockHeight(currentBlock);
       setMinimumSigners(minSigners);
 
+      // Fetch on-chain oracle info
+      const oracleInfo = await getOracleInfo(currentBlock);
       const newPriceRows:any = [];
-      newPriceRows.push(
-        <PriceRow 
-          key={infoStx.tokenId}
-          tokenId={infoStx.tokenId}
-          symbols={infoStx.symbols.join(", ")} 
-          decimals={infoStx.oracleDecimals} 
-          lastUpdated={infoStx.blocksAgo + " blocks ago (#" + infoStx.lastBlock + ")"} 
-          price={"$" + infoStx.lastDollarPrice + " (" + infoStx.lastOraclePrice + ")"}
-        />
-      )
-      newPriceRows.push(
-        <PriceRow 
-          key={infoBtc.tokenId}
-          tokenId={infoBtc.tokenId}
-          symbols={infoBtc.symbols.join(", ")} 
-          decimals={infoBtc.oracleDecimals} 
-          lastUpdated={infoBtc.blocksAgo + " blocks ago (#" + infoBtc.lastBlock + ")"} 
-          price={"$" + infoBtc.lastDollarPrice + " (" + infoBtc.lastOraclePrice + ")"}
-        />
-      )
-      newPriceRows.push(
-        <PriceRow 
-          key={infoUsda.tokenId}
-          tokenId={infoUsda.tokenId}
-          symbols={infoUsda.symbols.join(", ")} 
-          decimals={infoUsda.oracleDecimals} 
-          lastUpdated={infoUsda.blocksAgo + " blocks ago (#" + infoUsda.lastBlock + ")"} 
-          price={"$" + infoUsda.lastDollarPrice + " (" + infoUsda.lastOraclePrice + ")"}
-        />
-      )
-      newPriceRows.push(
-        <PriceRow 
-          key={infoDiko.tokenId}
-          tokenId={infoDiko.tokenId}
-          symbols={infoDiko.symbols.join(", ")} 
-          decimals={infoDiko.oracleDecimals} 
-          lastUpdated={infoDiko.blocksAgo + " blocks ago (#" + infoDiko.lastBlock + ")"} 
-          price={"$" + infoDiko.lastDollarPrice + " (" + infoDiko.lastOraclePrice + ")"}
-        />
-      )
-      newPriceRows.push(
-        <PriceRow 
-          key={infoAtAlex.tokenId}
-          tokenId={infoAtAlex.tokenId}
-          symbols={infoAtAlex.symbols.join(", ")} 
-          decimals={infoAtAlex.oracleDecimals} 
-          lastUpdated={infoAtAlex.blocksAgo + " blocks ago (#" + infoAtAlex.lastBlock + ")"} 
-          price={"$" + infoAtAlex.lastDollarPrice + " (" + infoAtAlex.lastOraclePrice + ")"}
-        />
-      )
+      for (const info of oracleInfo) {
+        newPriceRows.push(
+          <PriceRow 
+            key={info.tokenId}
+            tokenId={info.tokenId}
+            symbols={info.symbols.join(", ")} 
+            decimals={info.oracleDecimals} 
+            lastUpdated={info.blocksAgo + " blocks ago (#" + info.lastBlock + ")"} 
+            price={"$" + info.lastDollarPrice + " (" + info.lastOraclePrice + ")"}
+          />
+        )
+      }
       setPriceRows(newPriceRows)
       setIsLoadingPrices(false)
 
+      // Fetch node info
       const infoNodes = await getNodesInfo();
+
+      // Create node rows
       const newNodeRows:any = [];
       for (const infoNode of infoNodes) {
         newNodeRows.push(
@@ -165,49 +142,63 @@ export default function Home() {
         )
       }
       setNodeRows(newNodeRows)
-      setIsLoadingNodes(false);
 
-      const prices = await getSourcePriceInfo(infoNodes);
+      // Create sources and prices rows 
       const newSourceRows:any = [];
-      for (const price of prices) {
+      for (const infoNode of infoNodes) {
         newSourceRows.push(
           <SourceRow 
-            key={price.source}
-            source={price.source}
-            currentNode={price.source == config.sourceName}
-            stx={price['STX']}
-            btc={price['BTC']}
-            usda={price['USDA']}
-            diko={price['DIKO']}
-            atAlex={price['auto-alex']}
+            key={infoNode.source}
+            source={infoNode.source}
+            currentNode={infoNode.publicKey == pubKey}
+            stx={infoNode.prices['STX']}
+            btc={infoNode.prices['BTC']}
+            usda={infoNode.prices['USDA']}
+            diko={infoNode.prices['DIKO']}
+            atAlex={infoNode.prices['auto-alex']}
           />
         )
       }
       setSourceRows(newSourceRows);
-      setIsLoadingSourcePrices(false);
+      setIsLoadingNodes(false);
     };
 
     fetchInfo();
   }, []);
+
+  // ----------------------------------------------
+  // HTML
+  // ----------------------------------------------
 
   return (
     <div className={styles.container}>
       <Head>
         <title>Arkadiko Oracle Node</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="Multisig oracle solution on Stacks."
+          key="desc"
+        />
       </Head>
 
       <main className="mt-10 text-center">
+        
+        {/* 
+          HEADER
+        */}
         <h1 className={styles.title}>
           <a href="https://arkadiko.finance/" target="_blank" rel="noreferrer">Arkadiko</a> Oracle Node
         </h1>
-
         <p className="mt-2 text-2xl text-gray-400">
           Multisig oracle solution on Stacks.
         </p>
 
+        {/* 
+          ON-CHAIN ORACLE INFO
+        */}
         <h2 className="mt-10 text-xl text-gray-600">
-          On chain oracle info
+          On-chain oracle info
         </h2>
         {isLoadingPrices ? (
           <p className="mb-3 text-sm text-gray-400">
@@ -222,37 +213,38 @@ export default function Home() {
               </a>
             </p>
 
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
-              <div className="overflow-hidden border border-gray-200 rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        ID
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Symbols
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Decimals
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Last updated
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Price
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {priceRows}
-                  </tbody>
-                </table>
-              </div>
+            <div className="overflow-x-auto border border-gray-200 rounded-lg text-left">
+              <table className="table-auto overflow-scroll w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      ID
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Symbols
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Decimals
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Last updated
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Price
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {priceRows}
+                </tbody>
+              </table>
             </div>
           </>
         )}
 
+        {/* 
+          ACTIVE ORACLE NODES
+        */}
         <h2 className="mt-10 text-xl text-gray-600">
           Active oracle nodes
         </h2>
@@ -266,47 +258,48 @@ export default function Home() {
               {config.nodes.length} nodes | {minimumSigners} valid signatures needed
             </p>
 
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
-              <div className="overflow-hidden border border-gray-200 rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Trusted
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Public key
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Network
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Source
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Max block diff
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Max price diff
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Link
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {nodeRows}
-                  </tbody>
-                </table>
-              </div>
+            <div className="overflow-x-auto border border-gray-200 rounded-lg text-left">
+              <table className="table-auto overflow-scroll w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Trusted
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Public key
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Network
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Source
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Max block diff
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Max price diff
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Link
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nodeRows}
+                </tbody>
+              </table>
             </div>
           </>
         )}
 
+        {/* 
+          SOURCES AND PRICES
+        */}
         <h2 className="mt-10 text-xl text-gray-600">
-          Source prices
+          Sources and prices
         </h2>
-        {isLoadingSourcePrices ? (
+        {isLoadingNodes ? (
           <p className="mb-3 text-sm text-gray-400">
             Loading..
           </p>
@@ -316,39 +309,45 @@ export default function Home() {
               {config.sourceName} | Arkadiko DEX | Alex DEX
             </p>
 
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8 text-left">
-              <div className="overflow-hidden border border-gray-200 rounded-lg">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        Source
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        STX
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        BTC
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        USDA
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        DIKO
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                        atALEX
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sourceRows}
-                  </tbody>
-                </table>
-              </div>
+            <div className="overflow-x-auto border border-gray-200 rounded-lg text-left">
+              <table className="table-auto overflow-scroll w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Source
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      STX
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      BTC
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      USDA
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      DIKO
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      atALEX
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sourceRows}
+                </tbody>
+              </table>
             </div>
           </>
         )}
+
+        {/* 
+          FOOTER
+        */}
+        <p className="mt-10 mb-10 text-sm text-gray-400">
+          Find the latest version on {' '}
+          <a href="https://github.com/arkadiko-dao/oracle-node" target="_blank" rel="noreferrer" className="text-blue-500">Github</a>
+        </p>
 
       </main>
     </div>
