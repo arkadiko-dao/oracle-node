@@ -1,5 +1,5 @@
-import { getAutoAlexPrice } from "@common/alexSwap";
-import { getDikoPrice, getUsdaPrice } from "@common/arkadikoSwap";
+import { getAutoAlexPrice } from "./ammAlex";
+import { getDikoPrice, getUsdaPrice } from "./ammArkadiko";
 
 export async function fetchPriceAMM(symbol: string, stxPrice: number): Promise<number> {
   if (symbol == "DIKO") {
