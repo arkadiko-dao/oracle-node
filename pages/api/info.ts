@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { isTrustedOracle } from '@common/oracle';
 import { getPublicKey } from '@common/helpers';
-import { config } from '@common/config';
+import { config, tokenDecimals } from '@common/config';
 
 type Data = {
   publicKey: string,
@@ -9,7 +9,8 @@ type Data = {
   network: string,
   source: string,
   maxBlockDiff: number,
-  maxPriceDiff: number
+  maxPriceDiff: number,
+  prices: any
 }
 
 export default async function handler(
@@ -20,6 +21,13 @@ export default async function handler(
   const publicKey = getPublicKey();
   const trusted = await isTrustedOracle(publicKey);
 
+  // Get all prices
+  var prices: { [key: string]: number } = {};
+  for (const symbol of config.symbols) {
+    const price = await config.source.fetchPrice(symbol);
+    prices[symbol] = price / Math.pow(10, tokenDecimals[symbol]);
+  }
+
   res.setHeader("Access-Control-Allow-Origin", "*")
   res.status(200).json({ 
     publicKey: publicKey,
@@ -27,6 +35,7 @@ export default async function handler(
     network: config.network.isMainnet() ? "mainnet" : "testnet",
     source: config.sourceName,
     maxBlockDiff: config.inputMaxBlockDiff,
-    maxPriceDiff: config.inputMaxPriceDiff
+    maxPriceDiff: config.inputMaxPriceDiff,
+    prices: prices
   })
 }
