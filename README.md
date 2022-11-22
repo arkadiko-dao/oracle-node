@@ -7,7 +7,7 @@ Many oracle systems put all data on-chain after which the data integrity can be 
 
 ## Solution
 
-![Architecture](https://github.com/arkadiko-dao/oracle-node/blob/master/docs/architecture.png?raw=true)
+![Architecture](https://github.com/arkadiko-dao/oracle-node/blob/main/docs/architecture.png?raw=true)
 
 Any node in the system periodically checks if the on-chain price needs to be updated, currently based on the amount of blocks mined since last update.
 
