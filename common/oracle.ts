@@ -15,13 +15,13 @@ import { getNonce } from './stacks';
 
 export async function isTrustedOracle(publicKey: string): Promise<boolean> {
   const call = await callReadOnlyFunction({
-    contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v2-1",
+    contractAddress: config.oracleAddress as string,
+    contractName: config.oracleContractName,
     functionName: "is-trusted-oracle",
     functionArgs: [
       bufferCV(Buffer.from(publicKey, "hex"))
     ],
-    senderAddress: config.arkadikoAddress as string,
+    senderAddress: config.oracleAddress as string,
     network: config.network,
   });
   const result = cvToJSON(call).value;
@@ -30,8 +30,8 @@ export async function isTrustedOracle(publicKey: string): Promise<boolean> {
 
 export async function getSignableMessage(price: PriceObject): Promise<string> {
   const call = await callReadOnlyFunction({
-    contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v2-1",
+    contractAddress: config.oracleAddress as string,
+    contractName: config.oracleContractName,
     functionName: "get-signable-message-hash",
     functionArgs: [
       uintCV(price.block),
@@ -39,7 +39,7 @@ export async function getSignableMessage(price: PriceObject): Promise<string> {
       uintCV(price.price),
       uintCV(price.decimals),
     ],
-    senderAddress: config.arkadikoAddress as string,
+    senderAddress: config.oracleAddress as string,
     network: config.network,
   });
   const result = cvToJSON(call).value;
@@ -48,13 +48,13 @@ export async function getSignableMessage(price: PriceObject): Promise<string> {
 
 export async function getTokenId(symbol: string): Promise<any> {
   const call = await callReadOnlyFunction({
-    contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v2-1",
+    contractAddress: config.oracleAddress as string,
+    contractName: config.oracleContractName,
     functionName: "get-token-id-from-name",
     functionArgs: [
       stringAsciiCV(symbol)
     ],
-    senderAddress: config.arkadikoAddress as string,
+    senderAddress: config.oracleAddress as string,
     network: config.network,
   });
   const result = cvToJSON(call).value;
@@ -63,13 +63,13 @@ export async function getTokenId(symbol: string): Promise<any> {
 
 export async function getTokenNames(tokenId: number): Promise<any> {
   const call = await callReadOnlyFunction({
-    contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v2-1",
+    contractAddress: config.oracleAddress as string,
+    contractName: config.oracleContractName,
     functionName: "get-token-names-from-id",
     functionArgs: [
       uintCV(tokenId),
     ],
-    senderAddress: config.arkadikoAddress as string,
+    senderAddress: config.oracleAddress as string,
     network: config.network,
   });
   const result = cvToJSON(call).value;
@@ -78,11 +78,11 @@ export async function getTokenNames(tokenId: number): Promise<any> {
 
 export async function getMinimumSigners(): Promise<any> {
   const call = await callReadOnlyFunction({
-    contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v2-1",
+    contractAddress: config.oracleAddress as string,
+    contractName: config.oracleContractName,
     functionName: "get-minimum-valid-signers",
     functionArgs: [],
-    senderAddress: config.arkadikoAddress as string,
+    senderAddress: config.oracleAddress as string,
     network: config.network,
   });
   const result = cvToJSON(call).value;
@@ -91,13 +91,13 @@ export async function getMinimumSigners(): Promise<any> {
 
 export async function getPriceInfo(symbol: string): Promise<any> {
   const call = await callReadOnlyFunction({
-    contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v2-1",
+    contractAddress: config.oracleAddress as string,
+    contractName: config.oracleContractName,
     functionName: "get-price",
     functionArgs: [
       stringAsciiCV(symbol)
     ],
-    senderAddress: config.arkadikoAddress as string,
+    senderAddress: config.oracleAddress as string,
     network: config.network,
   });
   const result = cvToJSON(call).value;
@@ -111,8 +111,8 @@ export async function pushPriceInfo(price: PriceObject, signatures: string[]): P
 
 async function pushPriceInfoHelper(price: PriceObject, signatures: string[], nonce: number): Promise<any> {
   const txOptions = {
-    contractAddress: config.arkadikoAddress as string,
-    contractName: "arkadiko-oracle-v2-1",
+    contractAddress: config.oracleAddress as string,
+    contractName: config.oracleContractName,
     functionName: "update-price-multi",
     functionArgs: [
       uintCV(price.block),

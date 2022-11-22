@@ -53,7 +53,7 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
   const allTxs = mempoolTxs.concat(unanchoredTxs);
 
   // Find oracle transactions
-  const oracleContract = config.arkadikoAddress + '.arkadiko-oracle-v2-1';
+  const oracleContract = config.oracleAddress + '.' + config.oracleContractName;
   const filteredTxs = allTxs.filter(tx => tx.tx_type == 'contract_call' && tx.contract_call.contract_id == oracleContract);
 
   // Check if given token is currently being updated

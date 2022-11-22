@@ -208,7 +208,12 @@ export default function Home() {
           <>
             <p className="mb-3 text-sm text-gray-400">
               current block #{blockHeight}{' | '}
-              <a className="text-blue-500" target="_blank" rel="noreferrer" href="https://explorer.stacks.co/txid/SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-oracle-v2-1?chain=mainnet">
+              <a 
+                className="text-blue-500" 
+                target="_blank" 
+                rel="noreferrer" 
+                href={`https://explorer.stacks.co/txid/${config.oracleAddress}.${config.oracleContractName}?chain=${config.networkName}`}
+              >
                 show contract
               </a>
             </p>
