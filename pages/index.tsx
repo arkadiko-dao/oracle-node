@@ -11,6 +11,10 @@ import { SourceRow } from 'components/source-row';
 
 export default function Home() {
 
+  // ----------------------------------------------
+  // State
+  // ----------------------------------------------
+
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
   const [isLoadingNodes, setIsLoadingNodes] = useState(true);
   const [isLoadingSourcePrices, setIsLoadingSourcePrices] = useState(true);
@@ -22,6 +26,21 @@ export default function Home() {
   const [nodeRows, setNodeRows] = useState([]);
   const [sourceRows, setSourceRows] = useState([]);
 
+  // ----------------------------------------------
+  // Fetch info
+  // ----------------------------------------------
+
+  // Get on-chain oracle info for all symbols
+  async function getOracleInfo(currentBlock: number) {
+    var requests = [];
+    for (const symbol of config.symbols) {
+      requests.push(getSymbolInfo(symbol, currentBlock));
+    }
+    const result = await Promise.all(requests);
+    return result;
+  }
+
+  // Get on-chain oracle info for given symbol
   async function getSymbolInfo(symbol: string, currentBlock: number) {
     const priceInfo = await getPriceInfo(symbol);
     const tokenId = await getTokenId(symbol);
@@ -44,6 +63,7 @@ export default function Home() {
     }
   }
 
+  // 
   async function getNodesInfo() {
     var result: any[] = [];
     for (const node of config.nodes) {
@@ -56,6 +76,7 @@ export default function Home() {
     return result;
   }
 
+  // 
   async function getSourcePriceInfo(nodes: any) {
     var result: any[] = [];
     for (const node of nodes) {
@@ -68,82 +89,43 @@ export default function Home() {
     return result;
   }
 
+  // ----------------------------------------------
+  // Main
+  // ----------------------------------------------
+
   useEffect(() => {
 
     const fetchInfo = async () => {
-      const currentBlock = await getCurrentBlockHeight();
+
+      // Get some general info
       const [
         minSigners,
         pubKey,
-        infoStx,
-        infoBtc,
-        infoUsda,
-        infoDiko,
-        infoAtAlex,
+        currentBlock
       ] = await Promise.all([
         getMinimumSigners(),
         getPublicKey(),
-        getSymbolInfo("STX", currentBlock),
-        getSymbolInfo("BTC", currentBlock),
-        getSymbolInfo("USDA", currentBlock),
-        getSymbolInfo("DIKO", currentBlock),
-        getSymbolInfo("auto-alex", currentBlock),
+        getCurrentBlockHeight()
       ]);
 
       setBlockHeight(currentBlock);
       setMinimumSigners(minSigners);
 
+      // Fetch on-chain oracle info
+      const oracleInfo = await getOracleInfo(currentBlock);
       const newPriceRows:any = [];
-      newPriceRows.push(
-        <PriceRow 
-          key={infoStx.tokenId}
-          tokenId={infoStx.tokenId}
-          symbols={infoStx.symbols.join(", ")} 
-          decimals={infoStx.oracleDecimals} 
-          lastUpdated={infoStx.blocksAgo + " blocks ago (#" + infoStx.lastBlock + ")"} 
-          price={"$" + infoStx.lastDollarPrice + " (" + infoStx.lastOraclePrice + ")"}
-        />
-      )
-      newPriceRows.push(
-        <PriceRow 
-          key={infoBtc.tokenId}
-          tokenId={infoBtc.tokenId}
-          symbols={infoBtc.symbols.join(", ")} 
-          decimals={infoBtc.oracleDecimals} 
-          lastUpdated={infoBtc.blocksAgo + " blocks ago (#" + infoBtc.lastBlock + ")"} 
-          price={"$" + infoBtc.lastDollarPrice + " (" + infoBtc.lastOraclePrice + ")"}
-        />
-      )
-      newPriceRows.push(
-        <PriceRow 
-          key={infoUsda.tokenId}
-          tokenId={infoUsda.tokenId}
-          symbols={infoUsda.symbols.join(", ")} 
-          decimals={infoUsda.oracleDecimals} 
-          lastUpdated={infoUsda.blocksAgo + " blocks ago (#" + infoUsda.lastBlock + ")"} 
-          price={"$" + infoUsda.lastDollarPrice + " (" + infoUsda.lastOraclePrice + ")"}
-        />
-      )
-      newPriceRows.push(
-        <PriceRow 
-          key={infoDiko.tokenId}
-          tokenId={infoDiko.tokenId}
-          symbols={infoDiko.symbols.join(", ")} 
-          decimals={infoDiko.oracleDecimals} 
-          lastUpdated={infoDiko.blocksAgo + " blocks ago (#" + infoDiko.lastBlock + ")"} 
-          price={"$" + infoDiko.lastDollarPrice + " (" + infoDiko.lastOraclePrice + ")"}
-        />
-      )
-      newPriceRows.push(
-        <PriceRow 
-          key={infoAtAlex.tokenId}
-          tokenId={infoAtAlex.tokenId}
-          symbols={infoAtAlex.symbols.join(", ")} 
-          decimals={infoAtAlex.oracleDecimals} 
-          lastUpdated={infoAtAlex.blocksAgo + " blocks ago (#" + infoAtAlex.lastBlock + ")"} 
-          price={"$" + infoAtAlex.lastDollarPrice + " (" + infoAtAlex.lastOraclePrice + ")"}
-        />
-      )
+      for (const info of oracleInfo) {
+        newPriceRows.push(
+          <PriceRow 
+            key={info.tokenId}
+            tokenId={info.tokenId}
+            symbols={info.symbols.join(", ")} 
+            decimals={info.oracleDecimals} 
+            lastUpdated={info.blocksAgo + " blocks ago (#" + info.lastBlock + ")"} 
+            price={"$" + info.lastDollarPrice + " (" + info.lastOraclePrice + ")"}
+          />
+        )
+      }
       setPriceRows(newPriceRows)
       setIsLoadingPrices(false)
 
@@ -167,6 +149,7 @@ export default function Home() {
       setNodeRows(newNodeRows)
       setIsLoadingNodes(false);
 
+      
       const prices = await getSourcePriceInfo(infoNodes);
       const newSourceRows:any = [];
       for (const price of prices) {
@@ -190,22 +173,37 @@ export default function Home() {
     fetchInfo();
   }, []);
 
+  // ----------------------------------------------
+  // HTML
+  // ----------------------------------------------
+
   return (
     <div className={styles.container}>
       <Head>
         <title>Arkadiko Oracle Node</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="Multisig oracle solution on Stacks."
+          key="desc"
+        />
       </Head>
 
       <main className="mt-10 text-center">
+        
+        {/* 
+          HEADER
+        */}
         <h1 className={styles.title}>
           <a href="https://arkadiko.finance/" target="_blank" rel="noreferrer">Arkadiko</a> Oracle Node
         </h1>
-
         <p className="mt-2 text-2xl text-gray-400">
           Multisig oracle solution on Stacks.
         </p>
 
+        {/* 
+          ON-CHAIN ORACLE INFO
+        */}
         <h2 className="mt-10 text-xl text-gray-600">
           On-chain oracle info
         </h2>
@@ -251,6 +249,9 @@ export default function Home() {
           </>
         )}
 
+        {/* 
+          ACTIVE ORACLE NODES
+        */}
         <h2 className="mt-10 text-xl text-gray-600">
           Active oracle nodes
         </h2>
@@ -299,6 +300,9 @@ export default function Home() {
           </>
         )}
 
+        {/* 
+          SOURCES AND PRICES
+        */}
         <h2 className="mt-10 text-xl text-gray-600">
           Sources and prices
         </h2>
@@ -344,6 +348,9 @@ export default function Home() {
           </>
         )}
 
+        {/* 
+          FOOTER
+        */}
         <p className="mt-10 mb-10 text-sm text-gray-400">
           Find the latest version on {' '}
           <a href="https://github.com/arkadiko-dao/oracle-node" target="_blank" rel="noreferrer" className="text-blue-500">Github</a>
