@@ -1,19 +1,19 @@
 # [Arkadiko](https://arkadiko.finance/) Oracle
 
 ## Multisig oracle on Stacks
-Oracles are often a key part of decentralised applications. Information from outside the blockchain needs to become accessible in decentralised applications. This needs to happen in a fast, accurate and decentralised
+Oracles are often a key part of decentralised applications. Information from outside the blockchain needs to become accessible in a fast, accurate and decentralised fashion.
 
-Many oracle systems put all data on-chain after which the data integrity can be evaluated on chain. Meaning many transactions are needed, increasing fees and decreasing speed. Such a solution would not fit the slow block times seen on Stacks today. This is why we designed a secure multisig oracle solution where only one transaction is needed to update a price.
+Many oracle systems put all data on-chain after which the data integrity can be evaluated. Meaning many transactions are needed, increasing fees and decreasing speed. Such a solution would not fit the slow block times seen on Stacks today. This is why we designed a secure multisig oracle solution where only one transaction is needed to update a price.
 
 ## Solution
 
 ![Architecture](https://github.com/arkadiko-dao/oracle-node/blob/main/docs/architecture.png?raw=true)
 
-Any node in the system periodically checks if the on-chain price needs to be updated, currently based on the amount of blocks mined since last update.
+Any node in the system periodically checks if the on-chain price needs to be updated. Currently this is based on the amount of blocks mined since last price update.
 
-If the on-chain price needs to be updated, the node will fetch the price from its source, and will ask all other nodes in the network to sign the given price. The other nodes will only sign the given price if it does not deviate too much from the price received from their own source.
+If the on-chain price needs an update, the node will fetch the price from its source and will ask all other nodes in the network to sign the given price. The other nodes will only sign the given price if it does not deviate too much from the price received from their own source.
 
-If the node received enough signatures, it will push the price info and list of signatures to the oracle smart contract. The oracle contract will validate the signatures and save the price if enough valid signatures provided.
+If the node received enough signatures it means the price is considered valid by other nodes. The node will will push the price info and list of signatures to the oracle smart contract. The oracle contract will validate the signatures and save the price if enough valid signatures are provided.
 
 ```mermaid 
 sequenceDiagram
@@ -26,7 +26,7 @@ Node-->>Oracle: push price and list of signatures
 
 ## Signing
 
-Each node has its own private and public key. The node can use the private key to sign a message and create a signature. By taking the signature and message, the oracle smart contract can recover the public key used to sign the message. The recovered public key is checked against a list of trusted public keys to decide if the signature should be accepted.
+Each node has its own private key, and derived public key. A node can use the private key to sign a price message and create a signature. By taking the signature and message, the oracle smart contract can recover the public key used to sign the message. The recovered public key is checked against a list of trusted public keys to decide if the signature should be accepted. If the price message has been tampered with then the recovered public key will be wrong, and thus not trusted.
 
 Recovering the public key is possible using the clarity function [secp256k1-recover?](https://docs.stacks.co/docs/write-smart-contracts/clarity-language/language-functions#secp256k1-recover).
 
@@ -34,7 +34,7 @@ Recovering the public key is possible using the clarity function [secp256k1-reco
 ## Setup
 
 **Smart contract**
-You can use the [Arkadiko oracle smart contract](https://explorer.stacks.co/txid/SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-oracle-v2-1?chain=mainnet) code to publish your own oracle contract. 
+You can use the [Arkadiko oracle smart contract](https://explorer.stacks.co/txid/SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.arkadiko-oracle-v2-1?chain=mainnet) code to publish your own oracle smart contract. 
 
 There are 3 admin functions to set up the oracle contract.
 
@@ -43,7 +43,7 @@ There are 3 admin functions to set up the oracle contract.
  - `set-minimum-valid-signers` allows to set the amount of valid signatures required
 
 **Nodes**
-This repository provides the code (next.js) to run a node and can easily be deployed to hosting services such as Heroku or Vercel. You will need to set up some environment variables, see `env.example`, and update the file `config.ts` to fit your setup. The info used in `config.ts` is explained below.
+This repository provides the code (next.js) to run a node and can easily be deployed to hosting services such as Heroku or Vercel. You will need to set up some environment variables (see `env.example`) and update the file `config.ts` to fit your setup. The info used in `config.ts` is explained below.
 
 ```
   // The symbols to fetch prices for 
@@ -83,14 +83,15 @@ This repository provides the code (next.js) to run a node and can easily be depl
   sourceName: source,
   ```
 
-You can use the API endpoint `generate` to get a private and public key pair.
+The API endpoint `/generate` can be used to generate a private and public key.
 
 **Cron jobs**
-Nodes need to periodically check if prices need to be updated. This is done through the API endpoint `check`. 
-This repository contains a simple file `request.js` which can be used to set up a simple node scheduler job which calls a given url. For example `node request.js https://oracle1.mysite.com/api/check`.
+The API endpoint `/check` needs to be called periodically to check if prices need to be updated and perform the updates.
+
+This repository contains a file `request.js` which can be used to set up a simple node scheduler to call given url. For example `node request.js https://oracle1.mysite.com/api/check`.
 
 ## Sources
-Adding a new data source is easy. First, you need to create a new class which implements the `PriceSourceInterface` interface. The interface has one function (`fetchPrice(symbol: string)`) to get the price for a given symbol. Secondly, add the new source to the factory function `getSource` in `config.ts`.
+Adding a new data source is easy. First, you need to create a class which implements the `PriceSourceInterface` interface. The interface has one function (`fetchPrice(symbol: string)`) to get the price for a given symbol. Secondly, add the new source to the factory method `getSource` in `config.ts`.
 
 Prices for STX and BTC are fetched from different sources. There are 7 different sources included in the codebase. For DIKO, USDA, atALEX the prices are fetched from the AMMs.
 
