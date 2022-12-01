@@ -60,7 +60,7 @@ const mocknet = {
   managerKey: "753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601",
   source: getSource(),
   sourceName: source,
-  inputMaxBlockDiff: 6,
+  inputMaxBlockDiff: 3,
   inputMaxPriceDiff: 0.025
 };
 
@@ -84,7 +84,7 @@ const testnet = {
   managerKey: process.env.NEXT_PUBLIC_STACKS_KEY as string,
   source: getSource(),
   sourceName: source,
-  inputMaxBlockDiff: 6,
+  inputMaxBlockDiff: 3,
   inputMaxPriceDiff: 0.025
 }
 
@@ -110,7 +110,7 @@ const mainnet = {
   managerKey: process.env.NEXT_PUBLIC_STACKS_KEY as string,
   source: getSource(),
   sourceName: source,
-  inputMaxBlockDiff: 6,
+  inputMaxBlockDiff: 3,
   inputMaxPriceDiff: 0.025
 }
 
