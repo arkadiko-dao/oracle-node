@@ -19,18 +19,19 @@ export default async function handler(
 
     // Get on chain price info
     const priceInfo = await getPriceInfo(symbol);
+    const lastBlock = Number(priceInfo["last-block"].value)
 
     // Get token ID for symbol
     const tokenId = await getTokenId(symbol)
 
     // Check if price needs to be updated
-    const shouldUpdate = await shouldUpdatePrice(tokenId, Number(priceInfo["last-block"].value), blockHeight);
+    const shouldUpdate = await shouldUpdatePrice(tokenId, lastBlock, blockHeight);
 
     // Update if needed
     if (shouldUpdate) {
       console.log("\n[CHECK] Should update: " + symbol + " (ID #" + tokenId + ")");
       console.log("[CHECK] Current price info:", priceInfo);
-      await updatePrice(symbol, tokenId, priceInfo.decimals.value, blockHeight);
+      await updatePrice(symbol, tokenId, priceInfo.decimals.value, lastBlock, blockHeight);
     } else {
       console.log("\n[CHECK] Is up to date: " + symbol + " (ID #" + tokenId + ")");
     }
@@ -48,8 +49,8 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
   }
 
   // Get mempool and unanchored transactions
-  const mempoolTxs = await getMempoolTransactions();
   const unanchoredTxs = await getUnanchoredMicroblockTransactions();
+  const mempoolTxs = await getMempoolTransactions();
   const allTxs = mempoolTxs.concat(unanchoredTxs);
 
   // Find oracle transactions
@@ -72,7 +73,7 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
   return true
 }
 
-async function updatePrice(symbol: string, tokenId: number, decimals: number, blockHeight: number) {
+async function updatePrice(symbol: string, tokenId: number, decimals: number, lastBlock: number, blockHeight: number) {
 
   // Fetch price from source
   const price = await config.source.fetchPrice(symbol) as number;
@@ -105,8 +106,13 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, bl
   const minimumSigners = await getMinimumSigners();
   const uniqueSignatures = new Set(signatures).size
   if (uniqueSignatures >= minimumSigners) {
-    console.log("[CHECK] Push price info for " + symbol);
-    const pushResult = await pushPriceInfo(priceObject, signatures);
-    console.log("[CHECK] Transaction result:", pushResult);
+
+    // Check again if price still needs update
+    const shouldUpdate = await shouldUpdatePrice(tokenId, lastBlock, blockHeight);
+    if (shouldUpdate) {
+      console.log("[CHECK] Push price info for " + symbol);
+      const pushResult = await pushPriceInfo(priceObject, signatures);
+      console.log("[CHECK] Transaction result:", pushResult);
+    }
   }
 }
