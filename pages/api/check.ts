@@ -44,7 +44,7 @@ export default async function handler(
 async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight: number): Promise<boolean> {
 
   // Check if it's time to update
-  if (blockHeight <= lastBlock + 6) {
+  if (blockHeight < lastBlock + 6) {
     return false
   }
 
