@@ -64,5 +64,5 @@ export async function getUsdaPrice(): Promise<number> {
     network: config.network,
   });
   const result = cvToJSON(call).value.value;
-  return Math.round(100000000000000 / result);
+  return 100000000 / result;
 }
