@@ -49,3 +49,20 @@ export async function getAutoAlexPrice(stxPrice: number): Promise<number> {
 
   return autoAlexPrice;
 }
+
+export async function getUsdaPrice(): Promise<number> {
+  const call = await callReadOnlyFunction({
+    contractAddress: config.alexAddress as string,
+    contractName: "amm-swap-pool",
+    functionName: "get-price",
+    functionArgs: [
+      contractPrincipalCV(config.alexAddress, "token-wxusd"),
+      contractPrincipalCV(config.alexAddress, "token-wusda"),
+      uintCV(500000),
+    ],
+    senderAddress: config.managerAddress as string,
+    network: config.network,
+  });
+  const result = cvToJSON(call).value.value;
+  return Math.round(100000000000000 / result);
+}
