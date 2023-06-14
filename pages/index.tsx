@@ -336,6 +336,9 @@ export default function Home() {
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       atALEX
                     </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      atALEXv2
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
