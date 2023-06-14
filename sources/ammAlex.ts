@@ -40,6 +40,23 @@ export async function getPairDetailsFixedWeightPool(tokenX: string, tokenY: stri
   return result;
 }
 
+export async function getPriceAmmPool(tokenX: string, tokenY: string, factor: number): Promise<any> {
+  const call = await callReadOnlyFunction({
+    contractAddress: config.alexAddress as string,
+    contractName: "amm-swap-pool-v1-1",
+    functionName: "get-price",
+    functionArgs: [
+      contractPrincipalCV(tokenX.split(".")[0], tokenX.split(".")[1]),
+      contractPrincipalCV(tokenY.split(".")[0], tokenY.split(".")[1]),
+      uintCV(factor),
+    ],
+    senderAddress: config.managerAddress as string,
+    network: config.network,
+  });
+  const result = cvToJSON(call).value.value;
+  return result;
+}
+
 export async function getAutoAlexPrice(stxPrice: number): Promise<number> {
   const stxAlexPair = await getPairDetailsFixedWeightPool(`${config.alexAddress}.token-wstx`, `${config.alexAddress}.age000-governance-token`)
   const alexPrice = (stxAlexPair['balance-x'].value / stxAlexPair['balance-y'].value) * stxPrice;
@@ -48,6 +65,14 @@ export async function getAutoAlexPrice(stxPrice: number): Promise<number> {
   const autoAlexPrice = (alexPair['balance-x'].value / alexPair['balance-y'].value) * alexPrice;
 
   return autoAlexPrice;
+}
+
+export async function getAutoAlexV2Price(stxPrice: number): Promise<number> {
+  const stxAlexPair = await getPairDetailsFixedWeightPool(`${config.alexAddress}.token-wstx`, `${config.alexAddress}.age000-governance-token`)
+  const alexPrice = (stxAlexPair['balance-x'].value / stxAlexPair['balance-y'].value) * stxPrice;
+
+  const autoAlexPrice = await getPriceAmmPool(`${config.alexAddress}.age000-governance-token`, `${config.alexAddress}.auto-alex-v2`, 100000000);
+  return alexPrice * (1 / (autoAlexPrice / 100000000));
 }
 
 export async function getUsdaPrice(): Promise<number> {

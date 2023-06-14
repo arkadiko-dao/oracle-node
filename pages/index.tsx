@@ -156,6 +156,7 @@ export default function Home() {
             usda={infoNode.prices['USDA']}
             diko={infoNode.prices['DIKO']}
             atAlex={infoNode.prices['auto-alex']}
+            atAlexV2={infoNode.prices['auto-alex-v2']}
           />
         )
       }
@@ -335,6 +336,9 @@ export default function Home() {
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       atALEX
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      atALEXv2
                     </th>
                   </tr>
                 </thead>
