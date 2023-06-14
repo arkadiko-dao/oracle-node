@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const SourceRow: React.FC = ({ source, currentNode, stx, btc, usda, diko, atAlex }) => {
+export const SourceRow: React.FC = ({ source, currentNode, stx, btc, usda, diko, atAlex, atAlexV2 }) => {
   return (
     <tr key={source} className="bg-white">
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
@@ -25,6 +25,9 @@ export const SourceRow: React.FC = ({ source, currentNode, stx, btc, usda, diko,
       </td>
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         ${atAlex}
+      </td>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+        ${atAlexV2}
       </td>
     </tr>
   );

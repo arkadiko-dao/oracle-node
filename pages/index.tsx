@@ -156,6 +156,7 @@ export default function Home() {
             usda={infoNode.prices['USDA']}
             diko={infoNode.prices['DIKO']}
             atAlex={infoNode.prices['auto-alex']}
+            atAlexV2={infoNode.prices['auto-alex-v2']}
           />
         )
       }
