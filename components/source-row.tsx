@@ -1,6 +1,17 @@
 import React from 'react';
 
-export const SourceRow: React.FC = ({ source, currentNode, stx, btc, usda, diko, atAlex, atAlexV2 }) => {
+export type SourceRowObject = {
+  source: string,
+  currentNode: boolean,
+  stx: number,
+  btc: number,
+  usda: number,
+  diko: number,
+  atAlex: number,
+  atAlexV2: number
+}
+
+export default function SourceRow({ source, currentNode, stx, btc, usda, diko, atAlex, atAlexV2 }: SourceRowObject) {    
   return (
     <tr key={source} className="bg-white">
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">

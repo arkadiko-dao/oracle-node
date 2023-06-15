@@ -5,9 +5,9 @@ import { getMinimumSigners, getPriceInfo, getTokenId, getTokenNames } from '@com
 import { config, tokenDecimals } from '@common/config';
 import { getCurrentBlockHeight } from '@common/stacks';
 import { getPublicKey } from '@common/helpers';
-import { PriceRow } from 'components/price-row';
-import { NodeRow } from 'components/node-row';
-import { SourceRow } from 'components/source-row';
+import PriceRow from 'components/price-row';
+import NodeRow from 'components/node-row';
+import SourceRow from 'components/source-row';
 
 export default function Home() {
 
