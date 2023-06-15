@@ -1,6 +1,14 @@
 import React from 'react';
 
-export const PriceRow: React.FC = ({ tokenId, symbols, decimals, lastUpdated, price }) => {
+export type PriceRowObject = {
+  tokenId: number,
+  symbols: string,
+  decimals: number,
+  lastUpdated: string,
+  price: string
+}
+
+export default function PriceRow({ tokenId, symbols, decimals, lastUpdated, price }: PriceRowObject) {    
   return (
     <tr key={tokenId} className="bg-white">
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
