@@ -100,7 +100,7 @@ By default this oracle system saves prices for STX, BTC, DIKO, USDA and atALEX. 
 
  1. Add the symbol to the oracle smart contract
  2. Update all sources so prices for the new symbol can be fetched
- 3. Add the symbol to the map `tokenDecimals` in `config.ts`
+ 3. Add the symbol info to `tokenInfo` in `config.ts`
 
 ## Contact  
 If you have any questions or suggestions, you can always reach out to the Arkadiko team and community on  [Discord](https://discord.gg/7UB6JjjCNV).

@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import { getMinimumSigners, getPriceInfo, getTokenId, getTokenNames } from '@common/oracle';
-import { config, tokenDecimals } from '@common/config';
+import { config, tokenInfo } from '@common/config';
 import { getCurrentBlockHeight } from '@common/stacks';
 import PriceRow from 'components/price-row';
 import NodeRow from 'components/node-row';
@@ -55,10 +55,9 @@ export default function Home() {
       lastBlock: priceInfo['last-block'].value,
       blocksAgo: currentBlock - priceInfo['last-block'].value,
       lastOraclePrice: priceInfo['last-price'].value,
-      lastDollarPrice: priceInfo['last-price'].value / Math.pow(10, tokenDecimals[symbol]),
+      lastDollarPrice: priceInfo['last-price'].value / Math.pow(10, tokenInfo[symbol].decimals),
       arkadikoDecimals: priceInfo['decimals'].value,
-      decimals: tokenDecimals[symbol],
-      priceDecimals: tokenDecimals[symbol]
+      decimals: tokenInfo[symbol].decimals,
     }
   }
 
@@ -334,6 +333,11 @@ export default function Home() {
                     {config.symbols.map((symbol) => (
                       <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                         {symbol}
+                        {tokenInfo[symbol].tooltip ? (
+                          <span className="ml-2">
+                            <ToolTip info={tokenInfo[symbol].tooltip!}/>
+                          </span>
+                        ): null}
                       </th>
                     ))}
                   </tr>

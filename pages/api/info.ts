@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { isTrustedOracle } from '@common/oracle';
 import { getPublicKey } from '@common/helpers';
-import { config, tokenDecimals } from '@common/config';
+import { config, tokenInfo } from '@common/config';
 
 type Data = {
   publicKey: string,
@@ -25,7 +25,7 @@ export default async function handler(
   var prices: { [key: string]: number } = {};
   for (const symbol of config.symbols) {
     const price = await config.source.fetchPrice(symbol);
-    prices[symbol] = price / Math.pow(10, tokenDecimals[symbol]);
+    prices[symbol] = price / Math.pow(10, tokenInfo[symbol].decimals);
   }
 
   res.setHeader("Access-Control-Allow-Origin", "*")

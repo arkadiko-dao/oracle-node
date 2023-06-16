@@ -9,7 +9,7 @@ export type PriceRowObject = {
   price: string
 }
 
-export default function PriceRow({ tokenId, symbols, decimals, lastUpdated, price }: PriceRowObject) {    
+export default function PriceRow({ tokenId, symbols, decimals, arkadikoDecimals, lastUpdated, price }: PriceRowObject) {    
   return (
     <tr key={tokenId} className="bg-white">
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
