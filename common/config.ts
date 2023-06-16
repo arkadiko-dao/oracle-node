@@ -31,15 +31,15 @@ function getSource() {
   return new SourceRedstone();
 }
 
-// Number of decimals to use for price representation on chain
-export const tokenDecimals: { [key: string]: number } = {
-  "STX": 6,
-  "BTC": 6,
-  "DIKO": 6,
-  "USDA": 6,
-  "STX/USDA": 6,
-  "auto-alex": 8,
-  "auto-alex-v2": 8
+// Token info
+export const tokenInfo: { [key: string]: { decimals: number, arkadikoDecimals: number, tooltip?: string } } = {
+  "STX": { decimals: 6, arkadikoDecimals: 1000000 },
+  "BTC": { decimals: 6, arkadikoDecimals: 100000000 },
+  "DIKO": { decimals: 6, arkadikoDecimals: 1000000 },
+  "USDA": { decimals: 6, arkadikoDecimals: 1000000, tooltip: "Using ALEX xUSD/USDA stable pool" },
+  "STX/USDA": { decimals: 6, arkadikoDecimals: 1000000, tooltip: "Using STX/USDA Arkadiko swap pool" },
+  "auto-alex": { decimals: 8, arkadikoDecimals: 10000000000 },
+  "auto-alex-v2": { decimals: 8, arkadikoDecimals: 10000000000 }
 } 
 
 // Mocknet config

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { config } from '@common/config';
+import { config, tokenInfo } from '@common/config';
 import { getMinimumSigners, getPriceInfo, getTokenId, pushPriceInfo } from '@common/oracle';
 import { getCurrentBlockHeight, getMempoolTransactions, getNonce, getUnanchoredMicroblockTransactions } from '@common/stacks';
 
@@ -31,7 +31,8 @@ export default async function handler(
     if (shouldUpdate) {
       console.log("\n[CHECK] Should update: " + symbol + " (ID #" + tokenId + ")");
       console.log("[CHECK] Current price info:", priceInfo);
-      await updatePrice(symbol, tokenId, priceInfo.decimals.value, lastBlock, blockHeight);
+      const arkadikoDecimals = priceInfo.decimals.value == 0 ? tokenInfo.arkadikoDecimals : priceInfo.decimals.value;
+      await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight);
     } else {
       console.log("\n[CHECK] Is up to date: " + symbol + " (ID #" + tokenId + ")");
     }
