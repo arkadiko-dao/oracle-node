@@ -1,14 +1,14 @@
 import { fetchPriceAMM } from "./amm";
 import { PriceSourceInterface } from "./interface";
 import redstone from 'redstone-api-extended';
-import { tokenDecimals } from "@common/config";
+import { tokenInfo } from "@common/config";
 
 export class SourceRedstone implements PriceSourceInterface {
 
   // Return price as int
   public async fetchPrice(symbol: string): Promise<number> {
     const price = await this.fetchPriceHelper(symbol);
-    return Math.round(price * Math.pow(10, tokenDecimals[symbol]));
+    return Math.round(price * Math.pow(10, tokenInfo[symbol].decimals));
   }
 
   // Return price as double

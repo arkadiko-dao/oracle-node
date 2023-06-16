@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getPriceInfo, getSignableMessage, getTokenNames } from '@common/oracle';
 import secp256k1 from 'secp256k1';
-import { config } from '@common/config';
+import { config, tokenInfo } from '@common/config';
 import { getCurrentBlockHeight } from '@common/stacks';
 
 type Data = {
@@ -90,8 +90,9 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
     const priceInfo = await getPriceInfo(symbol);
 
     // Check if decimals correct
-    if (priceInfo.decimals.value != decimals) {
-      console.log("[SIGN] Wrong input - Decimals: " + decimals + ", on chain decimals: " + priceInfo.decimals.value);
+    const arkadikoDecimals = priceInfo.decimals.value == 0 ? tokenInfo.arkadikoDecimals : priceInfo.decimals.value;
+    if (arkadikoDecimals != decimals) {
+      console.log("[SIGN] Wrong input - Decimals: " + decimals + ", on chain decimals: " + arkadikoDecimals);
       return { error: "wrong input - decimals" };
     }
 
