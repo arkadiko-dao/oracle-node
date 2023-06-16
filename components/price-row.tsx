@@ -4,6 +4,7 @@ export type PriceRowObject = {
   tokenId: number,
   symbols: string,
   decimals: number,
+  arkadikoDecimals: number,
   lastUpdated: string,
   price: string
 }
@@ -19,6 +20,9 @@ export default function PriceRow({ tokenId, symbols, decimals, lastUpdated, pric
       </td>
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         {decimals}
+      </td>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+        {arkadikoDecimals}
       </td>
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         {lastUpdated}

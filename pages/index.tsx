@@ -6,6 +6,7 @@ import { getCurrentBlockHeight } from '@common/stacks';
 import PriceRow from 'components/price-row';
 import NodeRow from 'components/node-row';
 import SourceRow from 'components/source-row';
+import ToolTip from 'components/tooltip';
 
 export default function Home() {
 
@@ -55,7 +56,8 @@ export default function Home() {
       blocksAgo: currentBlock - priceInfo['last-block'].value,
       lastOraclePrice: priceInfo['last-price'].value,
       lastDollarPrice: priceInfo['last-price'].value / Math.pow(10, tokenDecimals[symbol]),
-      oracleDecimals: priceInfo['decimals'].value,
+      arkadikoDecimals: priceInfo['decimals'].value,
+      decimals: tokenDecimals[symbol],
       priceDecimals: tokenDecimals[symbol]
     }
   }
@@ -108,7 +110,8 @@ export default function Home() {
             key={info.tokenId}
             tokenId={info.tokenId}
             symbols={info.symbols.join(", ")} 
-            decimals={info.oracleDecimals} 
+            decimals={info.decimals} 
+            arkadikoDecimals={info.arkadikoDecimals}
             lastUpdated={info.blocksAgo + " blocks ago (#" + info.lastBlock + ")"} 
             price={"$" + info.lastDollarPrice + " (" + info.lastOraclePrice + ")"}
           />
@@ -222,6 +225,15 @@ export default function Home() {
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Decimals
+                      <span className="ml-2">
+                        <ToolTip info="Decimals for pushed prices"/>
+                      </span>
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      Arkadiko decimals
+                      <span className="ml-2">
+                        <ToolTip info="Used by Arkadiko to convert prices"/>
+                      </span>
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Last updated
@@ -273,9 +285,15 @@ export default function Home() {
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Max block diff
+                      <span className="ml-2">
+                        <ToolTip info="Node will not sign price if given block deviates too much from current block"/>
+                      </span>
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Max price diff
+                      <span className="ml-2">
+                        <ToolTip info="Node will not sign price if given price deviates too much from it's own price"/>
+                      </span>
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Link
