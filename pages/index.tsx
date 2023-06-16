@@ -331,7 +331,7 @@ export default function Home() {
                       Source
                     </th>
                     {config.symbols.map((symbol) => (
-                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                      <th key={symbol} scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                         {symbol}
                         {tokenInfo[symbol].tooltip ? (
                           <span className="ml-2">
