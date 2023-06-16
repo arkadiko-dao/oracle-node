@@ -6,12 +6,13 @@ export type SourceRowObject = {
   stx: number,
   btc: number,
   usda: number,
+  usdaStx: number,
   diko: number,
   atAlex: number,
   atAlexV2: number
 }
 
-export default function SourceRow({ source, currentNode, stx, btc, usda, diko, atAlex, atAlexV2 }: SourceRowObject) {    
+export default function SourceRow({ source, currentNode, stx, btc, usda, usdaStx, diko, atAlex, atAlexV2 }: SourceRowObject) {    
   return (
     <tr key={source} className="bg-white">
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
@@ -30,6 +31,9 @@ export default function SourceRow({ source, currentNode, stx, btc, usda, diko, a
       </td>
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         ${usda}
+      </td>
+      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+        ${usdaStx}
       </td>
       <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
         ${diko}
