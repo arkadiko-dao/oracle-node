@@ -57,7 +57,7 @@ This repository provides the code (next.js) to run a node and can easily be depl
   ],
   
   // Private key, used to sign prices. Should be unique per node.
-  signKey: process.env.NEXT_PUBLIC_SIGN_KEY as string,
+  signKey: process.env.SIGN_KEY as string,
 
   // Oracle smart contract address info 
   oracleAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
@@ -65,7 +65,7 @@ This repository provides the code (next.js) to run a node and can easily be depl
 
   // The wallet used to push the prices on chain.
   managerAddress: "SP2YYZRZ210D7CPG5M8TDJE8V694B6AVGAKM99MH9",
-  managerKey: process.env.NEXT_PUBLIC_STACKS_KEY as string,
+  managerKey: process.env.STACKS_KEY as string,
   
   // Price is considered outdated if 6 blocks have passe
   inputMaxBlockDiff: 6,

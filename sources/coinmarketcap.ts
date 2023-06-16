@@ -28,7 +28,7 @@ export class SourceCoinMarketCap implements PriceSourceInterface {
     const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=${id}&convert=USD`
     const response = await fetch(url, { 
       headers: {
-        "X-CMC_PRO_API_KEY": process.env.NEXT_PUBLIC_CMC_KEY!
+        "X-CMC_PRO_API_KEY": process.env.API_CMC_KEY!
       }
     });
     const data = await response.json();
