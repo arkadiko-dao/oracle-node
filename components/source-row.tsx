@@ -19,9 +19,9 @@ export default function SourceRow({ source, currentNode, prices }: SourceRowObje
       </td>
 
       {Object.keys(prices).map((symbol) => (
-        <th key={symbol} scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+        <td key={symbol} scope="col" className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
           {prices[symbol]}
-        </th>
+        </td>
       ))}
     </tr>
   );
