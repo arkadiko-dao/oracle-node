@@ -147,13 +147,7 @@ export default function Home() {
             key={infoNode.source}
             source={infoNode.source}
             currentNode={infoNode.source == config.sourceName}
-            stx={infoNode.prices['STX']}
-            btc={infoNode.prices['BTC']}
-            usda={infoNode.prices['USDA']}
-            usdaStx={infoNode.prices['USDA/STX']}
-            diko={infoNode.prices['DIKO']}
-            atAlex={infoNode.prices['auto-alex']}
-            atAlexV2={infoNode.prices['auto-alex-v2']}
+            prices={infoNode.prices}
           />
         )
       }
@@ -169,7 +163,7 @@ export default function Home() {
   // ----------------------------------------------
 
   return (
-    <div>
+    <div className='p-8'>
       <Head>
         <title>Arkadiko Oracle Node</title>
         <link rel="icon" href="/favicon.ico" />
@@ -185,8 +179,8 @@ export default function Home() {
         {/* 
           HEADER
         */}
-        <h1 className="text-blue-600 font-semibold text-6xl">
-          <a href="https://arkadiko.finance/" target="_blank" rel="noreferrer">Arkadiko</a> Oracle Node
+        <h1 className="font-medium text-6xl">
+          <a className="text-blue-600" href="https://arkadiko.finance/" target="_blank" rel="noreferrer">Arkadiko</a> Oracle Node
         </h1>
         <p className="mt-2 text-2xl text-gray-400">
           Multisig oracle solution on Stacks.
@@ -319,27 +313,11 @@ export default function Home() {
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Source
                     </th>
-                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                      STX
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                      BTC
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                      USDA
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                      USDA/STX
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                      DIKO
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                      atALEX
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                      atALEXv2
-                    </th>
+                    {config.symbols.map((symbol) => (
+                      <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                        {symbol}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
