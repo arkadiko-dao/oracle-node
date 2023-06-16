@@ -4,7 +4,6 @@ import styles from '../styles/Home.module.css'
 import { getMinimumSigners, getPriceInfo, getTokenId, getTokenNames } from '@common/oracle';
 import { config, tokenDecimals } from '@common/config';
 import { getCurrentBlockHeight } from '@common/stacks';
-import { getPublicKey } from '@common/helpers';
 import PriceRow from 'components/price-row';
 import NodeRow from 'components/node-row';
 import SourceRow from 'components/source-row';
@@ -92,11 +91,9 @@ export default function Home() {
       // Get some general info
       const [
         minSigners,
-        pubKey,
         currentBlock
       ] = await Promise.all([
         getMinimumSigners(),
-        getPublicKey(),
         getCurrentBlockHeight()
       ]);
 
@@ -132,7 +129,7 @@ export default function Home() {
             key={infoNode.publicKey}
             publicKey={infoNode.publicKey}
             url={infoNode.url}
-            currentNode={infoNode.publicKey == pubKey}
+            currentNode={infoNode.source == config.sourceName}
             trusted={infoNode.trusted} 
             network={infoNode.network} 
             source={infoNode.source} 
@@ -150,7 +147,7 @@ export default function Home() {
           <SourceRow 
             key={infoNode.source}
             source={infoNode.source}
-            currentNode={infoNode.publicKey == pubKey}
+            currentNode={infoNode.source == config.sourceName}
             stx={infoNode.prices['STX']}
             btc={infoNode.prices['BTC']}
             usda={infoNode.prices['USDA']}
