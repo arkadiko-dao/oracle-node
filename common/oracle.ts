@@ -133,7 +133,7 @@ async function pushPriceInfoHelper(price: PriceObject, signatures: string[], non
   const result = await broadcastTransaction(transaction, config.network);
 
   // Increase nonce if needed
-  if ((result.reason as string) == "ConflictingNonceInMempool") {
+  if ((result.reason as string) == "ConflictingNonceInMempool" || (result.reason as string) == "BadNonce") {
     return await pushPriceInfoHelper(price, signatures, nonce+1);
   }
 
