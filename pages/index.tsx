@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
-import styles from '../styles/Home.module.css'
 import { getMinimumSigners, getPriceInfo, getTokenId, getTokenNames } from '@common/oracle';
 import { config, tokenDecimals } from '@common/config';
 import { getCurrentBlockHeight } from '@common/stacks';
@@ -170,7 +169,7 @@ export default function Home() {
   // ----------------------------------------------
 
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Arkadiko Oracle Node</title>
         <link rel="icon" href="/favicon.ico" />
@@ -186,7 +185,7 @@ export default function Home() {
         {/* 
           HEADER
         */}
-        <h1 className={styles.title}>
+        <h1 className="text-blue-600 font-semibold text-6xl">
           <a href="https://arkadiko.finance/" target="_blank" rel="noreferrer">Arkadiko</a> Oracle Node
         </h1>
         <p className="mt-2 text-2xl text-gray-400">
