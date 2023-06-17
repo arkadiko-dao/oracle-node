@@ -61,7 +61,7 @@ This repository provides the code (next.js) to run a node and can easily be depl
 
   // Oracle smart contract address info 
   oracleAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
-  oracleContractName: "arkadiko-oracle-v2-1",
+  oracleContractName: "arkadiko-oracle-v2-2",
 
   // The wallet used to push the prices on chain.
   managerAddress: "SP2YYZRZ210D7CPG5M8TDJE8V694B6AVGAKM99MH9",
