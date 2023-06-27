@@ -20,19 +20,23 @@ export default async function handler(
     // Get on chain price info
     const priceInfo = await getPriceInfo(symbol);
     const lastBlock = Number(priceInfo["last-block"].value)
+    const lastPrice = Number(priceInfo["last-price"].value)
 
     // Get token ID for symbol
-    const tokenId = await getTokenId(symbol)
+    const tokenId = await getTokenId(symbol);
+
+    // Get source price
+    const price = await config.source.fetchPrice(symbol) as number;
 
     // Check if price needs to be updated
-    const shouldUpdate = await shouldUpdatePrice(tokenId, lastBlock, blockHeight);
+    const shouldUpdate = await shouldUpdatePrice(tokenId, lastBlock, blockHeight, lastPrice, price);
 
     // Update if needed
     if (shouldUpdate) {
       console.log("\n[CHECK] Should update: " + symbol + " (ID #" + tokenId + ")");
       console.log("[CHECK] Current price info:", priceInfo);
       const arkadikoDecimals = priceInfo.decimals.value == 0 ? tokenInfo[symbol].arkadikoDecimals : priceInfo.decimals.value;
-      await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight);
+      await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price);
     } else {
       console.log("\n[CHECK] Is up to date: " + symbol + " (ID #" + tokenId + ")");
     }
@@ -42,10 +46,14 @@ export default async function handler(
   res.status(200).json({ result: "done" })
 }
 
-async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight: number): Promise<boolean> {
+async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight: number, lastPrice: number, price: number): Promise<boolean> {
 
-  // Check if it's time to update
-  if (blockHeight < lastBlock + 6) {
+  // Block and price triggers
+  let blockTrigger = blockHeight >= lastBlock + config.updateBlockDiff;
+  let priceTrigger = Math.abs((lastPrice / price) - 1.0) > config.updatePriceDiff;
+
+  // Do not continue if both triggers are false
+  if (!blockTrigger && !priceTrigger) {
     return false
   }
 
@@ -56,7 +64,7 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
 
   // Find oracle transactions
   const oracleContract = config.oracleAddress + '.' + config.oracleContractName;
-  const filteredTxs = allTxs.filter(tx => tx.tx_type == 'contract_call' && tx.contract_call.contract_id == oracleContract);
+  const filteredTxs = allTxs.filter((tx: any) => tx.tx_type == 'contract_call' && tx.contract_call.contract_id == oracleContract);
 
   // Check if given token is currently being updated
   const nonce = await getNonce(config.managerAddress)
@@ -74,10 +82,7 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
   return true
 }
 
-async function updatePrice(symbol: string, tokenId: number, decimals: number, lastBlock: number, blockHeight: number) {
-
-  // Fetch price from source
-  const price = await config.source.fetchPrice(symbol) as number;
+async function updatePrice(symbol: string, tokenId: number, decimals: number, lastBlock: number, blockHeight: number, lastPrice: number, price: number) {
 
   // Create price object
   const priceObject = {
@@ -109,7 +114,7 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, la
   if (uniqueSignatures >= minimumSigners) {
 
     // Check again if price still needs update
-    const shouldUpdate = await shouldUpdatePrice(tokenId, lastBlock, blockHeight);
+    const shouldUpdate = await shouldUpdatePrice(tokenId, lastBlock, blockHeight, lastPrice, price);
     if (shouldUpdate) {
       console.log("[CHECK] Push price info for " + symbol);
       const pushResult = await pushPriceInfo(priceObject, signatures);

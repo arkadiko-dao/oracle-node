@@ -63,7 +63,9 @@ const mocknet = {
   source: getSource(),
   sourceName: source,
   inputMaxBlockDiff: 3,
-  inputMaxPriceDiff: 0.025
+  inputMaxPriceDiff: 0.025,
+  updateBlockDiff: 6,
+  updatePriceDiff: 0.1
 };
 
 // Testnet config
@@ -87,7 +89,9 @@ const testnet = {
   source: getSource(),
   sourceName: source,
   inputMaxBlockDiff: 3,
-  inputMaxPriceDiff: 0.025
+  inputMaxPriceDiff: 0.025,
+  updateBlockDiff: 6,
+  updatePriceDiff: 0.1
 }
 
 // Mainnet config
@@ -113,7 +117,9 @@ const mainnet = {
   source: getSource(),
   sourceName: source,
   inputMaxBlockDiff: 3,
-  inputMaxPriceDiff: 0.025
+  inputMaxPriceDiff: 0.025,
+  updateBlockDiff: 6,
+  updatePriceDiff: 0.1
 }
 
 const networks = {
