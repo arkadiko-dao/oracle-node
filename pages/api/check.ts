@@ -31,7 +31,7 @@ export default async function handler(
     if (shouldUpdate) {
       console.log("\n[CHECK] Should update: " + symbol + " (ID #" + tokenId + ")");
       console.log("[CHECK] Current price info:", priceInfo);
-      const arkadikoDecimals = priceInfo.decimals.value == 0 ? tokenInfo.arkadikoDecimals : priceInfo.decimals.value;
+      const arkadikoDecimals = priceInfo.decimals.value == 0 ? tokenInfo[symbol].arkadikoDecimals : priceInfo.decimals.value;
       await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight);
     } else {
       console.log("\n[CHECK] Is up to date: " + symbol + " (ID #" + tokenId + ")");

@@ -90,7 +90,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
     const priceInfo = await getPriceInfo(symbol);
 
     // Check if decimals correct
-    const arkadikoDecimals = priceInfo.decimals.value == 0 ? tokenInfo.arkadikoDecimals : priceInfo.decimals.value;
+    const arkadikoDecimals = priceInfo.decimals.value == 0 ? tokenInfo[symbol].arkadikoDecimals : priceInfo.decimals.value;
     if (arkadikoDecimals != decimals) {
       console.log("[SIGN] Wrong input - Decimals: " + decimals + ", on chain decimals: " + arkadikoDecimals);
       return { error: "wrong input - decimals" };
