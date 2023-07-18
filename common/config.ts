@@ -4,20 +4,17 @@ dotenv.config();
 import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
 import { SourceCoinMarketCap } from '@sources/coinmarketcap';
 import { SourceCoinGecko } from '@sources/coingecko';
-import { SourceRedstone } from '@sources/redstone';
 import { SourceCoinCap } from '@sources/coincap';
 import { SourceCoinbase } from '@sources/coinbase';
 import { SourceKucoin } from '@sources/kucoin';
 import { SourceCryptoCompare } from '@sources/cryptocompare';
 
 const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
-const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinbase' | 'kucoin' | 'coincap' | 'cryptocompare' | 'redstone';
+const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinbase' | 'kucoin' | 'coincap' | 'cryptocompare';
 
 // Map source names to objects
 function getSource() {
-  if (source == "coinmarketcap") {
-    return new SourceCoinMarketCap();
-  } else if (source == "coingecko") {
+  if (source == "coingecko") {
     return new SourceCoinGecko();
   } else if (source == "coinbase") {
     return new SourceCoinbase();
@@ -28,7 +25,7 @@ function getSource() {
   } else if (source == "cryptocompare") {
     return new SourceCryptoCompare();
   }
-  return new SourceRedstone();
+  return new SourceCoinMarketCap();
 }
 
 // Token info

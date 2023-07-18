@@ -4,7 +4,6 @@ import { SourceCoinGecko } from '@sources/coingecko';
 import { SourceCoinMarketCap } from '@sources/coinmarketcap';
 import { SourceCryptoCompare } from '@sources/cryptocompare';
 import { SourceKucoin } from '@sources/kucoin';
-import { SourceRedstone } from '@sources/redstone';
 
 jest.setTimeout(50000);
 
@@ -51,15 +50,15 @@ describe('/api/sources', () => {
     expect(price).toBeGreaterThan(0);
   });
 
-  test('can get price from Redstone', async () => {
-    const source = new SourceRedstone();
+  test('can get price from Coinbase', async () => {
+    const source = new SourceCoinbase();
     const price = await source.fetchPrice("STX");
     console.log("price:", price);
     expect(price).toBeGreaterThan(0);
   });
 
   test('can get AMM prices', async () => {
-    const source = new SourceRedstone();
+    const source = new SourceCoinbase();
     var price = await source.fetchPrice("DIKO");
     console.log("DIKO price:", price);
     expect(price).toBeGreaterThan(0);
