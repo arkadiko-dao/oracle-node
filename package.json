@@ -27,6 +27,7 @@
     "node-mocks-http": "^1.11.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "request": "^2.88.2",
     "secp256k1": "^4.0.3",
     "typescript": "4.8.4"
   },
