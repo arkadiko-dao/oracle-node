@@ -24,8 +24,12 @@ export default async function handler(
   // Get all prices
   var prices: { [key: string]: number } = {};
   for (const symbol of config.symbols) {
-    const price = await config.source.fetchPrice(symbol);
-    prices[symbol] = price / Math.pow(10, tokenInfo[symbol].decimals);
+    try {
+      const price = await config.source.fetchPrice(symbol);
+      prices[symbol] = price / Math.pow(10, tokenInfo[symbol].decimals);
+    } catch (error) {
+      prices[symbol] = 0.0;
+    }
   }
 
   res.setHeader("Access-Control-Allow-Origin", "*")
