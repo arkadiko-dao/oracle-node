@@ -22,7 +22,11 @@ export async function getMempoolTransactions(): Promise<any> {
 
   // Calculate number of pages
   const total = data.total;
-  const pages = Math.floor(total / 50) + 1;
+  
+  // Max 20 pages to avoid API limit
+  // const pages = Math.floor(total / 50) + 1;
+  const pages = Math.max(Math.floor(total / 50) + 1, 20);
+
 
   // Results
   var result = data.results;
