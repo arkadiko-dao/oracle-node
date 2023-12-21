@@ -25,7 +25,7 @@ export async function getMempoolTransactions(): Promise<any> {
   
   // Max 20 pages to avoid API limit
   // const pages = Math.floor(total / 50) + 1;
-  const pages = Math.min(Math.floor(total / 50) + 1, 20);
+  const pages = Math.min(Math.floor(total / 50) + 1, 10);
 
 
   // Results

@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { config, tokenInfo } from '@common/config';
 import { getMinimumSigners, getPriceInfo, getTokenId, pushPriceInfo } from '@common/oracle';
 import { getCurrentBlockHeight, getMempoolTransactions, getNonce, getUnanchoredMicroblockTransactions } from '@common/stacks';
-import { sleep } from '@common/utils';
 
 type Data = {
   result: string
@@ -41,8 +40,6 @@ export default async function handler(
     } else {
       console.log("\n[CHECK] Is up to date: " + symbol + " (ID #" + tokenId + ")");
     }
-
-    await sleep(5);
   }
 
   res.setHeader("Access-Control-Allow-Origin", "*")
