@@ -25,13 +25,17 @@ export class SourceCoinMarketCap implements PriceSourceInterface {
   }
 
   async fetchPriceAPI(id: string): Promise<number> {
-    const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=${id}&convert=USD`
-    const response = await fetch(url, { 
-      headers: {
-        "X-CMC_PRO_API_KEY": process.env.API_CMC_KEY!
-      }
-    });
-    const data = await response.json();
-    return data.data[id].quote.USD.price;
+    try {
+      const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=${id}&convert=USD`
+      const response = await fetch(url, { 
+        headers: {
+          "X-CMC_PRO_API_KEY": process.env.API_CMC_KEY!
+        }
+      });
+      const data = await response.json();
+      return data.data[id].quote.USD.price;
+    } catch (error) {
+      return 0
+    }
   }
 }
