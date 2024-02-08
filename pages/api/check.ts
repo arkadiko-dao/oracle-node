@@ -69,11 +69,14 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
   // Check if given token is currently being updated
   const nonce = await getNonce(config.managerAddress)
   for (const tx of filteredTxs) {
-    for (const arg of tx.contract_call.function_args) {
-      if (arg.name == 'token-id' && arg.repr == 'u' + tokenId) {
-        // Check if it's an actual TX, or stuck TX
-        if (nonce <= tx.nonce) {
-          return false
+    if (tx.sender_address == config.managerAddress) {
+      for (const arg of tx.contract_call.function_args) {
+        if (arg.name == 'token-id' && arg.repr == 'u' + tokenId) {
+          // Check if it's an actual TX, or stuck TX
+          if (nonce <= tx.nonce) {
+            console.log("do not update because of nonce", tx)
+            return false
+          }
         }
       }
     }

@@ -124,7 +124,7 @@ async function pushPriceInfoHelper(price: PriceObject, signatures: string[], non
     senderKey: config.managerKey,
     nonce: nonce,
     postConditionMode: 1,
-    fee: (0.5 * 1000000),
+    fee: (0.2 * 1000000),
     network: config.network,
     anchorMode: AnchorMode.Any
   };
