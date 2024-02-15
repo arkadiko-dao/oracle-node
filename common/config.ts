@@ -37,7 +37,7 @@ export const tokenInfo: { [key: string]: { decimals: number, arkadikoDecimals: n
   "STX/USDA": { decimals: 6, arkadikoDecimals: 1000000, tooltip: "Using STX/USDA Arkadiko swap pool" },
   "auto-alex": { decimals: 8, arkadikoDecimals: 10000000000 },
   "auto-alex-v2": { decimals: 8, arkadikoDecimals: 10000000000 }
-} 
+}
 
 // Mocknet config
 const mocknet = {
@@ -52,7 +52,7 @@ const mocknet = {
   network: new StacksMocknet(),
   stacksApiBase: "http://localhost:3999",
   oracleAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-  oracleContractName: "arkadiko-oracle-v2-2",
+  oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   alexAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
@@ -78,7 +78,7 @@ const testnet = {
   network: new StacksTestnet(),
   stacksApiBase: "https://stacks-node-api.testnet.stacks.co",
   oracleAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-  oracleContractName: "arkadiko-oracle-v2-2",
+  oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   alexAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
@@ -105,9 +105,9 @@ const mainnet = {
   networkName: network,
   network: new StacksMainnet(),
   // stacksApiBase: "https://stacks-node-api.stacks.co", 
-  stacksApiBase: "https://stacks-blockchain-lb.alexlab.co", 
+  stacksApiBase: "https://stacks-blockchain-lb.alexlab.co",
   oracleAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
-  oracleContractName: "arkadiko-oracle-v2-2",
+  oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
   alexAddress: "SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9",
   managerAddress: "SP2YYZRZ210D7CPG5M8TDJE8V694B6AVGAKM99MH9",
