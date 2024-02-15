@@ -36,12 +36,13 @@ export const tokenInfo: { [key: string]: { decimals: number, arkadikoDecimals: n
   "USDA": { decimals: 6, arkadikoDecimals: 1000000, tooltip: "Using ALEX xUSD/USDA stable pool" },
   "STX/USDA": { decimals: 6, arkadikoDecimals: 1000000, tooltip: "Using STX/USDA Arkadiko swap pool" },
   "auto-alex": { decimals: 8, arkadikoDecimals: 10000000000 },
-  "auto-alex-v2": { decimals: 8, arkadikoDecimals: 10000000000 }
+  "auto-alex-v2": { decimals: 8, arkadikoDecimals: 10000000000 },
+  "stSTX": { decimals: 6, arkadikoDecimals: 1000000 },
 }
 
 // Mocknet config
 const mocknet = {
-  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2"],
+  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -67,7 +68,7 @@ const mocknet = {
 
 // Testnet config
 const testnet = {
-  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2"],
+  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -93,7 +94,7 @@ const testnet = {
 
 // Mainnet config
 const mainnet = {
-  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2"],
+  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
     "https://arkadiko-oracle-node-redstone.herokuapp.com",
     "https://arkadiko-oracle-node-coingecko.herokuapp.com",
