@@ -96,11 +96,11 @@ const testnet = {
 const mainnet = {
   symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
-    "https://arkadiko-oracle-node-redstone.herokuapp.com",
-    "https://arkadiko-oracle-node-coingecko.herokuapp.com",
-    "https://arkadiko-oracle-node-cmc.herokuapp.com",
-    "https://arkadiko-oracle-node-coincap.herokuapp.com",
-    "https://arkadiko-oracle-node-ccompare.herokuapp.com"
+    "https://oracle-node-2-cmc.herokuapp.com",
+    "https://oracle-node-2-coinbase.herokuapp.com",
+    "https://oracle-node-2-coincap.herokuapp.com",
+    "https://oracle-node-2-coingecko.herokuapp.com",
+    "https://oracle-node-2-cryptocompare.herokuapp.com",
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
@@ -111,7 +111,7 @@ const mainnet = {
   oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
   alexAddress: "SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9",
-  managerAddress: "SP2YYZRZ210D7CPG5M8TDJE8V694B6AVGAKM99MH9",
+  managerAddress: "SP3K198T4PSVAPJT5K3060HXWEDVMKGA2S4TB0K9C",
   managerKey: process.env.STACKS_KEY as string,
   source: getSource(),
   sourceName: source,
