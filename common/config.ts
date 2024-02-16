@@ -96,11 +96,11 @@ const testnet = {
 const mainnet = {
   symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
-    "https://oracle-node-2-cmc.herokuapp.com",
-    "https://oracle-node-2-coinbase.herokuapp.com",
-    "https://oracle-node-2-coincap.herokuapp.com",
-    "https://oracle-node-2-coingecko.herokuapp.com",
-    "https://oracle-node-2-cryptocompare.herokuapp.com",
+    "https://oracle-node-2-cmc-3145ef71e92c.herokuapp.com",
+    "https://oracle-node-2-coinbase-1975d018ff36.herokuapp.com",
+    "https://oracle-node-2-coincap-111f50ac7955.herokuapp.com",
+    "https://oracle-node-2-coingecko-6c26c41dd902.herokuapp.com",
+    "https://oracle-node-2-cryptocompare-31c996da69fb.herokuapp.com",
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
