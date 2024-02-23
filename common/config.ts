@@ -36,12 +36,13 @@ export const tokenInfo: { [key: string]: { decimals: number, arkadikoDecimals: n
   "USDA": { decimals: 6, arkadikoDecimals: 1000000, tooltip: "Using ALEX xUSD/USDA stable pool" },
   "STX/USDA": { decimals: 6, arkadikoDecimals: 1000000, tooltip: "Using STX/USDA Arkadiko swap pool" },
   "auto-alex": { decimals: 8, arkadikoDecimals: 10000000000 },
-  "auto-alex-v2": { decimals: 8, arkadikoDecimals: 10000000000 }
-} 
+  "auto-alex-v2": { decimals: 8, arkadikoDecimals: 10000000000 },
+  "stSTX": { decimals: 6, arkadikoDecimals: 1000000 },
+}
 
 // Mocknet config
 const mocknet = {
-  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2"],
+  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -52,7 +53,7 @@ const mocknet = {
   network: new StacksMocknet(),
   stacksApiBase: "http://localhost:3999",
   oracleAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-  oracleContractName: "arkadiko-oracle-v2-2",
+  oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   alexAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
@@ -67,7 +68,7 @@ const mocknet = {
 
 // Testnet config
 const testnet = {
-  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2"],
+  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
     "http://localhost:3000/api/sign",
     "http://localhost:3000/api/sign",
@@ -78,7 +79,7 @@ const testnet = {
   network: new StacksTestnet(),
   stacksApiBase: "https://stacks-node-api.testnet.stacks.co",
   oracleAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-  oracleContractName: "arkadiko-oracle-v2-2",
+  oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   alexAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
@@ -93,24 +94,24 @@ const testnet = {
 
 // Mainnet config
 const mainnet = {
-  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2"],
+  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
-    "https://arkadiko-oracle-node-redstone.herokuapp.com",
-    "https://arkadiko-oracle-node-coingecko.herokuapp.com",
-    "https://arkadiko-oracle-node-cmc.herokuapp.com",
-    "https://arkadiko-oracle-node-coincap.herokuapp.com",
-    "https://arkadiko-oracle-node-ccompare.herokuapp.com"
+    "https://oracle-node-2-cmc-3145ef71e92c.herokuapp.com",
+    "https://oracle-node-2-coinbase-1975d018ff36.herokuapp.com",
+    "https://oracle-node-2-coincap-111f50ac7955.herokuapp.com",
+    "https://oracle-node-2-coingecko-6c26c41dd902.herokuapp.com",
+    "https://oracle-node-2-cryptocompare-31c996da69fb.herokuapp.com",
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
   network: new StacksMainnet(),
   // stacksApiBase: "https://stacks-node-api.stacks.co", 
-  stacksApiBase: "https://stacks-blockchain-lb.alexlab.co", 
+  stacksApiBase: "https://stacks-blockchain-lb.alexlab.co",
   oracleAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
-  oracleContractName: "arkadiko-oracle-v2-2",
+  oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
   alexAddress: "SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9",
-  managerAddress: "SP2YYZRZ210D7CPG5M8TDJE8V694B6AVGAKM99MH9",
+  managerAddress: "SP3K198T4PSVAPJT5K3060HXWEDVMKGA2S4TB0K9C",
   managerKey: process.env.STACKS_KEY as string,
   source: getSource(),
   sourceName: source,

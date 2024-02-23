@@ -11,7 +11,7 @@ export async function getCurrentBlockHeight(): Promise<any> {
   const url = `${config.stacksApiBase}/extended/v1/block?limit=1`;
   const response = await fetch(url, { credentials: 'omit' });
   const data = await response.json();
-  return data.results[0].height;
+  return data.results[0].burn_block_height;
 }
 
 export async function getMempoolTransactions(): Promise<any> {
@@ -33,7 +33,7 @@ export async function getMempoolTransactions(): Promise<any> {
 
   // Loop over every page
   for (let page = 1; page < pages; page++) {
-    const url = `${config.stacksApiBase}/extended/v1/tx/mempool?limit=50&offset=${page*50}`;
+    const url = `${config.stacksApiBase}/extended/v1/tx/mempool?limit=50&offset=${page * 50}`;
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
     result = result.concat(data.results);

@@ -1,5 +1,5 @@
 import { tokenInfo } from "@common/config";
-import { fetchPriceAMM } from "./amm";
+import { fetchOnChainPrice } from "./onchain";
 import { PriceSourceInterface } from "./interface";
 
 export class SourceCoinMarketCap implements PriceSourceInterface {
@@ -19,15 +19,15 @@ export class SourceCoinMarketCap implements PriceSourceInterface {
       return await this.fetchPriceAPI("1");
     }
 
-    // AMM
+    // On chain
     const stxPrice = await this.fetchPriceAPI("4847");
-    return await fetchPriceAMM(symbol, stxPrice);
+    return await fetchOnChainPrice(symbol, stxPrice);
   }
 
   async fetchPriceAPI(id: string): Promise<number> {
     try {
       const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?id=${id}&convert=USD`
-      const response = await fetch(url, { 
+      const response = await fetch(url, {
         headers: {
           "X-CMC_PRO_API_KEY": process.env.API_CMC_KEY!
         }

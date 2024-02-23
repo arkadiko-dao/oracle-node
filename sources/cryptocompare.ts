@@ -1,5 +1,5 @@
 import { tokenInfo } from "@common/config";
-import { fetchPriceAMM } from "./amm";
+import { fetchOnChainPrice } from "./onchain";
 import { PriceSourceInterface } from "./interface";
 
 export class SourceCryptoCompare implements PriceSourceInterface {
@@ -19,14 +19,14 @@ export class SourceCryptoCompare implements PriceSourceInterface {
       return await this.fetchPriceAPI("BTC");
     }
 
-    // AMM
+    // On chain
     const stxPrice = await this.fetchPriceAPI("STX");
-    return await fetchPriceAMM(symbol, stxPrice);
+    return await fetchOnChainPrice(symbol, stxPrice);
   }
 
   async fetchPriceAPI(id: string): Promise<number> {
     const url = `https://min-api.cryptocompare.com/data/price?fsym=${id}&tsyms=USD`
-    const response = await fetch(url, { 
+    const response = await fetch(url, {
       headers: {
         "Apikey": process.env.API_CRYPTOCOMPARE_KEY!
       }

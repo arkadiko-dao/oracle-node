@@ -1,5 +1,5 @@
 import { tokenInfo } from "@common/config";
-import { fetchPriceAMM } from "./amm";
+import { fetchOnChainPrice } from "./onchain";
 import { PriceSourceInterface } from "./interface";
 
 export class SourceCoinGecko implements PriceSourceInterface {
@@ -19,9 +19,9 @@ export class SourceCoinGecko implements PriceSourceInterface {
       return await this.fetchPriceAPI("bitcoin", decimals);
     }
 
-    // AMM
+    // On chain
     const stxPrice = await this.fetchPriceAPI("blockstack", decimals);
-    return await fetchPriceAMM(symbol, stxPrice);
+    return await fetchOnChainPrice(symbol, stxPrice);
   }
 
   async fetchPriceAPI(id: string, decimals: number): Promise<number> {

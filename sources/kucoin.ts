@@ -1,5 +1,5 @@
 import { tokenInfo } from "@common/config";
-import { fetchPriceAMM } from "./amm";
+import { fetchOnChainPrice } from "./onchain";
 import { PriceSourceInterface } from "./interface";
 
 export class SourceKucoin implements PriceSourceInterface {
@@ -19,9 +19,9 @@ export class SourceKucoin implements PriceSourceInterface {
       return await this.fetchPriceAPI("BTC");
     }
 
-    // AMM
+    // On chain
     const stxPrice = await this.fetchPriceAPI("STX");
-    return await fetchPriceAMM(symbol, stxPrice);
+    return await fetchOnChainPrice(symbol, stxPrice);
   }
 
   async fetchPriceAPI(id: string): Promise<number> {
