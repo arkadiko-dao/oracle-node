@@ -11,7 +11,7 @@ import {
   uintCV
 } from '@stacks/transactions';
 import { PriceObject } from './price';
-import { getNonce } from './stacks';
+import { getMempoolFee, getNonce } from './stacks';
 
 export async function isTrustedOracle(publicKey: string): Promise<boolean> {
   const call = await callReadOnlyFunction({
@@ -105,11 +105,14 @@ export async function getPriceInfo(symbol: string): Promise<any> {
 }
 
 export async function pushPriceInfo(price: PriceObject, signatures: string[]): Promise<any> {
-  const nonce = await getNonce(config.managerAddress)
-  return await pushPriceInfoHelper(price, signatures, nonce);
+  const nonce = await getNonce(config.managerAddress);
+  console.log("Nonce", nonce);
+  const fee = await getMempoolFee();
+  console.log("Fee", fee);
+  return await pushPriceInfoHelper(price, signatures, nonce, fee);
 }
 
-async function pushPriceInfoHelper(price: PriceObject, signatures: string[], nonce: number): Promise<any> {
+async function pushPriceInfoHelper(price: PriceObject, signatures: string[], nonce: number, fee: number): Promise<any> {
   const txOptions = {
     contractAddress: config.oracleAddress as string,
     contractName: config.oracleContractName,
@@ -124,7 +127,7 @@ async function pushPriceInfoHelper(price: PriceObject, signatures: string[], non
     senderKey: config.managerKey,
     nonce: nonce,
     postConditionMode: 1,
-    fee: (0.2 * 1000000),
+    fee: fee,
     network: config.network,
     anchorMode: AnchorMode.Any
   };
@@ -134,7 +137,7 @@ async function pushPriceInfoHelper(price: PriceObject, signatures: string[], non
 
   // Increase nonce if needed
   if ((result.reason as string) == "ConflictingNonceInMempool" || (result.reason as string) == "BadNonce") {
-    return await pushPriceInfoHelper(price, signatures, nonce+1);
+    return await pushPriceInfoHelper(price, signatures, nonce+1, fee);
   }
 
   return result;

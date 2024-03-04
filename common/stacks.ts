@@ -48,3 +48,12 @@ export async function getUnanchoredMicroblockTransactions(): Promise<any> {
   const data = await response.json();
   return data.results;
 }
+
+export async function getMempoolFee(): Promise<any> {
+  // Endpoint does not work on custom RPC...
+  const url = `https://api.mainnet.hiro.so/extended/v2/mempool/fees`;
+  const response = await fetch(url, { credentials: 'omit' });
+  const data = await response.json();
+  return data.contract_call.medium_priority;
+}
+
