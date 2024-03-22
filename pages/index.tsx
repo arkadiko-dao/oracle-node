@@ -46,17 +46,17 @@ export default function Home() {
 
     var tokenNames = []
     for (const nameInfo of tokenNamesResult) {
-      tokenNames.push(nameInfo.value);
+      tokenNames.push(nameInfo);
     }
 
     return {
       tokenId: tokenId,
       symbols: tokenNames,
-      lastBlock: priceInfo['last-block'].value,
-      blocksAgo: currentBlock - priceInfo['last-block'].value,
-      lastOraclePrice: priceInfo['last-price'].value,
-      lastDollarPrice: priceInfo['last-price'].value / Math.pow(10, tokenInfo[symbol].decimals),
-      arkadikoDecimals: priceInfo['decimals'].value,
+      lastBlock: priceInfo['last-block'],
+      blocksAgo: currentBlock - priceInfo['last-block'],
+      lastOraclePrice: priceInfo['last-price'],
+      lastDollarPrice: priceInfo['last-price'] / Math.pow(10, tokenInfo[symbol].decimals),
+      arkadikoDecimals: priceInfo['decimals'],
       decimals: tokenInfo[symbol].decimals,
     }
   }

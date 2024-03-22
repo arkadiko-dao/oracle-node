@@ -79,10 +79,10 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
     const tokenNames = await getTokenNames(Number(tokenId));
 
     // Get supported symbol
-    var symbol = tokenNames[0].value;
+    var symbol = tokenNames[0];
     for (const tokenName of tokenNames) {
-      if (config.symbols.includes(tokenName.value)) {
-        symbol = tokenName.value;
+      if (config.symbols.includes(tokenName)) {
+        symbol = tokenName;
       }
     }
 
@@ -90,7 +90,7 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
     const priceInfo = await getPriceInfo(symbol);
 
     // Check if decimals correct
-    const arkadikoDecimals = priceInfo.decimals.value == 0 ? tokenInfo[symbol].arkadikoDecimals : priceInfo.decimals.value;
+    const arkadikoDecimals = priceInfo.decimals == 0 ? tokenInfo[symbol].arkadikoDecimals : priceInfo.decimals;
     if (arkadikoDecimals != decimals) {
       console.log("[SIGN] Wrong input - Decimals: " + decimals + ", on chain decimals: " + arkadikoDecimals);
       return { error: "wrong input - decimals" };

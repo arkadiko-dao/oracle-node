@@ -1,24 +1,18 @@
-import { config } from './config';
+import { cheetah } from '@nieldeckx/stacks-cheetah'
 
 export async function getNonce(address: string) {
-  const url = `${config.stacksApiBase}/v2/accounts/${address}?proof=0`;
-  const response = await fetch(url, { credentials: 'omit' });
-  const data = await response.json();
+  const data = await cheetah.callApi(`/v2/accounts/${address}?proof=0`)
   return data.nonce;
 }
 
 export async function getCurrentBlockHeight(): Promise<any> {
-  const url = `${config.stacksApiBase}/extended/v1/block?limit=1`;
-  const response = await fetch(url, { credentials: 'omit' });
-  const data = await response.json();
+  const data = await cheetah.callApi(`/extended/v1/block?limit=1`)
   return data.results[0].burn_block_height;
 }
 
-export async function getMempoolTransactions(): Promise<any> {
+export async function getMempoolTransactions(address: string): Promise<any> {
   // Start with first page
-  const url = `${config.stacksApiBase}/extended/v1/tx/mempool?limit=50`;
-  const response = await fetch(url, { credentials: 'omit' });
-  const data = await response.json();
+  const data = await cheetah.callApi(`/extended/v1/tx/mempool?limit=50&sender_address=${address}`)
 
   // Calculate number of pages
   const total = data.total;
@@ -33,9 +27,7 @@ export async function getMempoolTransactions(): Promise<any> {
 
   // Loop over every page
   for (let page = 1; page < pages; page++) {
-    const url = `${config.stacksApiBase}/extended/v1/tx/mempool?limit=50&offset=${page * 50}`;
-    const response = await fetch(url, { credentials: 'omit' });
-    const data = await response.json();
+    const data = await cheetah.callApi(`/extended/v1/tx/mempool?limit=50&offset=${page * 50}&sender_address=${address}`)
     result = result.concat(data.results);
   }
 
@@ -43,17 +35,6 @@ export async function getMempoolTransactions(): Promise<any> {
 }
 
 export async function getUnanchoredMicroblockTransactions(): Promise<any> {
-  const url = `${config.stacksApiBase}/extended/v1/microblock/unanchored/txs`;
-  const response = await fetch(url, { credentials: 'omit' });
-  const data = await response.json();
+  const data = await cheetah.callApi(`/extended/v1/microblock/unanchored/txs`)
   return data.results;
 }
-
-export async function getMempoolFee(): Promise<any> {
-  // Endpoint does not work on custom RPC...
-  const url = `https://api.mainnet.hiro.so/extended/v2/mempool/fees`;
-  const response = await fetch(url, { credentials: 'omit' });
-  const data = await response.json();
-  return data.contract_call.medium_priority;
-}
-

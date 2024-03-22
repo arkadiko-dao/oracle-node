@@ -19,26 +19,42 @@ export default async function handler(
 
     // Get on chain price info
     const priceInfo = await getPriceInfo(symbol);
-    const lastBlock = Number(priceInfo["last-block"].value)
-    const lastPrice = Number(priceInfo["last-price"].value)
+    const lastBlock = Number(priceInfo["last-block"])
+    const lastPrice = Number(priceInfo["last-price"])
 
     // Get token ID for symbol
     const tokenId = await getTokenId(symbol);
 
+    // Arkadiko decimals
+    const arkadikoDecimals = priceInfo.decimals == 0 ? tokenInfo[symbol].arkadikoDecimals : priceInfo.decimals;
+
     // Get source price
     const price = await config.source.fetchPrice(symbol) as number;
 
-    // Check if price needs to be updated
-    const shouldUpdate = await shouldUpdatePrice(tokenId, lastBlock, blockHeight, lastPrice, price);
-
-    // Update if needed
-    if (shouldUpdate) {
-      console.log("\n[CHECK] Should update: " + symbol + " (ID #" + tokenId + ")");
-      console.log("[CHECK] Current price info:", priceInfo);
-      const arkadikoDecimals = priceInfo.decimals.value == 0 ? tokenInfo[symbol].arkadikoDecimals : priceInfo.decimals.value;
-      await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price);
+    // Get TX for token ID already in mempool
+    const mempoolTx = await mempoolUpdateTx(tokenId);
+    if (mempoolTx) {
+      const mempoolFee = Number(mempoolTx.fee_rate);
+      const currentTimeStamp = (Date.now() / 1000.0);
+      if (20 * 60 < (currentTimeStamp - mempoolTx.receipt_time) && mempoolFee < 1000000) {
+  
+        console.log("\n[CHECK] Should RBF mempool TX: " + symbol + " (ID #" + tokenId + ")");  
+        await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price, mempoolTx.nonce, mempoolFee * 1.2);
+  
+      } else {
+        console.log("\n[CHECK] Waiting for TX in mempool: " + symbol + " (ID #" + tokenId + ")");
+      }
+    
     } else {
-      console.log("\n[CHECK] Is up to date: " + symbol + " (ID #" + tokenId + ")");
+      const shouldUpdate = await shouldUpdatePrice(lastBlock, blockHeight, lastPrice, price);
+
+      if (shouldUpdate) {
+        console.log("\n[CHECK] Should update: " + symbol + " (ID #" + tokenId + ")");
+        console.log("[CHECK] Current price info:", priceInfo);
+        await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price, undefined, undefined);
+      } else {
+        console.log("\n[CHECK] Is up to date: " + symbol + " (ID #" + tokenId + ")");
+      }
     }
   }
 
@@ -46,7 +62,7 @@ export default async function handler(
   res.status(200).json({ result: "done" })
 }
 
-async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight: number, lastPrice: number, price: number): Promise<boolean> {
+async function shouldUpdatePrice(lastBlock: number, blockHeight: number, lastPrice: number, price: number): Promise<boolean> {
 
   // Block and price triggers
   let blockTrigger = blockHeight >= lastBlock + config.updateBlockDiff;
@@ -57,9 +73,15 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
     return false
   }
 
+  return true
+}
+
+
+async function mempoolUpdateTx(tokenId: number): Promise<any | undefined> {
+
   // Get mempool and unanchored transactions
   const unanchoredTxs = await getUnanchoredMicroblockTransactions();
-  const mempoolTxs = await getMempoolTransactions();
+  const mempoolTxs = await getMempoolTransactions(config.managerAddress);
   const allTxs = mempoolTxs.concat(unanchoredTxs);
 
   // Find oracle transactions
@@ -70,22 +92,17 @@ async function shouldUpdatePrice(tokenId: number, lastBlock: number, blockHeight
   const nonce = await getNonce(config.managerAddress)
   for (const tx of filteredTxs) {
     if (tx.sender_address == config.managerAddress) {
-      for (const arg of tx.contract_call.function_args) {
-        if (arg.name == 'token-id' && arg.repr == 'u' + tokenId) {
-          // Check if it's an actual TX, or stuck TX
-          if (nonce <= tx.nonce) {
-            console.log("do not update because of nonce", tx)
-            return false
-          }
-        }
+      const txTokenId = tx.contract_call.function_args[1];
+      if (txTokenId == tokenId && nonce <= tx.nonce) {
+        return tx;
       }
     }
   }
 
-  return true
+  return undefined
 }
 
-async function updatePrice(symbol: string, tokenId: number, decimals: number, lastBlock: number, blockHeight: number, lastPrice: number, price: number) {
+async function updatePrice(symbol: string, tokenId: number, decimals: number, lastBlock: number, blockHeight: number, lastPrice: number, price: number, nonce: number | undefined, fee: number | undefined) {
 
   // Create price object
   const priceObject = {
@@ -117,10 +134,10 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, la
   if (uniqueSignatures >= minimumSigners) {
 
     // Check again if price still needs update
-    const shouldUpdate = await shouldUpdatePrice(tokenId, lastBlock, blockHeight, lastPrice, price);
+    const shouldUpdate = await shouldUpdatePrice(lastBlock, blockHeight, lastPrice, price);
     if (shouldUpdate) {
-      console.log("[CHECK] Push price info for " + symbol);
-      const pushResult = await pushPriceInfo(priceObject, signatures);
+      console.log("[CHECK] Push price info for " + symbol, ", info:", priceObject);
+      const pushResult = await pushPriceInfo(priceObject, signatures, nonce, fee);
       console.log("[CHECK] Transaction result:", pushResult);
     }
   }

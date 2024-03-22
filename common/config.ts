@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import { cheetah } from '@nieldeckx/stacks-cheetah';
 import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
 import { SourceCoinMarketCap } from '@sources/coinmarketcap';
 import { SourceCoinGecko } from '@sources/coingecko';
@@ -128,3 +129,8 @@ const networks = {
 }
 
 export const config = networks[network];
+
+cheetah.setup({
+  network: process.env.NEXT_PUBLIC_NETWORK as 'mainnet' | 'testnet',
+  coreApiUrl: networks[network].stacksApiBase,
+})
