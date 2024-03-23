@@ -119,7 +119,7 @@ export async function pushPriceInfo(price: PriceObject, signatures: string[], no
   }
 
   if (fee) {
-    txOptions.fee = fee;
+    txOptions.fee = Math.round(fee);
   } else {
     txOptions.fee = await cheetah.getFee(TransactionFeePriority.low)
   }
