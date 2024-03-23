@@ -1,4 +1,5 @@
 import { config } from './config';
+import { cheetah } from '@nieldeckx/stacks-cheetah';
 import {
   AnchorMode,
   broadcastTransaction,
@@ -11,10 +12,9 @@ import {
   uintCV
 } from '@stacks/transactions';
 import { PriceObject } from './price';
-import { getMempoolFee, getNonce } from './stacks';
 
 export async function isTrustedOracle(publicKey: string): Promise<boolean> {
-  const call = await callReadOnlyFunction({
+  const result = await cheetah.callReadOnlyFunction({
     contractAddress: config.oracleAddress as string,
     contractName: config.oracleContractName,
     functionName: "is-trusted-oracle",
@@ -22,14 +22,12 @@ export async function isTrustedOracle(publicKey: string): Promise<boolean> {
       bufferCV(Buffer.from(publicKey, "hex"))
     ],
     senderAddress: config.oracleAddress as string,
-    network: config.network,
   });
-  const result = cvToJSON(call).value;
   return result;
 }
 
 export async function getSignableMessage(price: PriceObject): Promise<string> {
-  const call = await callReadOnlyFunction({
+  const result = await cheetah.callReadOnlyFunction({
     contractAddress: config.oracleAddress as string,
     contractName: config.oracleContractName,
     functionName: "get-signable-message-hash",
@@ -40,14 +38,12 @@ export async function getSignableMessage(price: PriceObject): Promise<string> {
       uintCV(price.decimals),
     ],
     senderAddress: config.oracleAddress as string,
-    network: config.network,
   });
-  const result = cvToJSON(call).value;
   return result;
 }
 
 export async function getTokenId(symbol: string): Promise<any> {
-  const call = await callReadOnlyFunction({
+  const result = await cheetah.callReadOnlyFunction({
     contractAddress: config.oracleAddress as string,
     contractName: config.oracleContractName,
     functionName: "get-token-id-from-name",
@@ -55,14 +51,12 @@ export async function getTokenId(symbol: string): Promise<any> {
       stringAsciiCV(symbol)
     ],
     senderAddress: config.oracleAddress as string,
-    network: config.network,
   });
-  const result = cvToJSON(call).value;
   return result;
 }
 
 export async function getTokenNames(tokenId: number): Promise<any> {
-  const call = await callReadOnlyFunction({
+  const result = await cheetah.callReadOnlyFunction({
     contractAddress: config.oracleAddress as string,
     contractName: config.oracleContractName,
     functionName: "get-token-names-from-id",
@@ -70,27 +64,23 @@ export async function getTokenNames(tokenId: number): Promise<any> {
       uintCV(tokenId),
     ],
     senderAddress: config.oracleAddress as string,
-    network: config.network,
   });
-  const result = cvToJSON(call).value;
   return result;
 }
 
 export async function getMinimumSigners(): Promise<any> {
-  const call = await callReadOnlyFunction({
+  const result = await cheetah.callReadOnlyFunction({
     contractAddress: config.oracleAddress as string,
     contractName: config.oracleContractName,
     functionName: "get-minimum-valid-signers",
     functionArgs: [],
     senderAddress: config.oracleAddress as string,
-    network: config.network,
   });
-  const result = cvToJSON(call).value;
   return result;
 }
 
 export async function getPriceInfo(symbol: string): Promise<any> {
-  const call = await callReadOnlyFunction({
+  const result = await cheetah.callReadOnlyFunction({
     contractAddress: config.oracleAddress as string,
     contractName: config.oracleContractName,
     functionName: "get-price",
@@ -98,22 +88,14 @@ export async function getPriceInfo(symbol: string): Promise<any> {
       stringAsciiCV(symbol)
     ],
     senderAddress: config.oracleAddress as string,
-    network: config.network,
   });
-  const result = cvToJSON(call).value;
   return result;
 }
 
-export async function pushPriceInfo(price: PriceObject, signatures: string[]): Promise<any> {
-  const nonce = await getNonce(config.managerAddress);
-  console.log("Nonce", nonce);
-  const fee = await getMempoolFee();
-  console.log("Fee", fee);
-  return await pushPriceInfoHelper(price, signatures, nonce, fee);
-}
 
-async function pushPriceInfoHelper(price: PriceObject, signatures: string[], nonce: number, fee: number): Promise<any> {
-  const txOptions = {
+export async function pushPriceInfo(price: PriceObject, signatures: string[], nonce: number | undefined, fee: number | undefined): Promise<any> {
+
+  const txOptions: any = {
     contractAddress: config.oracleAddress as string,
     contractName: config.oracleContractName,
     functionName: "update-price-multi",
@@ -124,21 +106,33 @@ async function pushPriceInfoHelper(price: PriceObject, signatures: string[], non
       uintCV(price.decimals),
       listCV(signatures.map(signature => bufferCV(Buffer.from(signature, "hex")))),
     ],
+
+    senderAddress: config.managerAddress,
     senderKey: config.managerKey,
-    nonce: nonce,
-    postConditionMode: 1,
-    fee: fee,
-    network: config.network,
-    anchorMode: AnchorMode.Any
-  };
-
-  const transaction = await makeContractCall(txOptions);
-  const result = await broadcastTransaction(transaction, config.network);
-
-  // Increase nonce if needed
-  if ((result.reason as string) == "ConflictingNonceInMempool" || (result.reason as string) == "BadNonce") {
-    return await pushPriceInfoHelper(price, signatures, nonce+1, fee);
   }
 
-  return result;
+  if (nonce) {
+    txOptions.nonce = nonce;
+  }
+  if (fee) {
+    txOptions.fee = fee;
+  }
+
+  return cheetah.contractCall(
+    {
+      contractAddress: config.oracleAddress as string,
+      contractName: config.oracleContractName,
+      functionName: "update-price-multi",
+      functionArgs: [
+        uintCV(price.block),
+        uintCV(price.tokenId),
+        uintCV(price.price),
+        uintCV(price.decimals),
+        listCV(signatures.map(signature => bufferCV(Buffer.from(signature, "hex")))),
+      ],
+
+      senderAddress: config.managerAddress,
+      senderKey: config.managerKey,
+    }
+  )
 }
