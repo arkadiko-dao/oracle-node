@@ -118,7 +118,7 @@ export async function pushPriceInfo(price: PriceObject, signatures: string[], no
     txOptions.fee = fee;
   }
 
-  return await cheetah.contractCall(
+  return cheetah.contractCall(
     {
       contractAddress: config.oracleAddress as string,
       contractName: config.oracleContractName,

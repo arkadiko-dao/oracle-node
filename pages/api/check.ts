@@ -37,7 +37,6 @@ export default async function handler(
       const mempoolFee = Number(mempoolTx.fee_rate);
       const currentTimeStamp = (Date.now() / 1000.0);
       if (20 * 60 < (currentTimeStamp - mempoolTx.receipt_time) && mempoolFee < 1000000) {
-  
         console.log("\n[CHECK] Should RBF mempool TX: " + symbol + " (ID #" + tokenId + ")");  
         await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price, mempoolTx.nonce, mempoolFee * 1.2);
   
@@ -137,7 +136,7 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, la
     const shouldUpdate = await shouldUpdatePrice(lastBlock, blockHeight, lastPrice, price);
     if (shouldUpdate) {
       console.log("[CHECK] Push price info for " + symbol, ", info:", priceObject);
-      const pushResult = await pushPriceInfo(priceObject, signatures, nonce, fee);
+      const pushResult = pushPriceInfo(priceObject, signatures, nonce, fee);
       console.log("[CHECK] Transaction result:", pushResult);
     }
   }
