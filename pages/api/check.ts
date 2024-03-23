@@ -136,7 +136,7 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, la
     const shouldUpdate = await shouldUpdatePrice(lastBlock, blockHeight, lastPrice, price);
     if (shouldUpdate) {
       console.log("[CHECK] Push price info for " + symbol, ", info:", priceObject);
-      const pushResult = pushPriceInfo(priceObject, signatures, nonce, fee);
+      const pushResult = await pushPriceInfo(priceObject, signatures, nonce, fee);
       console.log("[CHECK] Transaction result:", pushResult);
     }
   }

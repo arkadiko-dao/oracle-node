@@ -12,6 +12,7 @@ import {
   uintCV
 } from '@stacks/transactions';
 import { PriceObject } from './price';
+import { TransactionFeePriority } from '@nieldeckx/stacks-cheetah/dist/src/write';
 
 export async function isTrustedOracle(publicKey: string): Promise<boolean> {
   const result = await cheetah.callReadOnlyFunction({
@@ -113,26 +114,15 @@ export async function pushPriceInfo(price: PriceObject, signatures: string[], no
 
   if (nonce) {
     txOptions.nonce = nonce;
+  } else {
+    txOptions.nonce = await cheetah.getNonce(config.managerAddress);
   }
+
   if (fee) {
     txOptions.fee = fee;
+  } else {
+    txOptions.fee = await cheetah.getFee(TransactionFeePriority.low)
   }
 
-  return cheetah.contractCall(
-    {
-      contractAddress: config.oracleAddress as string,
-      contractName: config.oracleContractName,
-      functionName: "update-price-multi",
-      functionArgs: [
-        uintCV(price.block),
-        uintCV(price.tokenId),
-        uintCV(price.price),
-        uintCV(price.decimals),
-        listCV(signatures.map(signature => bufferCV(Buffer.from(signature, "hex")))),
-      ],
-
-      senderAddress: config.managerAddress,
-      senderKey: config.managerKey,
-    }
-  )
+  return await cheetah.broadcastTransaction(txOptions)
 }
