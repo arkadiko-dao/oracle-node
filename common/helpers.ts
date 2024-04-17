@@ -1,5 +1,5 @@
-import { config } from "./config";
 import secp256k1 from 'secp256k1';
+import { config } from "./config";
 import { isTrustedOracle } from "./oracle";
 
 export function getPublicKey(): string {
@@ -10,6 +10,7 @@ export function getPublicKey(): string {
   // Get the public key in a compressed format
   const publicKey = secp256k1.publicKeyCreate(privateKey);
   const publicKeyString = Buffer.from(publicKey).toString("hex");
+  console.log('wtf', publicKeyString);
   return publicKeyString;
 }
 
