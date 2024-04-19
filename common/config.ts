@@ -2,13 +2,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { cheetah } from '@nieldeckx/stacks-cheetah';
-import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
-import { SourceCoinMarketCap } from '@sources/coinmarketcap';
-import { SourceCoinGecko } from '@sources/coingecko';
-import { SourceCoinCap } from '@sources/coincap';
 import { SourceCoinbase } from '@sources/coinbase';
-import { SourceKucoin } from '@sources/kucoin';
+import { SourceCoinCap } from '@sources/coincap';
+import { SourceCoinGecko } from '@sources/coingecko';
+import { SourceCoinMarketCap } from '@sources/coinmarketcap';
 import { SourceCryptoCompare } from '@sources/cryptocompare';
+import { SourceKucoin } from '@sources/kucoin';
+import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
 
 const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
 const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinbase' | 'kucoin' | 'coincap' | 'cryptocompare';
@@ -45,9 +45,9 @@ export const tokenInfo: { [key: string]: { decimals: number, arkadikoDecimals: n
 const mocknet = {
   symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
-    "http://localhost:3000/api/sign",
-    "http://localhost:3000/api/sign",
-    "http://localhost:3000/api/sign"
+    "http://localhost:3000/",
+    "http://localhost:3000/",
+    "http://localhost:3000/"
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
@@ -71,9 +71,9 @@ const mocknet = {
 const testnet = {
   symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
-    "http://localhost:3000/api/sign",
-    "http://localhost:3000/api/sign",
-    "http://localhost:3000/api/sign"
+    "http://localhost:3000/",
+    "http://localhost:3000/",
+    "http://localhost:3000/"
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
