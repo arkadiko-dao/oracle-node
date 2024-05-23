@@ -96,7 +96,7 @@ const testnet = {
 // Mainnet config
 const mainnet = {
   // symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
-  symbols: ["STX", "BTC", "stSTX"],
+  symbols: ["STX", "BTC", "stSTX", "DIKO"],
   nodes: [
     "https://oracle-node-cmc-93cae714f6ee.herokuapp.com",
     "https://oracle-node-coinbase-0ce3a6b4f2bd.herokuapp.com",
