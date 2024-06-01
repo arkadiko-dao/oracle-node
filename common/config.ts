@@ -45,9 +45,9 @@ export const tokenInfo: { [key: string]: { decimals: number, arkadikoDecimals: n
 const mocknet = {
   symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
-    "http://localhost:3000/",
-    "http://localhost:3000/",
-    "http://localhost:3000/"
+    "http://localhost:3000",
+    "http://localhost:3000",
+    "http://localhost:3000"
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
@@ -71,9 +71,9 @@ const mocknet = {
 const testnet = {
   symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
-    "http://localhost:3000/",
-    "http://localhost:3000/",
-    "http://localhost:3000/"
+    "http://localhost:3000",
+    "http://localhost:3000",
+    "http://localhost:3000"
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,

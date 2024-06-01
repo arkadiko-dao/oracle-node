@@ -1,6 +1,6 @@
 import { tokenInfo } from "@common/config";
-import { fetchOnChainPrice } from "./onchain";
 import { PriceSourceInterface } from "./interface";
+import { fetchOnChainPrice } from "./onchain";
 
 export class SourceCoinGecko implements PriceSourceInterface {
 
@@ -25,9 +25,10 @@ export class SourceCoinGecko implements PriceSourceInterface {
   }
 
   async fetchPriceAPI(id: string, decimals: number): Promise<number> {
-    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&precision=${decimals}`;
+    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&precision=${decimals}&x_cg_demo_api_key=CG-qmcsLMfDVnbXtcZovVyZzk26`;
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
+    console.log(data)
     return data[id].usd;
   }
 }

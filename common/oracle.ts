@@ -1,18 +1,13 @@
-import { config } from './config';
 import { cheetah } from '@nieldeckx/stacks-cheetah';
+import { TransactionFeePriority } from '@nieldeckx/stacks-cheetah/dist/src/write';
 import {
-  AnchorMode,
-  broadcastTransaction,
   bufferCV,
-  callReadOnlyFunction,
-  cvToJSON,
   listCV,
-  makeContractCall,
   stringAsciiCV,
   uintCV
 } from '@stacks/transactions';
+import { config } from './config';
 import { PriceObject } from './price';
-import { TransactionFeePriority } from '@nieldeckx/stacks-cheetah/dist/src/write';
 
 export async function isTrustedOracle(publicKey: string): Promise<boolean> {
   const result = await cheetah.callReadOnlyFunction({
@@ -24,6 +19,7 @@ export async function isTrustedOracle(publicKey: string): Promise<boolean> {
     ],
     senderAddress: config.oracleAddress as string,
   });
+  console.log((Buffer.from(publicKey, "hex")).toString('hex'))
   return result;
 }
 
