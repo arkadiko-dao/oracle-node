@@ -1,17 +1,26 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
-import { cheetah } from '@nieldeckx/stacks-cheetah';
-import { SourceCoinbase } from '@sources/coinbase';
-import { SourceCoinCap } from '@sources/coincap';
-import { SourceCoinGecko } from '@sources/coingecko';
-import { SourceCoinMarketCap } from '@sources/coinmarketcap';
-import { SourceCryptoCompare } from '@sources/cryptocompare';
-import { SourceKucoin } from '@sources/kucoin';
+import { cheetah } from "@nieldeckx/stacks-cheetah";
+import { SourceCoinbase } from "@sources/coinbase";
+import { SourceCoinCap } from "@sources/coincap";
+import { SourceCoinGecko } from "@sources/coingecko";
+import { SourceCoinMarketCap } from "@sources/coinmarketcap";
+import { SourceCryptoCompare } from "@sources/cryptocompare";
+import { SourceKucoin } from "@sources/kucoin";
 import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
 
-const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
-const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinbase' | 'kucoin' | 'coincap' | 'cryptocompare';
+const network = process.env.NEXT_PUBLIC_NETWORK as
+  | "mocknet"
+  | "testnet"
+  | "mainnet";
+const source = process.env.NEXT_PUBLIC_SOURCE as
+  | "coinmarketcap"
+  | "coingecko"
+  | "coinbase"
+  | "kucoin"
+  | "coincap"
+  | "cryptocompare";
 
 // Map source names to objects
 function getSource() {
@@ -30,24 +39,47 @@ function getSource() {
 }
 
 // Token info
-export const tokenInfo: { [key: string]: { decimals: number, arkadikoDecimals: number, tooltip?: string } } = {
-  "STX": { decimals: 6, arkadikoDecimals: 1000000 },
-  "BTC": { decimals: 6, arkadikoDecimals: 100000000 },
-  "DIKO": { decimals: 6, arkadikoDecimals: 1000000 },
-  "USDA": { decimals: 6, arkadikoDecimals: 1000000, tooltip: "Using ALEX xUSD/USDA stable pool" },
-  "STX/USDA": { decimals: 6, arkadikoDecimals: 1000000, tooltip: "Using STX/USDA Arkadiko swap pool" },
+export const tokenInfo: {
+  [key: string]: {
+    decimals: number;
+    arkadikoDecimals: number;
+    tooltip?: string;
+  };
+} = {
+  STX: { decimals: 6, arkadikoDecimals: 1000000 },
+  BTC: { decimals: 6, arkadikoDecimals: 100000000 },
+  DIKO: { decimals: 6, arkadikoDecimals: 1000000 },
+  USDA: {
+    decimals: 6,
+    arkadikoDecimals: 1000000,
+    tooltip: "Using ALEX xUSD/USDA stable pool",
+  },
+  "STX/USDA": {
+    decimals: 6,
+    arkadikoDecimals: 1000000,
+    tooltip: "Using STX/USDA Arkadiko swap pool",
+  },
   "auto-alex": { decimals: 8, arkadikoDecimals: 10000000000 },
   "auto-alex-v2": { decimals: 8, arkadikoDecimals: 10000000000 },
-  "stSTX": { decimals: 6, arkadikoDecimals: 1000000 },
-}
+  stSTX: { decimals: 6, arkadikoDecimals: 1000000 },
+};
 
 // Mocknet config
 const mocknet = {
-  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
+  symbols: [
+    "STX",
+    "BTC",
+    "USDA",
+    "STX/USDA",
+    "DIKO",
+    "auto-alex",
+    "auto-alex-v2",
+    "stSTX",
+  ],
   nodes: [
     "http://localhost:3000/",
     "http://localhost:3000/",
-    "http://localhost:3000/"
+    "http://localhost:3000/",
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
@@ -58,22 +90,32 @@ const mocknet = {
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   alexAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-  managerKey: "753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601",
+  managerKey:
+    "753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601",
   source: getSource(),
   sourceName: source,
   inputMaxBlockDiff: 3,
   inputMaxPriceDiff: 0.025,
   updateBlockDiff: 6,
-  updatePriceDiff: 0.1
+  updatePriceDiff: 0.1,
 };
 
 // Testnet config
 const testnet = {
-  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
+  symbols: [
+    "STX",
+    "BTC",
+    "USDA",
+    "STX/USDA",
+    "DIKO",
+    "auto-alex",
+    "auto-alex-v2",
+    "stSTX",
+  ],
   nodes: [
     "http://localhost:3000/",
     "http://localhost:3000/",
-    "http://localhost:3000/"
+    "http://localhost:3000/",
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
@@ -90,8 +132,8 @@ const testnet = {
   inputMaxBlockDiff: 3,
   inputMaxPriceDiff: 0.025,
   updateBlockDiff: 6,
-  updatePriceDiff: 0.1
-}
+  updatePriceDiff: 0.1,
+};
 
 // Mainnet config
 const mainnet = {
@@ -106,8 +148,10 @@ const mainnet = {
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
-  network: new StacksMainnet({ url: "https://burned-cosmological-meadow.stacks-mainnet.quiknode.pro/d7c6a3bf73c0f2578c71cf6e6ddf0b96cf2f4aa9" }),
-  stacksApiBase: "https://burned-cosmological-meadow.stacks-mainnet.quiknode.pro/d7c6a3bf73c0f2578c71cf6e6ddf0b96cf2f4aa9",
+  network: new StacksMainnet({
+    url: process.env.STACKS_API,
+  }),
+  stacksApiBase: process.env.STACKS_API,
   oracleAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
   oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
@@ -119,18 +163,18 @@ const mainnet = {
   inputMaxBlockDiff: 3,
   inputMaxPriceDiff: 0.025,
   updateBlockDiff: 6,
-  updatePriceDiff: 0.1
-}
+  updatePriceDiff: 0.1,
+};
 
 const networks = {
   mocknet,
   testnet,
-  mainnet
-}
+  mainnet,
+};
 
 export const config = networks[network];
 
 cheetah.setup({
-  network: process.env.NEXT_PUBLIC_NETWORK as 'mainnet' | 'testnet',
+  network: process.env.NEXT_PUBLIC_NETWORK as "mainnet" | "testnet",
   coreApiUrl: networks[network].stacksApiBase,
-})
+});
