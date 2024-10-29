@@ -1,10 +1,20 @@
-import { getAutoAlexPrice, getAutoAlexV2Price, getUsdaPrice as getUsdaPriceAlex } from "./alex";
+import {
+  getAutoAlexPrice,
+  getAutoAlexV2Price,
+  getUsdaPrice as getUsdaPriceAlex,
+  getWelshPrice,
+} from "./alex";
 import { getDikoPrice, getUsdaPrice as getUsdaPriceArkadiko } from "./arkadiko";
 import { getStStxPrice } from "./stackingDao";
 
-export async function fetchOnChainPrice(symbol: string, stxPrice: number): Promise<number> {
+export async function fetchOnChainPrice(
+  symbol: string,
+  stxPrice: number
+): Promise<number> {
   if (symbol == "DIKO") {
     return await getDikoPrice();
+  } else if (symbol == "WELSH") {
+    return await getWelshPrice(stxPrice);
   } else if (symbol == "USDA") {
     return await getUsdaPriceAlex();
   } else if (symbol == "STX/USDA") {
@@ -16,5 +26,5 @@ export async function fetchOnChainPrice(symbol: string, stxPrice: number): Promi
   } else if (symbol == "stSTX") {
     return await getStStxPrice(stxPrice);
   }
-  return 0.0
+  return 0.0;
 }

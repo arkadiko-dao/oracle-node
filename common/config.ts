@@ -49,6 +49,7 @@ export const tokenInfo: {
   STX: { decimals: 6, arkadikoDecimals: 1000000 },
   BTC: { decimals: 6, arkadikoDecimals: 100000000 },
   DIKO: { decimals: 6, arkadikoDecimals: 1000000 },
+  WELSH: { decimals: 8, arkadikoDecimals: 100000000 },
   USDA: {
     decimals: 6,
     arkadikoDecimals: 1000000,
@@ -138,7 +139,7 @@ const testnet = {
 // Mainnet config
 const mainnet = {
   // symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
-  symbols: ["STX", "BTC", "stSTX", "DIKO"],
+  symbols: ["STX", "BTC", "stSTX", "DIKO", "WELSH"],
   nodes: [
     "https://oracle-node-cmc-93cae714f6ee.herokuapp.com",
     "https://oracle-node-coinbase-0ce3a6b4f2bd.herokuapp.com",
@@ -155,7 +156,7 @@ const mainnet = {
   oracleAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
   oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
-  alexAddress: "SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9",
+  alexAddress: "SP102V8P0F7JX67ARQ77WEA3D3CFB5XW39REDT0AM",
   managerAddress: "SP3K198T4PSVAPJT5K3060HXWEDVMKGA2S4TB0K9C",
   managerKey: process.env.STACKS_KEY as string,
   source: getSource(),
@@ -163,7 +164,7 @@ const mainnet = {
   inputMaxBlockDiff: 3,
   inputMaxPriceDiff: 0.025,
   updateBlockDiff: 6,
-  updatePriceDiff: 0.1,
+  updatePriceDiff: 0.05,
 };
 
 const networks = {
