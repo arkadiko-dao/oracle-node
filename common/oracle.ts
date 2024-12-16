@@ -119,6 +119,7 @@ export async function pushPriceInfo(
     txOptions.fee = Math.round(fee);
   } else {
     txOptions.fee = await cheetah.getFee(TransactionFeePriority.medium);
+    txOptions.fee = Math.max(txOptions.fee, 200000);
   }
 
   return await cheetah.broadcastTransaction(txOptions);
