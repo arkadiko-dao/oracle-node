@@ -3,10 +3,12 @@ import { fetchOnChainPrice } from "./onchain";
 import { PriceSourceInterface } from "./interface";
 
 export class SourceCoinGecko implements PriceSourceInterface {
-
   // Return price as int
   public async fetchPrice(symbol: string): Promise<number> {
-    const price = await this.fetchPriceHelper(symbol, tokenInfo[symbol].decimals);
+    const price = await this.fetchPriceHelper(
+      symbol,
+      tokenInfo[symbol].decimals
+    );
     return Math.round(price * Math.pow(10, tokenInfo[symbol].decimals));
   }
 
@@ -25,8 +27,8 @@ export class SourceCoinGecko implements PriceSourceInterface {
   }
 
   async fetchPriceAPI(id: string, decimals: number): Promise<number> {
-    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&precision=${decimals}`;
-    const response = await fetch(url, { credentials: 'omit' });
+    const url = `https://pro-api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&precision=${decimals}&x_cg_pro_api_key=${process.env.API_COINGECKO_KEY}`;
+    const response = await fetch(url, { credentials: "omit" });
     const data = await response.json();
     return data[id].usd;
   }
