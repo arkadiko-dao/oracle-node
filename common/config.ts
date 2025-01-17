@@ -143,7 +143,7 @@ const mainnet = {
   nodes: [
     "https://oracle-node-cmc-93cae714f6ee.herokuapp.com",
     "https://oracle-node-coinbase-0ce3a6b4f2bd.herokuapp.com",
-    // "https://oracle-node-coincap-608f068d5a76.herokuapp.com",
+    "https://oracle-node-coincap-608f068d5a76.herokuapp.com",
     "https://oracle-node-cryptocompare-05ea46921e27.herokuapp.com",
     "https://oracle-node-coingecko-759ba1fb518b.herokuapp.com",
   ],
