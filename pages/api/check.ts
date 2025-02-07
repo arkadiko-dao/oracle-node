@@ -32,19 +32,19 @@ export default async function handler(
     const price = await config.source.fetchPrice(symbol) as number;
 
     // Get TX for token ID already in mempool
-    // const mempoolTx = await mempoolUpdateTx(tokenId);
-    // if (mempoolTx) {
-    //   const mempoolFee = Number(mempoolTx.fee_rate);
-    //   const currentTimeStamp = (Date.now() / 1000.0);
-    //   if (20 * 60 < (currentTimeStamp - mempoolTx.receipt_time) && mempoolFee < 1000000) {
-    //     console.log("\n[CHECK] Should RBF mempool TX: " + symbol + " (ID #" + tokenId + ")");  
-    //     await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price, mempoolTx.nonce, mempoolFee * 1.2);
+    const mempoolTx = await mempoolUpdateTx(tokenId);
+    if (mempoolTx) {
+      const mempoolFee = Number(mempoolTx.fee_rate);
+      const currentTimeStamp = (Date.now() / 1000.0);
+      if (20 * 60 < (currentTimeStamp - mempoolTx.receipt_time) && mempoolFee < 1000000) {
+        console.log("\n[CHECK] Should RBF mempool TX: " + symbol + " (ID #" + tokenId + ")");  
+        await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price, mempoolTx.nonce, mempoolFee * 1.2);
   
-    //   } else {
-    //     console.log("\n[CHECK] Waiting for TX in mempool: " + symbol + " (ID #" + tokenId + ")");
-    //   }
+      } else {
+        console.log("\n[CHECK] Waiting for TX in mempool: " + symbol + " (ID #" + tokenId + ")");
+      }
     
-    // } else {
+    } else {
       const shouldUpdate = await shouldUpdatePrice(lastBlock, blockHeight, lastPrice, price);
 
       if (shouldUpdate) {
@@ -54,7 +54,7 @@ export default async function handler(
       } else {
         console.log("\n[CHECK] Is up to date: " + symbol + " (ID #" + tokenId + ")");
       }
-    // }
+    }
   }
 
   res.setHeader("Access-Control-Allow-Origin", "*")
