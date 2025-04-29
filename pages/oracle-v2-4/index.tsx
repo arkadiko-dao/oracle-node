@@ -58,10 +58,10 @@ export default function Home() {
           HEADER
         */}
         <h1 className="font-medium text-6xl text-center">
-          <a className="text-blue-600" href="https://arkadiko.finance/" target="_blank" rel="noreferrer">Arkadiko</a> Oracle Node
+          <a className="text-blue-600" href="https://arkadiko.finance/" target="_blank" rel="noreferrer">Arkadiko</a> Oracle V2.4
         </h1>
         <p className="mt-2 text-2xl text-gray-400 text-center">
-          Multisig oracle solution on Stacks.
+          Prices from Pyth, DIA and StackingDAO.
         </p>
 
         {/* 
