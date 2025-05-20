@@ -25,7 +25,6 @@ export default function Home() {
       try {
         const response = await fetch('/api/oracle-v2-4');
         const data: PriceData = await response.json();
-        console.log("GOT PRICES", data.prices);
         setPrices(data.prices);
       } catch (error) {
         console.error('Error fetching prices:', error);
