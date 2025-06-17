@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { fetchPrice } from '@common/oracle-v2-4';
+import { fetchPrice } from '@common/oracle-v3';
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,12 +1,5 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
-import { getMinimumSigners, getPriceInfo, getTokenId, getTokenNames } from '@common/oracle';
-import { config, tokenInfo } from '@common/config';
-import { getCurrentBlockHeight } from '@common/stacks';
-import PriceRow from 'components/price-row';
-import NodeRow from 'components/node-row';
-import SourceRow from 'components/source-row';
-import ToolTip from 'components/tooltip';
 
 interface PriceData {
   prices: Record<string, any>;
@@ -23,7 +16,7 @@ export default function Home() {
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        const response = await fetch('/api/oracle-v2-4');
+        const response = await fetch('/api/oracle-v3');
         const data: PriceData = await response.json();
         setPrices(data.prices);
       } catch (error) {
