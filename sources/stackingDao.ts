@@ -8,14 +8,9 @@ import {
 export async function getStxPerStStx(): Promise<any> {
   const call = await callReadOnlyFunction({
     contractAddress: "SP4SZE494VC2YC5JYG7AYFQ44F5Q4PYV7DVMDPBG",
-    contractName: "data-core-v3",
+    contractName: "data-stx-v1",
     functionName: "get-stx-per-ststx",
-    functionArgs: [
-      contractPrincipalCV(
-        "SP4SZE494VC2YC5JYG7AYFQ44F5Q4PYV7DVMDPBG",
-        "reserve-v1"
-      ),
-    ],
+    functionArgs: [],
     senderAddress: config.managerAddress as string,
     network: config.network,
   });
