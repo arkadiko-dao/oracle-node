@@ -14,7 +14,7 @@ export async function getStxPerStStx(): Promise<any> {
     senderAddress: config.managerAddress as string,
     network: config.network,
   });
-  const result = cvToJSON(call).value.value / 1000000;
+  const result = cvToJSON(call).value / 1000000;
   return result;
 }
 
