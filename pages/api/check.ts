@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { config, tokenInfo } from '@common/config';
 import { getMinimumSigners, getPriceInfo, getTokenId, pushPriceInfo } from '@common/oracle';
-import { getCurrentBlockHeight, getMempoolTransactions, getNonce, getUnanchoredMicroblockTransactions } from '@common/stacks';
+import { getCurrentBlockHeight, getMempoolTransactions, getNonce } from '@common/stacks';
 
 type Data = {
   result: string
@@ -78,14 +78,13 @@ async function shouldUpdatePrice(lastBlock: number, blockHeight: number, lastPri
 
 async function mempoolUpdateTx(tokenId: number): Promise<any | undefined> {
 
-  // Get mempool and unanchored transactions
-  const unanchoredTxs = await getUnanchoredMicroblockTransactions();
-  const mempoolTxs = await getMempoolTransactions(config.managerAddress);
-  const allTxs = mempoolTxs.concat(unanchoredTxs);
+  // Pending transactions live in the mempool. Unanchored microblocks were
+  // removed in Nakamoto, and that API route now 404s.
+  const allTxs = await getMempoolTransactions(config.managerAddress);
 
   // Find oracle transactions
   const oracleContract = config.oracleAddress + '.' + config.oracleContractName;
-  const filteredTxs = allTxs.filter((tx: any) => tx.tx_type == 'contract_call' && tx.contract_call.contract_id == oracleContract);
+  const filteredTxs = allTxs.filter((tx: any) => tx?.tx_type == 'contract_call' && tx.contract_call?.contract_id == oracleContract);
 
   // Check if given token is currently being updated
   const nonce = await getNonce(config.managerAddress)

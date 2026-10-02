@@ -33,8 +33,3 @@ export async function getMempoolTransactions(address: string): Promise<any> {
 
   return result;
 }
-
-export async function getUnanchoredMicroblockTransactions(): Promise<any> {
-  const data = await cheetah.callApi(`/extended/v1/microblock/unanchored/txs`)
-  return data.results;
-}
