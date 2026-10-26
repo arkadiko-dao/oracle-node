@@ -38,7 +38,7 @@ export default async function handler(
       const currentTimeStamp = (Date.now() / 1000.0);
       if (20 * 60 < (currentTimeStamp - mempoolTx.receipt_time) && mempoolFee < 1000000) {
         console.log("\n[CHECK] Should RBF mempool TX: " + symbol + " (ID #" + tokenId + ")");  
-        await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price, mempoolTx.nonce, mempoolFee * 1.2);
+        await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price, mempoolTx.nonce, mempoolFee * 1.5);
   
       } else {
         console.log("\n[CHECK] Waiting for TX in mempool: " + symbol + " (ID #" + tokenId + ")");
